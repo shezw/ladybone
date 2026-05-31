@@ -441,11 +441,8 @@ set(SOURCES
     FileAPI/FileReader.cpp
     FileAPI/FileReaderSync.cpp
     Gamepad/EventNames.cpp
-    Gamepad/Gamepad.cpp
     Gamepad/GamepadButton.cpp
     Gamepad/GamepadEvent.cpp
-    Gamepad/GamepadHapticActuator.cpp
-    Gamepad/NavigatorGamepad.cpp
     Geolocation/Geolocation.cpp
     Serial/Serial.cpp
     Serial/SerialPort.cpp
@@ -747,7 +744,6 @@ set(SOURCES
     Infra/Strings.cpp
     Internals/FakeXRDevice.cpp
     Internals/InternalAnimationTimeline.cpp
-    Internals/InternalGamepad.cpp
     Internals/Internals.cpp
     Internals/InternalsBase.cpp
     Internals/WebUI.cpp
@@ -1246,9 +1242,28 @@ set(GENERATED_SOURCES
     HTML/Parser/NamedCharacterReferences.cpp
 )
 
+if (LADYBIRD_ENABLE_GAMEPAD)
+    list(APPEND SOURCES
+        Gamepad/Gamepad.cpp
+        Gamepad/GamepadHapticActuator.cpp
+        Gamepad/NavigatorGamepad.cpp
+        Internals/InternalGamepad.cpp
+    )
+else()
+    list(APPEND SOURCES
+        Gamepad/GamepadDisabled.cpp
+        Gamepad/GamepadHapticActuatorDisabled.cpp
+        Gamepad/NavigatorGamepadDisabled.cpp
+        Internals/InternalGamepadDisabled.cpp
+    )
+endif()
+
 ladybird_lib(LibWeb web EXPLICIT_SYMBOL_EXPORT)
 
-target_link_libraries(LibWeb PRIVATE LibCore LibCompress LibCrypto LibJS LibHTTP LibGfx LibIPC LibRegex LibSyntax LibTextCodec LibUnicode LibMedia LibWasm LibXML LibIDL LibURL LibTLS LibRequests LibGC LibSync LibThreading skia ${ANGLE_TARGETS} SDL3::SDL3 LibXml2::LibXml2)
+target_link_libraries(LibWeb PRIVATE LibCore LibCompress LibCrypto LibJS LibHTTP LibGfx LibIPC LibRegex LibSyntax LibTextCodec LibUnicode LibMedia LibWasm LibXML LibIDL LibURL LibTLS LibRequests LibGC LibSync LibThreading skia ${ANGLE_TARGETS} LibXml2::LibXml2)
+if (LADYBIRD_ENABLE_GAMEPAD)
+    target_link_libraries(LibWeb PRIVATE SDL3::SDL3)
+endif()
 
 import_rust_crate(MANIFEST_PATH Rust/Cargo.toml CRATE_NAME libweb_rust FFI_HEADER RustFFI.h)
 import_rust_crate(MANIFEST_PATH ContentBlocker/Rust/Cargo.toml CRATE_NAME libweb_content_blocker_rust FFI_HEADER ContentBlockerRustFFI.h)

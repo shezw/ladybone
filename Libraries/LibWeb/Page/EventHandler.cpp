@@ -56,8 +56,10 @@
 #include <LibWeb/UIEvents/PointerEvent.h>
 #include <LibWeb/UIEvents/WheelEvent.h>
 
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_joystick.h>
+#if ENABLE_GAMEPAD
+#    include <SDL3/SDL_events.h>
+#    include <SDL3/SDL_joystick.h>
+#endif
 
 namespace Web {
 
@@ -1133,6 +1135,7 @@ EventResult EventHandler::handle_paste(Utf16String const& text)
 
 void EventHandler::handle_sdl_input_events()
 {
+#if ENABLE_GAMEPAD
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -1149,6 +1152,7 @@ void EventHandler::handle_sdl_input_events()
             break;
         }
     }
+#endif
 }
 
 void EventHandler::handle_gamepad_connected(SDL_JoystickID sdl_joystick_id)

@@ -16,12 +16,19 @@ endif()
 
 include("Meta/CMake/gui_framework.cmake")
 
+option(LADYBIRD_ENABLE_GAMEPAD "Enable the Web Gamepad API SDL backend" ON)
+if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
+    set(LADYBIRD_ENABLE_GAMEPAD OFF CACHE BOOL "Enable the Web Gamepad API SDL backend" FORCE)
+endif()
+
 # Pass additional information to vcpkg if we are using it.
 if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake$")
     set(CMAKE_PROJECT_ladybird_INCLUDE_BEFORE "Meta/CMake/vcpkg/generate_vcpkg_toolchain_variables.cmake")
     if (LADYBIRD_GUI_FRAMEWORK STREQUAL "Qt" OR LADYBIRD_GUI_FRAMEWORK STREQUAL "Gtk")
         string(TOLOWER "${LADYBIRD_GUI_FRAMEWORK}" framework_feature)
         set(VCPKG_MANIFEST_FEATURES "${framework_feature}" CACHE STRING "" FORCE)
+    elseif (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
+        set(VCPKG_MANIFEST_NO_DEFAULT_FEATURES ON CACHE BOOL "" FORCE)
     endif()
 endif()
 
@@ -57,6 +64,12 @@ include(cmake_options)
 
 if(ENABLE_ALL_THE_DEBUG_MACROS)
     include(all_the_debug_macros)
+endif()
+
+if (LADYBIRD_ENABLE_GAMEPAD)
+    add_compile_definitions(ENABLE_GAMEPAD=1)
+else()
+    add_compile_definitions(ENABLE_GAMEPAD=0)
 endif()
 
 if (ENABLE_LAGOM_CCACHE)

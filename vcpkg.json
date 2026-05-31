@@ -1,5 +1,8 @@
 {
   "builtin-baseline": "48cfe1e0e928341709d97fc3d2eff10ad6262c96",
+  "default-features": [
+    "gamepad"
+  ],
   "dependencies": [
     {
       "name": "angle",
@@ -120,10 +123,6 @@
       "name": "pthread",
       "platform": "windows"
     },
-    {
-      "name": "sdl3",
-      "default-features": false
-    },
     "simdjson",
     "simdutf",
     {
@@ -181,6 +180,15 @@
     "zlib"
   ],
   "features": {
+    "gamepad": {
+      "description": "Build Web Gamepad API support using SDL",
+      "dependencies": [
+        {
+          "name": "sdl3",
+          "default-features": false
+        }
+      ]
+    },
     "gtk": {
       "description": "Build with GTK 4 GUI framework",
       "dependencies": [

@@ -33,7 +33,9 @@ target_include_directories(webcontentservice PUBLIC $<BUILD_INTERFACE:${LADYBIRD
 
 target_link_libraries(webcontentservice PUBLIC LibCore LibCrypto LibFileSystem LibGfx LibHTTP LibIPC LibJS LibMain LibMedia LibWeb LibWebSocket LibRequests LibWebView LibImageDecoderClient LibGC)
 target_link_libraries(webcontentservice PRIVATE OpenSSL::Crypto OpenSSL::SSL)
-target_link_libraries(webcontentservice PRIVATE SDL3::SDL3)
+if (LADYBIRD_ENABLE_GAMEPAD)
+    target_link_libraries(webcontentservice PRIVATE SDL3::SDL3)
+endif()
 
 add_executable(WebContent main.cpp)
 
