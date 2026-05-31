@@ -7,7 +7,11 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <GLES2/gl2.h>
+#if ENABLE_3D_GRAPHICS
+#    include <GLES2/gl2.h>
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 #include <LibJS/Runtime/Realm.h>
 #include <LibWeb/Bindings/Intrinsics.h>
 #include <LibWeb/Bindings/WebGLBuffer.h>

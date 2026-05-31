@@ -60,7 +60,7 @@ private:
     NonnullRefPtr<Gfx::SkiaBackendContext> m_skia_backend_context;
     Gfx::IntSize m_size;
     RefPtr<Gfx::PaintingSurface> m_painting_surface;
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
     OwnPtr<Gfx::SharedImageBuffer> m_shared_image_buffer;
 #endif
     NonnullOwnPtr<Impl> m_impl;
@@ -69,7 +69,7 @@ private:
     [[maybe_unused]] DrawingBufferOptions m_drawing_buffer_options;
 
     void free_surface_resources();
-#if defined(AK_OS_MACOS)
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
     void allocate_iosurface_painting_surface();
 #elif defined(USE_VULKAN_DMABUF_IMAGES)
     void allocate_vkimage_painting_surface();

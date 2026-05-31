@@ -213,8 +213,12 @@ ErrorOr<int> ladybird_main(Main::Arguments arguments)
     if (force_cpu_painting) {
         WebContent::PageClient::set_use_skia_painter(WebContent::PageClient::UseSkiaPainter::CPUBackend);
     } else {
+#if ENABLE_3D_GRAPHICS
         Gfx::SkiaBackendContext::initialize_gpu_backend();
         WebContent::PageClient::set_use_skia_painter(WebContent::PageClient::UseSkiaPainter::GPUBackendIfAvailable);
+#else
+        WebContent::PageClient::set_use_skia_painter(WebContent::PageClient::UseSkiaPainter::CPUBackend);
+#endif
     }
 
     WebContent::PageClient::set_is_headless(is_headless);

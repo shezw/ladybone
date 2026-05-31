@@ -1,20 +1,10 @@
 {
   "builtin-baseline": "48cfe1e0e928341709d97fc3d2eff10ad6262c96",
   "default-features": [
-    "gamepad"
+    "gamepad",
+    "graphics-3d"
   ],
   "dependencies": [
-    {
-      "name": "angle",
-      "platform": "osx",
-      "features": [
-        "metal"
-      ]
-    },
-    {
-      "name": "angle",
-      "platform": "linux | windows | android | bsd"
-    },
     {
       "name": "cpptrace",
       "platform": "linux | windows | osx"
@@ -130,7 +120,6 @@
       "platform": "osx",
       "default-features": false,
       "features": [
-        "metal",
         "fontconfig",
         "harfbuzz",
         "icu"
@@ -143,8 +132,7 @@
       "features": [
         "freetype",
         "harfbuzz",
-        "icu",
-        "vulkan"
+        "icu"
       ]
     },
     {
@@ -155,17 +143,13 @@
         "freetype",
         "fontconfig",
         "harfbuzz",
-        "icu",
-        "vulkan"
+        "icu"
       ]
     },
     {
       "name": "skia",
       "platform": "android",
-      "default-features": false,
-      "features": [
-        "vulkan"
-      ]
+      "default-features": false
     },
     "sqlite3",
     {
@@ -174,12 +158,44 @@
         "zstd"
       ]
     },
-    "vulkan",
-    "vulkan-headers",
     "woff2",
     "zlib"
   ],
   "features": {
+    "graphics-3d": {
+      "description": "Build WebGL and GPU-backed Skia rendering support",
+      "dependencies": [
+        {
+          "name": "angle",
+          "platform": "osx",
+          "features": [
+            "metal"
+          ]
+        },
+        {
+          "name": "angle",
+          "platform": "linux | windows | android | bsd"
+        },
+        {
+          "name": "skia",
+          "platform": "osx",
+          "default-features": false,
+          "features": [
+            "metal"
+          ]
+        },
+        {
+          "name": "skia",
+          "platform": "windows | linux | bsd | android",
+          "default-features": false,
+          "features": [
+            "vulkan"
+          ]
+        },
+        "vulkan",
+        "vulkan-headers"
+      ]
+    },
     "gamepad": {
       "description": "Build Web Gamepad API support using SDL",
       "dependencies": [

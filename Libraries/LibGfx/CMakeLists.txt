@@ -64,7 +64,7 @@ set(SOURCES
     YUVData.cpp
 )
 
-if (APPLE)
+if (LADYBIRD_ENABLE_3D_GRAPHICS AND APPLE)
     list(APPEND SOURCES MetalContext.mm)
 endif()
 
@@ -140,8 +140,10 @@ else()
     target_link_libraries(LibGfx PRIVATE libjxl::libjxl hwy::hwy)
 endif()
 
-if (APPLE)
+if (LADYBIRD_ENABLE_3D_GRAPHICS AND APPLE)
     target_link_libraries(LibCore PUBLIC "-framework Metal")
+endif()
+if (APPLE)
     target_link_libraries(LibCore PUBLIC "-framework Accelerate")
 endif()
 

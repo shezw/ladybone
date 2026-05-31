@@ -12,7 +12,11 @@
 #include <LibWeb/Bindings/WebGLUniformLocation.h>
 #include <LibWeb/WebGL/WebGLUniformLocation.h>
 
-#include <GLES2/gl2.h>
+#if ENABLE_3D_GRAPHICS
+#    include <GLES2/gl2.h>
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 
 namespace Web::WebGL {
 

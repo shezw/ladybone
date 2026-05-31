@@ -5,12 +5,16 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#define GL_GLEXT_PROTOTYPES 1
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#if ENABLE_3D_GRAPHICS
+#    define GL_GLEXT_PROTOTYPES 1
+#    include <GLES2/gl2.h>
+#    include <GLES2/gl2ext.h>
 extern "C" {
-#include <GLES2/gl2ext_angle.h>
+#    include <GLES2/gl2ext_angle.h>
 }
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 
 #include <LibGfx/BitmapExport.h>
 #include <LibGfx/DecodedImageFrame.h>

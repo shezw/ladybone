@@ -18,7 +18,7 @@
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/StorageAPI/StorageShed.h>
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
 #    include <LibGfx/MetalContext.h>
 #endif
 

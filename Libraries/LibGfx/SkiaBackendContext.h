@@ -13,7 +13,7 @@
 #    include <LibGfx/VulkanContext.h>
 #endif
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
 #    include <LibGfx/MetalContext.h>
 #endif
 
@@ -34,7 +34,7 @@ public:
     static RefPtr<SkiaBackendContext> create_vulkan_context(const VulkanContext& vulkan_context);
 #endif
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
     static RefPtr<SkiaBackendContext> create_metal_context(NonnullRefPtr<MetalContext>);
 #endif
 

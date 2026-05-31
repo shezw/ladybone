@@ -14,22 +14,26 @@
 #endif
 #include <LibWeb/WebGL/OpenGLContext.h>
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#define EGL_EGLEXT_PROTOTYPES 1
+#if ENABLE_3D_GRAPHICS
+#    include <EGL/egl.h>
+#    include <EGL/eglext.h>
+#    define EGL_EGLEXT_PROTOTYPES 1
 extern "C" {
-#include <EGL/eglext_angle.h>
+#    include <EGL/eglext_angle.h>
 }
-#define GL_GLEXT_PROTOTYPES 1
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#    define GL_GLEXT_PROTOTYPES 1
+#    include <GLES2/gl2.h>
+#    include <GLES2/gl2ext.h>
 extern "C" {
-#include <GLES2/gl2ext_angle.h>
+#    include <GLES2/gl2ext_angle.h>
 }
-#include <GLES3/gl3.h>
+#    include <GLES3/gl3.h>
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 
 // Enable WebGL if we're on MacOS and can use Metal or if we can use shareable Vulkan images
-#if defined(AK_OS_MACOS) || defined(USE_VULKAN_DMABUF_IMAGES)
+#if ENABLE_3D_GRAPHICS && (defined(AK_OS_MACOS) || defined(USE_VULKAN_DMABUF_IMAGES))
 #    define ENABLE_WEBGL 1
 #endif
 
@@ -286,7 +290,7 @@ void OpenGLContext::clear_buffer_to_default_values()
 #endif
 }
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
 void OpenGLContext::allocate_iosurface_painting_surface()
 {
     m_shared_image_buffer = make<Gfx::SharedImageBuffer>(Gfx::SharedImageBuffer::create(m_size));

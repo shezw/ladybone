@@ -11,9 +11,13 @@
 #include <LibWeb/WebGL/OpenGLContext.h>
 #include <LibWeb/WebGL/WebGLRenderingContextBase.h>
 
-#define GL_GLEXT_PROTOTYPES 1
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#if ENABLE_3D_GRAPHICS
+#    define GL_GLEXT_PROTOTYPES 1
+#    include <GLES2/gl2.h>
+#    include <GLES2/gl2ext.h>
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 
 namespace Web::WebGL {
 

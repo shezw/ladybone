@@ -22,7 +22,7 @@ struct VulkanImage;
 }
 #endif
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
 #    include <LibGfx/MetalContext.h>
 #endif
 
@@ -45,7 +45,7 @@ public:
     static NonnullRefPtr<PaintingSurface> create_with_size(IntSize size, BitmapFormat color_type, AlphaType alpha_type, RefPtr<SkiaBackendContext> = {});
     static NonnullRefPtr<PaintingSurface> wrap_bitmap(Bitmap&);
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
     static NonnullRefPtr<PaintingSurface> create_from_shared_image_buffer(SharedImageBuffer&, NonnullRefPtr<SkiaBackendContext>, Origin = Origin::TopLeft);
 #endif
 

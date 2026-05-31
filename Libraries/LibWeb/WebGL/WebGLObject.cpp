@@ -10,7 +10,11 @@
 #include <LibWeb/Bindings/WebGLObject.h>
 #include <LibWeb/WebGL/WebGLObject.h>
 
-#include <GLES2/gl2.h>
+#if ENABLE_3D_GRAPHICS
+#    include <GLES2/gl2.h>
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 
 namespace Web::WebGL {
 

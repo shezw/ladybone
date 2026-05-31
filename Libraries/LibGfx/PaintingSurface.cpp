@@ -11,11 +11,14 @@
 
 #include <core/SkColorSpace.h>
 #include <core/SkSurface.h>
-#include <gpu/ganesh/GrBackendSurface.h>
-#include <gpu/ganesh/GrDirectContext.h>
-#include <gpu/ganesh/SkSurfaceGanesh.h>
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS
+#    include <gpu/ganesh/GrBackendSurface.h>
+#    include <gpu/ganesh/GrDirectContext.h>
+#    include <gpu/ganesh/SkSurfaceGanesh.h>
+#endif
+
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
 #    include <gpu/ganesh/mtl/GrMtlBackendSurface.h>
 #elif defined(USE_VULKAN_DMABUF_IMAGES)
 #    include <LibGfx/VulkanImage.h>
@@ -32,7 +35,7 @@ struct PaintingSurface::Impl {
     RefPtr<Bitmap> bitmap;
 };
 
-#if defined(AK_OS_MACOS) || defined(USE_VULKAN_DMABUF_IMAGES)
+#if ENABLE_3D_GRAPHICS && (defined(AK_OS_MACOS) || defined(USE_VULKAN_DMABUF_IMAGES))
 static GrSurfaceOrigin origin_to_sk_origin(PaintingSurface::Origin origin)
 {
     switch (origin) {
@@ -97,6 +100,7 @@ NonnullRefPtr<PaintingSurface> PaintingSurface::create_with_size(IntSize size, B
     auto sk_alpha_type = to_skia_alpha_type(color_type, alpha_type);
     auto image_info = SkImageInfo::Make(size.width(), size.height(), sk_color_type, sk_alpha_type, SkColorSpace::MakeSRGB());
 
+#if ENABLE_3D_GRAPHICS
     if (context) {
         auto surface = SkSurfaces::RenderTarget(context->sk_context(), skgpu::Budgeted::kNo, image_info);
         if (surface)
@@ -104,6 +108,9 @@ NonnullRefPtr<PaintingSurface> PaintingSurface::create_with_size(IntSize size, B
         dbgln("Unable to create GPU surface for size {}x{}, falling back to CPU", size.width(), size.height());
         context = nullptr;
     }
+#else
+    VERIFY(!context);
+#endif
 
     auto bitmap = Bitmap::create(color_type, alpha_type, size).value();
     auto surface = SkSurfaces::WrapPixels(image_info, bitmap->begin(), bitmap->pitch());
@@ -121,7 +128,7 @@ NonnullRefPtr<PaintingSurface> PaintingSurface::wrap_bitmap(Bitmap& bitmap)
     return adopt_ref(*new PaintingSurface(make<Impl>(RefPtr<SkiaBackendContext> {}, size, surface, bitmap)));
 }
 
-#ifdef AK_OS_MACOS
+#if ENABLE_3D_GRAPHICS && defined(AK_OS_MACOS)
 NonnullRefPtr<PaintingSurface> PaintingSurface::create_from_shared_image_buffer(SharedImageBuffer& shared_image_buffer, NonnullRefPtr<SkiaBackendContext> context, Origin origin)
 {
     auto const& iosurface_handle = shared_image_buffer.iosurface_handle();

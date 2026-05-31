@@ -22,8 +22,12 @@
 #include <LibWeb/WebGL/WebGLShader.h>
 #include <LibWeb/WebIDL/Buffers.h>
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#if ENABLE_3D_GRAPHICS
+#    include <GLES2/gl2.h>
+#    include <GLES2/gl2ext.h>
+#else
+#    include <LibWeb/WebGL/OpenGLESStub.h>
+#endif
 
 namespace Web::WebGL {
 
