@@ -6,6 +6,7 @@
 
 #include <LibWeb/Bindings/Intrinsics.h>
 #include <LibWeb/Gamepad/Gamepad.h>
+#include <LibWeb/Gamepad/GamepadButton.h>
 #include <LibWeb/Gamepad/GamepadHapticActuator.h>
 
 namespace Web::Gamepad {

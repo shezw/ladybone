@@ -5,6 +5,7 @@
  */
 
 #include <AK/TypeCasts.h>
+#include <LibWeb/Gamepad/Gamepad.h>
 #include <LibWeb/Gamepad/NavigatorGamepad.h>
 #include <LibWeb/HTML/Navigator.h>
 

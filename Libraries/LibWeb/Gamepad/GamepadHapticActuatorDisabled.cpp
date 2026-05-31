@@ -7,8 +7,10 @@
 #include <AK/TypeCasts.h>
 #include <LibWeb/Bindings/Intrinsics.h>
 #include <LibWeb/DOM/DocumentObserver.h>
+#include <LibWeb/Gamepad/Gamepad.h>
 #include <LibWeb/Gamepad/GamepadHapticActuator.h>
 #include <LibWeb/HTML/Window.h>
+#include <LibWeb/Platform/Timer.h>
 #include <LibWeb/WebIDL/ExceptionOr.h>
 #include <LibWeb/WebIDL/Promise.h>
 

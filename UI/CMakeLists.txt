@@ -59,6 +59,13 @@ else()
     set(LADYBIRD_TARGET ladybird PRIVATE)
 endif()
 
+get_target_property(LADYBIRD_IS_BUNDLE ladybird MACOSX_BUNDLE)
+
+if (NOT TARGET ladybird_build_resource_files)
+    set(resource_base_dir "${CMAKE_BINARY_DIR}/${IN_BUILD_PREFIX}${CMAKE_INSTALL_DATADIR}/Lagom")
+    copy_resources_to_build(${resource_base_dir} ladybird)
+endif()
+
 set(LADYBIRD_LIBS AK LibCore LibFileSystem LibGfx LibImageDecoderClient LibIPC LibJS LibMain LibWeb LibWebView LibRequests LibSync LibURL)
 target_link_libraries(${LADYBIRD_TARGET} PRIVATE ${LADYBIRD_LIBS})
 target_link_libraries(${LADYBIRD_TARGET} PRIVATE OpenSSL::Crypto OpenSSL::SSL)
@@ -87,9 +94,14 @@ add_custom_target(run
     VERBATIM
 )
 
-if (APPLE)
+if (APPLE AND LADYBIRD_IS_BUNDLE)
     add_custom_target(debug-ladybird
         COMMAND "${CMAKE_COMMAND}" -E env "LADYBIRD_SOURCE_DIR=${LADYBIRD_SOURCE_DIR}" lldb "$<TARGET_BUNDLE_DIR:ladybird>"
+        USES_TERMINAL
+    )
+elseif(APPLE)
+    add_custom_target(debug-ladybird
+        COMMAND "${CMAKE_COMMAND}" -E env "LADYBIRD_SOURCE_DIR=${LADYBIRD_SOURCE_DIR}" lldb "$<TARGET_FILE:ladybird>"
         USES_TERMINAL
     )
 else()
