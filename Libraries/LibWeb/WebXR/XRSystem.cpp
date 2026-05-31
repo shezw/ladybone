@@ -49,6 +49,12 @@ GC::Ref<WebIDL::Promise> XRSystem::is_session_supported(Bindings::XRSessionMode 
     auto& realm = HTML::relevant_realm(*this);
     auto promise = WebIDL::create_promise(realm);
 
+    if (!ENABLE_WEBXR) {
+        (void)mode;
+        WebIDL::resolve_promise(realm, promise, JS::Value(false));
+        return promise;
+    }
+
     // 2. If mode is "inline", resolve promise with true and return it.
     if (mode == Bindings::XRSessionMode::Inline) {
         WebIDL::resolve_promise(realm, promise, JS::Value(true));
@@ -84,6 +90,13 @@ GC::Ref<WebIDL::Promise> XRSystem::request_session(Bindings::XRSessionMode mode,
     // 1. Let promise be a new Promise in the relevant realm of this XRSystem.
     auto& realm = HTML::relevant_realm(*this);
     auto promise = WebIDL::create_promise(realm);
+
+    if (!ENABLE_WEBXR) {
+        (void)mode;
+        (void)options;
+        WebIDL::reject_promise(realm, promise, WebIDL::NotSupportedError::create(realm, "WebXR is disabled in this build."_utf16));
+        return promise;
+    }
 
     // 2. Let immersive be true if mode is an immersive session mode, and false otherwise.
     auto immersive = mode != Bindings::XRSessionMode::Inline;

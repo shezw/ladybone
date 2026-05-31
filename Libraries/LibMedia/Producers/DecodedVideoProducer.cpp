@@ -6,7 +6,9 @@
 
 #include <LibCore/EventLoop.h>
 #include <LibMedia/Demuxer.h>
-#include <LibMedia/FFmpeg/FFmpegVideoDecoder.h>
+#if ENABLE_MEDIA_PLAYBACK
+#    include <LibMedia/FFmpeg/FFmpegVideoDecoder.h>
+#endif
 #include <LibMedia/Sinks/VideoSink.h>
 #include <LibMedia/VideoDecoder.h>
 #include <LibMedia/VideoFrame.h>
@@ -20,6 +22,12 @@ static constexpr int AUTO_SUSPEND_IDLE_TIMEOUT_MS = 10000;
 
 DecoderErrorOr<NonnullRefPtr<DecodedVideoProducer>> DecodedVideoProducer::try_create(NonnullRefPtr<Core::WeakEventLoopReference> const& main_thread_event_loop, NonnullRefPtr<Demuxer> const& demuxer, Track const& track)
 {
+#if !ENABLE_MEDIA_PLAYBACK
+    (void)main_thread_event_loop;
+    (void)demuxer;
+    (void)track;
+    return DecoderError::with_description(DecoderErrorCategory::NotImplemented, "Media playback is disabled in this build"sv);
+#else
     TRY(demuxer->create_context_for_track(track));
     auto duration = TRY(demuxer->duration_of_track(track));
     auto thread_data = DECODER_TRY_ALLOC(try_make_ref_counted<DecodedVideoProducer::ThreadData>(main_thread_event_loop, demuxer, track, duration));
@@ -40,6 +48,7 @@ DecoderErrorOr<NonnullRefPtr<DecodedVideoProducer>> DecodedVideoProducer::try_cr
     thread->detach();
 
     return producer;
+#endif
 }
 
 DecodedVideoProducer::DecodedVideoProducer(NonnullRefPtr<ThreadData> const& thread_state)
@@ -179,10 +188,14 @@ DecodedVideoProducer::ThreadData::ThreadData(NonnullRefPtr<Core::WeakEventLoopRe
 
 DecoderErrorOr<void> DecodedVideoProducer::ThreadData::create_decoder()
 {
+#if !ENABLE_MEDIA_PLAYBACK
+    return DecoderError::with_description(DecoderErrorCategory::NotImplemented, "Media playback is disabled in this build"sv);
+#else
     auto codec_id = TRY(m_demuxer->get_codec_id_for_track(m_track));
     auto codec_initialization_data = TRY(m_demuxer->get_codec_initialization_data_for_track(m_track));
     m_decoder = TRY(FFmpeg::FFmpegVideoDecoder::try_create(codec_id, codec_initialization_data));
     return {};
+#endif
 }
 
 TimeRanges DecodedVideoProducer::buffered_time_ranges() const

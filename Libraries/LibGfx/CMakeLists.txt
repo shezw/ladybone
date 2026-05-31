@@ -22,7 +22,6 @@ set(SOURCES
     FontCascadeList.cpp
     GradientPainting.cpp
     Matrix4x4.cpp
-    ImageFormats/AVIFLoader.cpp
     ImageFormats/BMPLoader.cpp
     ImageFormats/BMPWriter.cpp
     ImageFormats/CCITTDecoder.cpp
@@ -31,7 +30,6 @@ set(SOURCES
     ImageFormats/ImageDecoder.cpp
     ImageFormats/JPEGLoader.cpp
     ImageFormats/JPEGWriter.cpp
-    ImageFormats/JPEGXLLoader.cpp
     ImageFormats/PNGLoader.cpp
     ImageFormats/PNGWriter.cpp
     ImageFormats/TIFFLoader.cpp
@@ -63,6 +61,14 @@ set(SOURCES
     VectorGraphic.cpp
     YUVData.cpp
 )
+
+if (LADYBIRD_ENABLE_IMAGE_AVIF)
+    list(APPEND SOURCES ImageFormats/AVIFLoader.cpp)
+endif()
+
+if (LADYBIRD_ENABLE_IMAGE_JPEGXL)
+    list(APPEND SOURCES ImageFormats/JPEGXLLoader.cpp)
+endif()
 
 if (LADYBIRD_ENABLE_3D_GRAPHICS AND APPLE)
     list(APPEND SOURCES MetalContext.mm)
@@ -103,8 +109,12 @@ if (ENABLE_INSTALL_HEADERS)
     install(FILES ${generated_sources} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/LibGfx/ImageFormats")
 endif()
 
-target_link_libraries(LibGfx PRIVATE PkgConfig::WOFF2 JPEG::JPEG PNG::PNG avif WebP::webp WebP::webpdecoder
+target_link_libraries(LibGfx PRIVATE PkgConfig::WOFF2 JPEG::JPEG PNG::PNG WebP::webp WebP::webpdecoder
             WebP::webpdemux WebP::libwebpmux skia harfbuzz)
+
+if (LADYBIRD_ENABLE_IMAGE_AVIF)
+    target_link_libraries(LibGfx PRIVATE avif)
+endif()
 
 import_rust_crate(MANIFEST_PATH Rust/Cargo.toml CRATE_NAME libgfx_rust FFI_HEADER RustFFI.h)
 target_link_libraries(LibGfx PRIVATE libgfx_rust)
@@ -135,9 +145,13 @@ if (NOT ANDROID)
         #  alone causes transitive issues in other TUs that depend on it
         target_compile_options(LibGfx PRIVATE -fno-sanitize=address)
     endif()
-    target_link_libraries(LibGfx PRIVATE PkgConfig::Jxl)
+    if (LADYBIRD_ENABLE_IMAGE_JPEGXL)
+        target_link_libraries(LibGfx PRIVATE PkgConfig::Jxl)
+    endif()
 else()
-    target_link_libraries(LibGfx PRIVATE libjxl::libjxl hwy::hwy)
+    if (LADYBIRD_ENABLE_IMAGE_JPEGXL)
+        target_link_libraries(LibGfx PRIVATE libjxl::libjxl hwy::hwy)
+    endif()
 endif()
 
 if (LADYBIRD_ENABLE_3D_GRAPHICS AND APPLE)

@@ -6,7 +6,9 @@
 
 #include <LibMedia/Containers/Matroska/MatroskaDemuxer.h>
 #include <LibMedia/Demuxer.h>
-#include <LibMedia/FFmpeg/FFmpegDemuxer.h>
+#if ENABLE_MEDIA_PLAYBACK
+#    include <LibMedia/FFmpeg/FFmpegDemuxer.h>
+#endif
 #include <LibMedia/GenericTimeProvider.h>
 #include <LibMedia/PlaybackStates/StartingStateHandler.h>
 #include <LibMedia/Processors/AudioMixer.h>
@@ -26,7 +28,11 @@ DecoderErrorOr<NonnullRefPtr<Demuxer>> PlaybackManager::create_demuxer_for_strea
 {
     if (Matroska::Reader::is_matroska_or_webm(stream->create_cursor()))
         return Matroska::MatroskaDemuxer::from_stream(stream);
+#if ENABLE_MEDIA_PLAYBACK
     return FFmpeg::FFmpegDemuxer::from_stream(stream);
+#else
+    return DecoderError::with_description(DecoderErrorCategory::NotImplemented, "Media playback is disabled in this build"sv);
+#endif
 }
 
 DecoderErrorOr<void> PlaybackManager::prepare_playback_from_demuxer(WeakPlaybackManager const& self, NonnullRefPtr<Demuxer> const& demuxer, NonnullRefPtr<Core::WeakEventLoopReference> const& main_thread_event_loop_reference)

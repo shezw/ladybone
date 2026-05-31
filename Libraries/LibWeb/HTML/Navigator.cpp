@@ -51,6 +51,9 @@ void Navigator::initialize(JS::Realm& realm)
 // https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-pdfviewerenabled
 bool Navigator::pdf_viewer_enabled() const
 {
+    if (!ENABLE_PDF_VIEWER)
+        return false;
+
     // The NavigatorPlugins mixin's pdfViewerEnabled getter steps are to return the user agent's PDF viewer supported.
     // NOTE: The NavigatorPlugins mixin should only be exposed on the Window object.
     auto const& window = as<HTML::Window>(HTML::current_global_object());

@@ -32,22 +32,6 @@
       "platform": "windows"
     },
     "fast-float",
-    {
-      "name": "ffmpeg",
-      "features": [
-        "avcodec",
-        "avformat",
-        "swresample",
-        "dav1d",
-        "openh264",
-        "opus",
-        "webp",
-        "theora",
-        "vorbis",
-        "vpx",
-        "zlib"
-      ]
-    },
     "fmt",
     {
       "name": "fontconfig",
@@ -71,17 +55,10 @@
     },
     "icu",
     {
-      "name": "libavif",
-      "features": [
-        "dav1d"
-      ]
-    },
-    {
       "name": "libdwarf",
       "platform": "linux | windows | osx"
     },
     "libjpeg-turbo",
-    "libjxl",
     {
       "name": "libpng",
       "features": [
@@ -95,8 +72,8 @@
     "libtommath",
     {
       "name": "libwebp",
+      "default-features": false,
       "features": [
-        "anim",
         "libwebpmux",
         "simd"
       ]
@@ -108,7 +85,6 @@
     },
     "mimalloc",
     "openssl",
-    "pdfjs",
     {
       "name": "pthread",
       "platform": "windows"
@@ -152,12 +128,6 @@
       "default-features": false
     },
     "sqlite3",
-    {
-      "name": "tiff",
-      "features": [
-        "zstd"
-      ]
-    },
     "woff2",
     "zlib"
   ],
@@ -202,6 +172,61 @@
         {
           "name": "sdl3",
           "default-features": false
+        }
+      ]
+    },
+    "pdf-viewer": {
+      "description": "Bundle PDF.js resources for the built-in PDF viewer",
+      "dependencies": [
+        "pdfjs"
+      ]
+    },
+    "media-playback": {
+      "description": "Build audio/video media playback support",
+      "dependencies": [
+        {
+          "name": "ffmpeg",
+          "features": [
+            "avcodec",
+            "avformat",
+            "swresample",
+            "dav1d",
+            "openh264",
+            "opus",
+            "webp",
+            "theora",
+            "vorbis",
+            "vpx",
+            "zlib"
+          ]
+        }
+      ]
+    },
+    "image-avif": {
+      "description": "Build AVIF image decoding support",
+      "dependencies": [
+        {
+          "name": "libavif",
+          "features": [
+            "dav1d"
+          ]
+        }
+      ]
+    },
+    "image-jpeg-xl": {
+      "description": "Build JPEG XL image decoding support",
+      "dependencies": [
+        "libjxl"
+      ]
+    },
+    "image-tiff": {
+      "description": "Build TIFF image decoding support",
+      "dependencies": [
+        {
+          "name": "tiff",
+          "features": [
+            "zstd"
+          ]
         }
       ]
     },

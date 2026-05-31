@@ -23,21 +23,23 @@ set(SOURCES
 ladybird_lib(LibMedia media EXPLICIT_SYMBOL_EXPORT)
 target_link_libraries(LibMedia PRIVATE LibCore LibCrypto LibIPC LibGfx LibSync LibThreading LibUnicode)
 
-target_sources(LibMedia PRIVATE
-        FFmpeg/FFmpegAudioConverter.cpp
-        FFmpeg/FFmpegAudioDecoder.cpp
-        FFmpeg/FFmpegDemuxer.cpp
-        FFmpeg/FFmpegHelpers.cpp
-        FFmpeg/FFmpegIOContext.cpp
-        FFmpeg/FFmpegVideoDecoder.cpp
-)
+if (LADYBIRD_ENABLE_MEDIA_PLAYBACK)
+    target_sources(LibMedia PRIVATE
+            FFmpeg/FFmpegAudioConverter.cpp
+            FFmpeg/FFmpegAudioDecoder.cpp
+            FFmpeg/FFmpegDemuxer.cpp
+            FFmpeg/FFmpegHelpers.cpp
+            FFmpeg/FFmpegIOContext.cpp
+            FFmpeg/FFmpegVideoDecoder.cpp
+    )
 
-if (NOT ANDROID)
-    target_link_libraries(LibMedia PRIVATE PkgConfig::AVCODEC PkgConfig::AVFORMAT PkgConfig::AVUTIL PkgConfig::LIBSWRESAMPLE)
-else()
-    target_include_directories(LibMedia PRIVATE ${FFMPEG_INCLUDE_DIRS})
-    target_link_directories(LibMedia PRIVATE ${FFMPEG_LIBRARY_DIRS})
-    target_link_libraries(LibMedia PRIVATE ${FFMPEG_LIBRARIES})
+    if (NOT ANDROID)
+        target_link_libraries(LibMedia PRIVATE PkgConfig::AVCODEC PkgConfig::AVFORMAT PkgConfig::AVUTIL PkgConfig::LIBSWRESAMPLE)
+    else()
+        target_include_directories(LibMedia PRIVATE ${FFMPEG_INCLUDE_DIRS})
+        target_link_directories(LibMedia PRIVATE ${FFMPEG_LIBRARY_DIRS})
+        target_link_libraries(LibMedia PRIVATE ${FFMPEG_LIBRARIES})
+    endif()
 endif()
 
 if (LADYBIRD_AUDIO_BACKEND STREQUAL "PULSE")

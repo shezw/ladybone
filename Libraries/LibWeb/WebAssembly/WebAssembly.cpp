@@ -100,6 +100,12 @@ void initialize(JS::Object& self, JS::Realm&)
 // https://webassembly.github.io/spec/js-api/#dom-webassembly-validate
 bool validate(JS::VM& vm, GC::Ref<WebIDL::BufferSource> bytes)
 {
+    if (!ENABLE_WEBASSEMBLY) {
+        (void)vm;
+        (void)bytes;
+        return false;
+    }
+
     // 1. Let stableBytes be a copy of the bytes held by the buffer bytes.
     auto stable_bytes = WebIDL::get_buffer_source_copy(*bytes->raw_object());
     if (stable_bytes.is_error()) {
@@ -123,6 +129,11 @@ WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> compile(JS::VM& vm, GC::Ref<WebIDL
 {
     auto& realm = *vm.current_realm();
 
+    if (!ENABLE_WEBASSEMBLY) {
+        (void)bytes;
+        return WebIDL::create_rejected_promise(realm, WebIDL::NotSupportedError::create(realm, "WebAssembly is disabled in this build."_utf16));
+    }
+
     // 1. Let stableBytes be a copy of the bytes held by the buffer bytes.
     auto stable_bytes = WebIDL::get_buffer_source_copy(*bytes->raw_object());
     if (stable_bytes.is_error()) {
@@ -137,6 +148,12 @@ WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> compile(JS::VM& vm, GC::Ref<WebIDL
 // https://webassembly.github.io/spec/web-api/index.html#dom-webassembly-compilestreaming
 WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> compile_streaming(JS::VM& vm, GC::Ref<WebIDL::Promise> source)
 {
+    if (!ENABLE_WEBASSEMBLY) {
+        auto& realm = *vm.current_realm();
+        (void)source;
+        return WebIDL::create_rejected_promise(realm, WebIDL::NotSupportedError::create(realm, "WebAssembly is disabled in this build."_utf16));
+    }
+
     //  The compileStreaming(source) method, when invoked, returns the result of compiling a potential WebAssembly response with source.
     return compile_potential_webassembly_response(vm, source);
 }
@@ -146,6 +163,12 @@ WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> compile_streaming(JS::VM& vm, GC::
 WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> instantiate(JS::VM& vm, GC::Ref<WebIDL::BufferSource> bytes, GC::Ptr<JS::Object> import_object)
 {
     auto& realm = *vm.current_realm();
+
+    if (!ENABLE_WEBASSEMBLY) {
+        (void)bytes;
+        (void)import_object;
+        return WebIDL::create_rejected_promise(realm, WebIDL::NotSupportedError::create(realm, "WebAssembly is disabled in this build."_utf16));
+    }
 
     // 1. Let stableBytes be a copy of the bytes held by the buffer bytes.
     auto stable_bytes = WebIDL::get_buffer_source_copy(*bytes->raw_object());
@@ -167,6 +190,13 @@ WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> instantiate(JS::VM& vm, GC::Ref<We
 // https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate-moduleobject-importobject
 WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> instantiate(JS::VM& vm, GC::Ref<Module> module_object, GC::Ptr<JS::Object> import_object)
 {
+    if (!ENABLE_WEBASSEMBLY) {
+        auto& realm = *vm.current_realm();
+        (void)module_object;
+        (void)import_object;
+        return WebIDL::create_rejected_promise(realm, WebIDL::NotSupportedError::create(realm, "WebAssembly is disabled in this build."_utf16));
+    }
+
     // 1. Asynchronously instantiate the WebAssembly module moduleObject importing importObject, and return the result.
     return asynchronously_instantiate_webassembly_module(vm, module_object, import_object);
 }
@@ -174,6 +204,13 @@ WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> instantiate(JS::VM& vm, GC::Ref<Mo
 // https://webassembly.github.io/spec/web-api/index.html#dom-webassembly-instantiatestreaming
 WebIDL::ExceptionOr<GC::Ref<WebIDL::Promise>> instantiate_streaming(JS::VM& vm, GC::Ref<WebIDL::Promise> source, GC::Ptr<JS::Object> import_object)
 {
+    if (!ENABLE_WEBASSEMBLY) {
+        auto& realm = *vm.current_realm();
+        (void)source;
+        (void)import_object;
+        return WebIDL::create_rejected_promise(realm, WebIDL::NotSupportedError::create(realm, "WebAssembly is disabled in this build."_utf16));
+    }
+
     // The instantiateStreaming(source, importObject) method, when invoked, performs the following steps:
 
     // 1. Let promiseOfModule be the result of compiling a potential WebAssembly response with source.
@@ -785,6 +822,9 @@ JS::Value to_js_value(JS::VM& vm, Wasm::Value& wasm_value, Wasm::ValueType type)
 // https://webassembly.github.io/content-security-policy/js-api/#abstract-opdef-hostensurecancompilewasmbytes
 JS::ThrowCompletionOr<void> host_ensure_can_compile_wasm_bytes(JS::VM& vm)
 {
+    if (!ENABLE_WEBASSEMBLY)
+        return vm.throw_completion<CompileError>("WebAssembly is disabled in this build"sv);
+
     // 1. Let realm be the current Realm.
     auto& realm = *vm.current_realm();
 

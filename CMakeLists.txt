@@ -18,9 +18,31 @@ include("Meta/CMake/gui_framework.cmake")
 
 option(LADYBIRD_ENABLE_GAMEPAD "Enable the Web Gamepad API SDL backend" ON)
 option(LADYBIRD_ENABLE_3D_GRAPHICS "Enable WebGL and GPU-backed Skia rendering" ON)
+option(LADYBIRD_ENABLE_PDF_VIEWER "Enable the bundled PDF.js viewer" ON)
+option(LADYBIRD_ENABLE_MEDIA_PLAYBACK "Enable audio/video media playback through LibMedia" ON)
+option(LADYBIRD_ENABLE_IMAGE_AVIF "Enable AVIF image decoding" ON)
+option(LADYBIRD_ENABLE_IMAGE_JPEGXL "Enable JPEG XL image decoding" ON)
+option(LADYBIRD_ENABLE_IMAGE_TIFF "Enable TIFF image decoding" ON)
+option(LADYBIRD_ENABLE_WEBASSEMBLY "Enable WebAssembly web APIs" ON)
+option(LADYBIRD_ENABLE_MATHML "Enable MathML web APIs and rendering" ON)
+option(LADYBIRD_ENABLE_WEBRTC "Enable WebRTC and media capture web APIs" ON)
+option(LADYBIRD_ENABLE_NOTIFICATIONS "Enable the Notifications API" ON)
+option(LADYBIRD_ENABLE_WEBXR "Enable the WebXR API" ON)
+option(LADYBIRD_ENABLE_GEOLOCATION "Enable the Geolocation API" ON)
 if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
     set(LADYBIRD_ENABLE_GAMEPAD OFF CACHE BOOL "Enable the Web Gamepad API SDL backend" FORCE)
     set(LADYBIRD_ENABLE_3D_GRAPHICS OFF CACHE BOOL "Enable WebGL and GPU-backed Skia rendering" FORCE)
+    set(LADYBIRD_ENABLE_PDF_VIEWER OFF CACHE BOOL "Enable the bundled PDF.js viewer" FORCE)
+    set(LADYBIRD_ENABLE_MEDIA_PLAYBACK OFF CACHE BOOL "Enable audio/video media playback through LibMedia" FORCE)
+    set(LADYBIRD_ENABLE_IMAGE_AVIF OFF CACHE BOOL "Enable AVIF image decoding" FORCE)
+    set(LADYBIRD_ENABLE_IMAGE_JPEGXL OFF CACHE BOOL "Enable JPEG XL image decoding" FORCE)
+    set(LADYBIRD_ENABLE_IMAGE_TIFF OFF CACHE BOOL "Enable TIFF image decoding" FORCE)
+    set(LADYBIRD_ENABLE_WEBASSEMBLY OFF CACHE BOOL "Enable WebAssembly web APIs" FORCE)
+    set(LADYBIRD_ENABLE_MATHML OFF CACHE BOOL "Enable MathML web APIs and rendering" FORCE)
+    set(LADYBIRD_ENABLE_WEBRTC OFF CACHE BOOL "Enable WebRTC and media capture web APIs" FORCE)
+    set(LADYBIRD_ENABLE_NOTIFICATIONS OFF CACHE BOOL "Enable the Notifications API" FORCE)
+    set(LADYBIRD_ENABLE_WEBXR OFF CACHE BOOL "Enable the WebXR API" FORCE)
+    set(LADYBIRD_ENABLE_GEOLOCATION OFF CACHE BOOL "Enable the Geolocation API" FORCE)
 endif()
 
 # Pass additional information to vcpkg if we are using it.
@@ -36,6 +58,21 @@ if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake$")
     endif()
     if (LADYBIRD_ENABLE_3D_GRAPHICS)
         list(APPEND vcpkg_manifest_features "graphics-3d")
+    endif()
+    if (LADYBIRD_ENABLE_PDF_VIEWER)
+        list(APPEND vcpkg_manifest_features "pdf-viewer")
+    endif()
+    if (LADYBIRD_ENABLE_MEDIA_PLAYBACK)
+        list(APPEND vcpkg_manifest_features "media-playback")
+    endif()
+    if (LADYBIRD_ENABLE_IMAGE_AVIF)
+        list(APPEND vcpkg_manifest_features "image-avif")
+    endif()
+    if (LADYBIRD_ENABLE_IMAGE_JPEGXL)
+        list(APPEND vcpkg_manifest_features "image-jpeg-xl")
+    endif()
+    if (LADYBIRD_ENABLE_IMAGE_TIFF)
+        list(APPEND vcpkg_manifest_features "image-tiff")
     endif()
     set(VCPKG_MANIFEST_NO_DEFAULT_FEATURES ON CACHE BOOL "" FORCE)
     set(VCPKG_MANIFEST_FEATURES "${vcpkg_manifest_features}" CACHE STRING "" FORCE)
@@ -85,6 +122,25 @@ if (LADYBIRD_ENABLE_3D_GRAPHICS)
 else()
     add_compile_definitions(ENABLE_3D_GRAPHICS=0)
 endif()
+foreach(feature
+    PDF_VIEWER
+    MEDIA_PLAYBACK
+    IMAGE_AVIF
+    IMAGE_JPEGXL
+    IMAGE_TIFF
+    WEBASSEMBLY
+    MATHML
+    WEBRTC
+    NOTIFICATIONS
+    WEBXR
+    GEOLOCATION
+)
+    if (LADYBIRD_ENABLE_${feature})
+        add_compile_definitions(ENABLE_${feature}=1)
+    else()
+        add_compile_definitions(ENABLE_${feature}=0)
+    endif()
+endforeach()
 
 if (ENABLE_LAGOM_CCACHE)
     include(setup_ccache)

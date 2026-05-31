@@ -469,7 +469,7 @@ bool can_load_document_with_type(MimeSniff::MimeType const& type)
         return true;
     if (type.is_image() || type.is_audio_or_video())
         return true;
-    if (type.essence() == "application/pdf"_string || type.essence() == "text/pdf"_string)
+    if (ENABLE_PDF_VIEWER && (type.essence() == "application/pdf"_string || type.essence() == "text/pdf"_string))
         return true;
     if (type.essence() == "text/markdown"sv)
         return true;
@@ -540,8 +540,9 @@ GC::Ptr<DOM::Document> load_document(HTML::NavigationParams const& navigation_pa
 
     // -> "application/pdf"
     // -> "text/pdf"
-    if (type.essence() == "application/pdf"_string
-        || type.essence() == "text/pdf"_string) {
+    if (ENABLE_PDF_VIEWER
+        && (type.essence() == "application/pdf"_string
+            || type.essence() == "text/pdf"_string)) {
         return load_pdf_document(navigation_params);
     }
 

@@ -337,6 +337,9 @@ void MediaSource::run_duration_change_algorithm(double new_duration)
 // https://w3c.github.io/media-source/#dom-mediasource-istypesupported
 bool MediaSource::is_type_supported(String const& type)
 {
+    if (!ENABLE_MEDIA_PLAYBACK)
+        return false;
+
     // 1. If type is an empty string, then return false.
     if (type.is_empty())
         return false;
