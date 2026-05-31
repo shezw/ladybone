@@ -62,7 +62,11 @@ endif()
 get_target_property(LADYBIRD_IS_BUNDLE ladybird MACOSX_BUNDLE)
 
 if (NOT TARGET ladybird_build_resource_files)
-    set(resource_base_dir "${CMAKE_BINARY_DIR}/${IN_BUILD_PREFIX}${CMAKE_INSTALL_DATADIR}/Lagom")
+    if (APPLE)
+        set(resource_base_dir "${CMAKE_BINARY_DIR}/Resources")
+    else()
+        set(resource_base_dir "${CMAKE_BINARY_DIR}/${IN_BUILD_PREFIX}${CMAKE_INSTALL_DATADIR}/Lagom")
+    endif()
     copy_resources_to_build(${resource_base_dir} ladybird)
 endif()
 
