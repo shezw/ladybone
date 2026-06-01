@@ -22,7 +22,19 @@ class HTMLCanvasElement final : public HTMLElement {
 public:
     static constexpr bool OVERRIDES_FINALIZE = true;
 
-    using RenderingContext = Variant<GC::Ref<CanvasRenderingContext2D>, GC::Ref<WebGL::WebGLRenderingContext>, GC::Ref<WebGL::WebGL2RenderingContext>, Empty>;
+    using CanvasContextState = Variant<GC::Ref<CanvasRenderingContext2D>
+#if ENABLE_3D_GRAPHICS
+        ,
+        GC::Ref<WebGL::WebGLRenderingContext>,
+        GC::Ref<WebGL::WebGL2RenderingContext>
+#endif
+        ,
+        Empty>;
+#if ENABLE_3D_GRAPHICS
+    using RenderingContext = CanvasContextState;
+#else
+    using RenderingContext = GC::Ptr<CanvasRenderingContext2D>;
+#endif
 
     virtual ~HTMLCanvasElement() override;
 
@@ -71,14 +83,16 @@ private:
     virtual GC::Ptr<Layout::Node> create_layout_node(GC::Ref<CSS::ComputedProperties>) override;
     virtual void adjust_computed_style(CSS::ComputedProperties&) override;
 
+#if ENABLE_3D_GRAPHICS
     template<typename ContextType>
     JS::ThrowCompletionOr<HasOrCreatedContext> create_webgl_context(JS::Value options);
+#endif
     void reset_context_to_default_state();
     void notify_context_about_canvas_size_change();
     void clear_compositor_surface();
     void update_compositor_surface();
 
-    Variant<GC::Ref<HTML::CanvasRenderingContext2D>, GC::Ref<WebGL::WebGLRenderingContext>, GC::Ref<WebGL::WebGL2RenderingContext>, Empty> m_context;
+    CanvasContextState m_context;
     Optional<Painting::CompositorSurfaceId> m_compositor_surface_id;
     bool m_canvas_content_dirty { false };
 };

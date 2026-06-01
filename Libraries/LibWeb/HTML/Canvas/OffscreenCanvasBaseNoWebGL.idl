@@ -1,0 +1,2 @@
+// https://html.spec.whatwg.org/multipage/canvas.html#offscreenrenderingcontext
+typedef OffscreenCanvasRenderingContext2D OffscreenRenderingContext;

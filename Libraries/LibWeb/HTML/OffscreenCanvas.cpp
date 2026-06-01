@@ -17,8 +17,10 @@
 #include <LibWeb/HTML/WorkerGlobalScope.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
 #include <LibWeb/Platform/FontPlugin.h>
+#if ENABLE_3D_GRAPHICS
 #include <LibWeb/WebGL/WebGL2RenderingContext.h>
 #include <LibWeb/WebGL/WebGLRenderingContext.h>
+#endif
 
 namespace Web::HTML {
 
@@ -128,12 +130,14 @@ void OffscreenCanvas::reset_context_to_default_state()
         [](GC::Ref<OffscreenCanvasRenderingContext2D>& context) {
             context->reset_to_default_state();
         },
+#if ENABLE_3D_GRAPHICS
         [](GC::Ref<WebGL::WebGLRenderingContext>& context) {
             context->reset_to_default_state();
         },
         [](GC::Ref<WebGL::WebGL2RenderingContext>& context) {
             context->reset_to_default_state();
         },
+#endif
         [](Empty) {
             // Do nothing.
         });
@@ -157,12 +161,14 @@ WebIDL::ExceptionOr<void> OffscreenCanvas::set_new_bitmap_size(Gfx::IntSize new_
         [&](GC::Ref<OffscreenCanvasRenderingContext2D>& context) {
             context->set_size(new_size);
         },
+#if ENABLE_3D_GRAPHICS
         [&](GC::Ref<WebGL::WebGLRenderingContext>& context) {
             context->set_size(new_size);
         },
         [&](GC::Ref<WebGL::WebGL2RenderingContext>& context) {
             context->set_size(new_size);
         },
+#endif
         [](Empty) {
             // Do nothing.
         });
@@ -216,9 +222,14 @@ JS::ThrowCompletionOr<OffscreenRenderingContext> OffscreenCanvas::get_context(Bi
         if (TRY(create_2d_context(options)) == HasOrCreatedContext::Yes)
             return *m_context.get<GC::Ref<HTML::OffscreenCanvasRenderingContext2D>>();
 
+#if ENABLE_3D_GRAPHICS
         return Empty {};
+#else
+        return nullptr;
+#endif
     }
 
+#if ENABLE_3D_GRAPHICS
     if (contextId == Bindings::OffscreenRenderingContextId::Webgl) {
         dbgln("(STUBBED) OffscreenCanvas::get_context(Webgl)");
 
@@ -230,8 +241,16 @@ JS::ThrowCompletionOr<OffscreenRenderingContext> OffscreenCanvas::get_context(Bi
 
         return Empty {};
     }
+#else
+    if (contextId == Bindings::OffscreenRenderingContextId::Webgl || contextId == Bindings::OffscreenRenderingContextId::Webgl2)
+        return nullptr;
+#endif
 
+#if ENABLE_3D_GRAPHICS
     return Empty {};
+#else
+    return nullptr;
+#endif
 }
 
 // https://html.spec.whatwg.org/multipage/canvas.html#dom-offscreencanvas-transfertoimagebitmap

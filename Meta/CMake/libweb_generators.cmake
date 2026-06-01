@@ -195,6 +195,32 @@ function (generate_css_implementation)
         "GeneratedCSSStyleProperties.idl"
         "GeneratedCSSNumericFactoryMethods.idl"
     )
+    if (NOT LADYBIRD_ENABLE_3D_GRAPHICS)
+        set(no_webgl_canvas_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/HTMLCanvasElement.idl")
+        add_custom_command(
+            OUTPUT "${no_webgl_canvas_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/HTMLCanvasElementNoWebGL.idl" "${no_webgl_canvas_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/HTMLCanvasElementNoWebGL.idl"
+        )
+        add_custom_target("generate_HTMLCanvasElement.idl" DEPENDS "${no_webgl_canvas_idl}")
+
+        set(no_webgl_offscreen_canvas_base_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/Canvas/OffscreenCanvasBase.idl")
+        add_custom_command(
+            OUTPUT "${no_webgl_offscreen_canvas_base_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML/Canvas"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/Canvas/OffscreenCanvasBaseNoWebGL.idl" "${no_webgl_offscreen_canvas_base_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/Canvas/OffscreenCanvasBaseNoWebGL.idl"
+        )
+        add_custom_target("generate_OffscreenCanvasBase.idl" DEPENDS "${no_webgl_offscreen_canvas_base_idl}")
+
+        list(APPEND LIBWEB_ALL_GENERATED_IDL
+            "HTMLCanvasElement.idl"
+            "OffscreenCanvasBase.idl"
+        )
+    endif()
     list(APPEND LIBWEB_ALL_GENERATED_IDL ${CSS_GENERATED_IDL})
     set(LIBWEB_ALL_GENERATED_IDL ${LIBWEB_ALL_GENERATED_IDL} PARENT_SCOPE)
 endfunction()

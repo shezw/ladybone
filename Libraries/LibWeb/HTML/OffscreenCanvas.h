@@ -17,7 +17,19 @@ namespace Web::HTML {
 
 // https://html.spec.whatwg.org/multipage/canvas.html#offscreenrenderingcontext
 // NOTE: This is the Variant created by the IDL wrapper generator, and needs to be updated accordingly.
-using OffscreenRenderingContext = Variant<GC::Ref<OffscreenCanvasRenderingContext2D>, GC::Ref<WebGL::WebGLRenderingContext>, GC::Ref<WebGL::WebGL2RenderingContext>, Empty>;
+using OffscreenCanvasContextState = Variant<GC::Ref<OffscreenCanvasRenderingContext2D>
+#if ENABLE_3D_GRAPHICS
+    ,
+    GC::Ref<WebGL::WebGLRenderingContext>,
+    GC::Ref<WebGL::WebGL2RenderingContext>
+#endif
+    ,
+    Empty>;
+#if ENABLE_3D_GRAPHICS
+using OffscreenRenderingContext = OffscreenCanvasContextState;
+#else
+using OffscreenRenderingContext = GC::Ptr<OffscreenCanvasRenderingContext2D>;
+#endif
 
 // https://html.spec.whatwg.org/multipage/canvas.html#offscreencanvas
 class OffscreenCanvas : public DOM::EventTarget
@@ -78,7 +90,7 @@ private:
     void reset_context_to_default_state();
     WebIDL::ExceptionOr<void> set_new_bitmap_size(Gfx::IntSize new_size);
 
-    Variant<GC::Ref<HTML::OffscreenCanvasRenderingContext2D>, GC::Ref<WebGL::WebGLRenderingContext>, GC::Ref<WebGL::WebGL2RenderingContext>, Empty> m_context;
+    OffscreenCanvasContextState m_context;
 
     RefPtr<Gfx::Bitmap> m_bitmap;
 };
