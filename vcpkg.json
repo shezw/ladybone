@@ -219,17 +219,6 @@
         "libjxl"
       ]
     },
-    "image-tiff": {
-      "description": "Build TIFF image decoding support",
-      "dependencies": [
-        {
-          "name": "tiff",
-          "features": [
-            "zstd"
-          ]
-        }
-      ]
-    },
     "gtk": {
       "description": "Build with GTK 4 GUI framework",
       "dependencies": [

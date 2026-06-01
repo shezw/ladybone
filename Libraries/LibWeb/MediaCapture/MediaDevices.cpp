@@ -338,12 +338,6 @@ GC::Ref<WebIDL::Promise> MediaDevices::enumerate_devices()
 
     // 1. Let p be a new promise.
     GC::Ref<WebIDL::Promise> promise = WebIDL::create_promise(realm);
-
-    if (!ENABLE_WEBRTC) {
-        WebIDL::resolve_promise(realm, promise, MUST(JS::Array::create(realm, 0)));
-        return promise;
-    }
-
     m_stored_device_list = current_audio_device_snapshot();
 
     // 2. Let proceed be the result of device enumeration can proceed with this.
@@ -585,8 +579,6 @@ Bindings::MediaTrackSupportedConstraints MediaDevices::get_supported_constraints
 {
     // Returns a dictionary whose members are the constrainable properties known to the User Agent.
     Bindings::MediaTrackSupportedConstraints supported_constraints;
-    if (!ENABLE_WEBRTC)
-        return supported_constraints;
     supported_constraints.device_id = true;
     return supported_constraints;
 }
@@ -596,9 +588,6 @@ GC::Ref<WebIDL::Promise> MediaDevices::get_user_media(Optional<Bindings::MediaSt
 {
     JS::Realm& realm = this->realm();
     JS::VM& vm = realm.vm();
-
-    if (!ENABLE_WEBRTC)
-        return WebIDL::create_rejected_promise(realm, WebIDL::NotSupportedError::create(realm, "WebRTC and media capture are disabled in this build"_utf16));
 
     bool audio_requested = false;
     bool video_requested = false;

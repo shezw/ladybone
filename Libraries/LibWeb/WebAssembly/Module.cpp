@@ -23,11 +23,6 @@ WebIDL::ExceptionOr<GC::Ref<Module>> Module::construct_impl(JS::Realm& realm, GC
 {
     auto& vm = realm.vm();
 
-    if (!ENABLE_WEBASSEMBLY) {
-        (void)bytes;
-        return WebIDL::NotSupportedError::create(realm, "WebAssembly is disabled in this build."_utf16);
-    }
-
     auto stable_bytes_or_error = WebIDL::get_buffer_source_copy(bytes->raw_object());
     if (stable_bytes_or_error.is_error()) {
         VERIFY(stable_bytes_or_error.error().code() == ENOMEM);

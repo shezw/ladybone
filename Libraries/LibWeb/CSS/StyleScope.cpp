@@ -335,8 +335,7 @@ void StyleScope::for_each_stylesheet(CascadeOrigin cascade_origin, Function<void
         callback(default_stylesheet());
         if (document().in_quirks_mode())
             callback(quirks_mode_stylesheet());
-        if (ENABLE_MATHML)
-            callback(mathml_stylesheet());
+        callback(mathml_stylesheet());
         callback(svg_stylesheet());
     }
     if (cascade_origin == CascadeOrigin::User) {

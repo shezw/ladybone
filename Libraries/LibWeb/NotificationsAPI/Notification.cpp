@@ -165,12 +165,6 @@ WebIDL::ExceptionOr<GC::Ref<Notification>> Notification::construct_impl(
     String const& title,
     Bindings::NotificationOptions const& options)
 {
-    if (!ENABLE_NOTIFICATIONS) {
-        (void)title;
-        (void)options;
-        return WebIDL::SimpleException { WebIDL::SimpleExceptionType::TypeError, "Notifications API is disabled in this build"sv };
-    }
-
     auto this_notification = realm.create<Notification>(realm);
     auto& relevant_settings_object = HTML::relevant_settings_object(this_notification);
     auto& relevant_global_object = HTML::relevant_global_object(this_notification);

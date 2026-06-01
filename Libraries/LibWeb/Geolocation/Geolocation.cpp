@@ -52,13 +52,6 @@ void Geolocation::visit_edges(Visitor& visitor)
 void Geolocation::get_current_position(GC::Ref<WebIDL::CallbackType> success_callback,
     GC::Ptr<WebIDL::CallbackType> error_callback, Bindings::PositionOptions const& options)
 {
-    if (!ENABLE_GEOLOCATION) {
-        (void)success_callback;
-        (void)options;
-        call_back_with_error(error_callback, GeolocationPositionError::ErrorCode::PositionUnavailable);
-        return;
-    }
-
     // 1. If this's relevant global object's associated Document is not fully active:
     auto& window = as<HTML::Window>(HTML::relevant_global_object(*this));
     if (!window.associated_document().is_fully_active()) {
@@ -77,13 +70,6 @@ void Geolocation::get_current_position(GC::Ref<WebIDL::CallbackType> success_cal
 WebIDL::Long Geolocation::watch_position(GC::Ref<WebIDL::CallbackType> success_callback,
     GC::Ptr<WebIDL::CallbackType> error_callback, Bindings::PositionOptions const& options)
 {
-    if (!ENABLE_GEOLOCATION) {
-        (void)success_callback;
-        (void)options;
-        call_back_with_error(error_callback, GeolocationPositionError::ErrorCode::PositionUnavailable);
-        return 0;
-    }
-
     // 1. If this's relevant global object's associated Document is not fully active:
     auto& window = as<HTML::Window>(HTML::relevant_global_object(*this));
     if (!window.associated_document().is_fully_active()) {

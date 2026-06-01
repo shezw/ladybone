@@ -38,9 +38,7 @@ static ErrorOr<OwnPtr<ImageDecoderPlugin>> probe_and_sniff_for_appropriate_plugi
         { JPEGXLImageDecoderPlugin::sniff, JPEGXLImageDecoderPlugin::create },
 #endif
         { PNGImageDecoderPlugin::sniff, PNGImageDecoderPlugin::create },
-#if ENABLE_IMAGE_TIFF
         { TIFFImageDecoderPlugin::sniff, TIFFImageDecoderPlugin::create },
-#endif
         { TinyVGImageDecoderPlugin::sniff, TinyVGImageDecoderPlugin::create },
         { WebPImageDecoderPlugin::sniff, WebPImageDecoderPlugin::create },
 #if ENABLE_IMAGE_AVIF
