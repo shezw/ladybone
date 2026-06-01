@@ -806,11 +806,6 @@ set(SOURCES
     MathML/MathMLMspaceElement.cpp
     MathML/TagNames.cpp
     MediaCapabilitiesAPI/MediaCapabilities.cpp
-    MediaCapture/MediaDeviceInfo.cpp
-    MediaCapture/MediaDevices.cpp
-    MediaCapture/MediaStream.cpp
-    MediaCapture/MediaStreamTrack.cpp
-    MediaCapture/MediaStreamTrackEvent.cpp
     MediaSourceExtensions/BufferedChangeEvent.cpp
     MediaSourceExtensions/EventNames.cpp
     MediaSourceExtensions/ManagedMediaSource.cpp
@@ -1257,6 +1252,16 @@ endif()
 if (LADYBIRD_ENABLE_NOTIFICATIONS)
     list(APPEND SOURCES
         NotificationsAPI/Notification.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_WEBRTC)
+    list(APPEND SOURCES
+        MediaCapture/MediaDeviceInfo.cpp
+        MediaCapture/MediaDevices.cpp
+        MediaCapture/MediaStream.cpp
+        MediaCapture/MediaStreamTrack.cpp
+        MediaCapture/MediaStreamTrackEvent.cpp
     )
 endif()
 

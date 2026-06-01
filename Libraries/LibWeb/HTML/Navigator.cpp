@@ -23,7 +23,9 @@
 #include <LibWeb/Internals/XRTest.h>
 #endif
 #include <LibWeb/Loader/ResourceLoader.h>
+#if ENABLE_WEBRTC
 #include <LibWeb/MediaCapture/MediaDevices.h>
+#endif
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/PermissionsAPI/Permissions.h>
 #include <LibWeb/ServiceWorker/ServiceWorkerContainer.h>
@@ -90,7 +92,9 @@ void Navigator::visit_edges(Cell::Visitor& visitor)
     visitor.visit(m_user_activation);
     visitor.visit(m_service_worker_container);
     visitor.visit(m_media_capabilities);
+#if ENABLE_WEBRTC
     visitor.visit(m_media_devices);
+#endif
     visitor.visit(m_credentials);
     visitor.visit(m_battery_promise);
 #if ENABLE_WEBXR
@@ -184,12 +188,14 @@ GC::Ref<MediaCapabilitiesAPI::MediaCapabilities> Navigator::media_capabilities()
     return *m_media_capabilities;
 }
 
+#if ENABLE_WEBRTC
 GC::Ref<MediaCapture::MediaDevices> Navigator::media_devices()
 {
     if (!m_media_devices)
         m_media_devices = realm().create<MediaCapture::MediaDevices>(realm());
     return *m_media_devices;
 }
+#endif
 
 // https://w3c.github.io/battery/#the-getbattery-method
 GC::Ref<WebIDL::Promise> Navigator::get_battery()
