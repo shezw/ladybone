@@ -67,7 +67,9 @@ public:
     [[nodiscard]] GC::Ref<UserActivation> user_activation();
     [[nodiscard]] GC::Ref<CredentialManagement::CredentialsContainer> credentials();
     [[nodiscard]] GC::Ref<WebIDL::Promise> get_battery();
+#if ENABLE_WEBXR
     [[nodiscard]] GC::Ref<WebXR::XRSystem> xr();
+#endif
     [[nodiscard]] GC::Ref<PermissionsAPI::Permissions> permissions();
 
     GC::Ref<ServiceWorker::ServiceWorkerContainer> service_worker();
@@ -120,8 +122,10 @@ private:
     // https://w3c.github.io/battery/
     GC::Ptr<WebIDL::Promise> m_battery_promise;
 
+#if ENABLE_WEBXR
     // https://immersive-web.github.io/webxr/#dom-navigator-xr
     GC::Ptr<WebXR::XRSystem> m_xr;
+#endif
 
     // https://w3c.github.io/permissions/#navigator-and-workernavigator-extension
     GC::Ptr<PermissionsAPI::Permissions> m_permissions;

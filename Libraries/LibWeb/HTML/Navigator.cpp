@@ -17,13 +17,17 @@
 #include <LibWeb/HTML/Navigator.h>
 #include <LibWeb/HTML/Scripting/Environments.h>
 #include <LibWeb/HTML/Window.h>
+#if ENABLE_WEBXR
 #include <LibWeb/Internals/XRTest.h>
+#endif
 #include <LibWeb/Loader/ResourceLoader.h>
 #include <LibWeb/MediaCapture/MediaDevices.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/PermissionsAPI/Permissions.h>
 #include <LibWeb/ServiceWorker/ServiceWorkerContainer.h>
+#if ENABLE_WEBXR
 #include <LibWeb/WebXR/XRSystem.h>
+#endif
 
 namespace Web::HTML {
 
@@ -85,7 +89,9 @@ void Navigator::visit_edges(Cell::Visitor& visitor)
     visitor.visit(m_media_devices);
     visitor.visit(m_credentials);
     visitor.visit(m_battery_promise);
+#if ENABLE_WEBXR
     visitor.visit(m_xr);
+#endif
     visitor.visit(m_permissions);
 }
 
@@ -138,6 +144,7 @@ GC::Ref<CredentialManagement::CredentialsContainer> Navigator::credentials()
     return *m_credentials;
 }
 
+#if ENABLE_WEBXR
 GC::Ref<WebXR::XRSystem> Navigator::xr()
 {
     if (!m_xr) {
@@ -148,6 +155,7 @@ GC::Ref<WebXR::XRSystem> Navigator::xr()
     }
     return *m_xr;
 }
+#endif
 
 // https://w3c.github.io/pointerevents/#dom-navigator-maxtouchpoints
 WebIDL::Long Navigator::max_touch_points()

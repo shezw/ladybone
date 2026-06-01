@@ -742,12 +742,10 @@ set(SOURCES
     Infra/ByteSequences.cpp
     Infra/JSON.cpp
     Infra/Strings.cpp
-    Internals/FakeXRDevice.cpp
     Internals/InternalAnimationTimeline.cpp
     Internals/Internals.cpp
     Internals/InternalsBase.cpp
     Internals/WebUI.cpp
-    Internals/XRTest.cpp
     IntersectionObserver/IntersectionObserver.cpp
     IntersectionObserver/IntersectionObserverEntry.cpp
     Layout/AudioBox.cpp
@@ -1174,12 +1172,6 @@ set(SOURCES
     WebSockets/WebSocket.cpp
     WebVTT/VTTCue.cpp
     WebVTT/VTTRegion.cpp
-    WebXR/XRLayer.cpp
-    WebXR/XRRenderState.cpp
-    WebXR/XRSession.cpp
-    WebXR/XRSessionEvent.cpp
-    WebXR/XRSystem.cpp
-    WebXR/XRWebGLLayer.cpp
     Worker/WebWorkerClient.cpp
     XHR/EventNames.cpp
     XHR/FormData.cpp
@@ -1255,6 +1247,19 @@ else()
         Gamepad/GamepadHapticActuatorDisabled.cpp
         Gamepad/NavigatorGamepadDisabled.cpp
         Internals/InternalGamepadDisabled.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_WEBXR)
+    list(APPEND SOURCES
+        Internals/FakeXRDevice.cpp
+        Internals/XRTest.cpp
+        WebXR/XRLayer.cpp
+        WebXR/XRRenderState.cpp
+        WebXR/XRSession.cpp
+        WebXR/XRSessionEvent.cpp
+        WebXR/XRSystem.cpp
+        WebXR/XRWebGLLayer.cpp
     )
 endif()
 

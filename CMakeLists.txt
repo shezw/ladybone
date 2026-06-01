@@ -22,6 +22,7 @@ option(LADYBIRD_ENABLE_PDF_VIEWER "Enable the bundled PDF.js viewer" ON)
 option(LADYBIRD_ENABLE_MEDIA_PLAYBACK "Enable audio/video media playback through LibMedia" ON)
 option(LADYBIRD_ENABLE_IMAGE_AVIF "Enable AVIF image decoding" ON)
 option(LADYBIRD_ENABLE_IMAGE_JPEGXL "Enable JPEG XL image decoding" ON)
+option(LADYBIRD_ENABLE_WEBXR "Enable the WebXR API" ON)
 if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
     set(LADYBIRD_ENABLE_GAMEPAD OFF CACHE BOOL "Enable the Web Gamepad API SDL backend" FORCE)
     set(LADYBIRD_ENABLE_3D_GRAPHICS OFF CACHE BOOL "Enable WebGL and GPU-backed Skia rendering" FORCE)
@@ -29,6 +30,7 @@ if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
     set(LADYBIRD_ENABLE_MEDIA_PLAYBACK OFF CACHE BOOL "Enable audio/video media playback through LibMedia" FORCE)
     set(LADYBIRD_ENABLE_IMAGE_AVIF OFF CACHE BOOL "Enable AVIF image decoding" FORCE)
     set(LADYBIRD_ENABLE_IMAGE_JPEGXL OFF CACHE BOOL "Enable JPEG XL image decoding" FORCE)
+    set(LADYBIRD_ENABLE_WEBXR OFF CACHE BOOL "Enable the WebXR API" FORCE)
 endif()
 
 # Pass additional information to vcpkg if we are using it.
@@ -110,6 +112,7 @@ foreach(feature
     MEDIA_PLAYBACK
     IMAGE_AVIF
     IMAGE_JPEGXL
+    WEBXR
 )
     if (LADYBIRD_ENABLE_${feature})
         add_compile_definitions(ENABLE_${feature}=1)

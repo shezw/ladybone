@@ -1,0 +1,4 @@
+// https://immersive-web.github.io/webxr/#navigator-xr-attribute
+partial interface Navigator {
+    [SecureContext, SameObject] readonly attribute XRSystem xr;
+};
