@@ -830,7 +830,6 @@ set(SOURCES
     NavigationTiming/EntryNames.cpp
     NavigationTiming/PerformanceNavigation.cpp
     NavigationTiming/PerformanceTiming.cpp
-    NotificationsAPI/Notification.cpp
     Page/AutoScrollHandler.cpp
     Page/DragAndDropEventHandler.cpp
     Page/ElementResizeAction.cpp
@@ -1252,6 +1251,12 @@ if (LADYBIRD_ENABLE_GEOLOCATION)
         Geolocation/GeolocationCoordinates.cpp
         Geolocation/GeolocationPosition.cpp
         Geolocation/GeolocationPositionError.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_NOTIFICATIONS)
+    list(APPEND SOURCES
+        NotificationsAPI/Notification.cpp
     )
 endif()
 
