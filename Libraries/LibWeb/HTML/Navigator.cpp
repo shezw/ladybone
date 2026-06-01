@@ -13,7 +13,9 @@
 #include <LibWeb/Bindings/Navigator.h>
 #include <LibWeb/Clipboard/Clipboard.h>
 #include <LibWeb/CredentialManagement/CredentialsContainer.h>
+#if ENABLE_GEOLOCATION
 #include <LibWeb/Geolocation/Geolocation.h>
+#endif
 #include <LibWeb/HTML/Navigator.h>
 #include <LibWeb/HTML/Scripting/Environments.h>
 #include <LibWeb/HTML/Window.h>
@@ -81,7 +83,9 @@ void Navigator::visit_edges(Cell::Visitor& visitor)
     visitor.visit(m_mime_type_array);
     visitor.visit(m_plugin_array);
     visitor.visit(m_clipboard);
+#if ENABLE_GEOLOCATION
     visitor.visit(m_geolocation);
+#endif
     visitor.visit(m_serial);
     visitor.visit(m_user_activation);
     visitor.visit(m_service_worker_container);
@@ -116,12 +120,14 @@ GC::Ref<Clipboard::Clipboard> Navigator::clipboard()
     return *m_clipboard;
 }
 
+#if ENABLE_GEOLOCATION
 GC::Ref<Geolocation::Geolocation> Navigator::geolocation()
 {
     if (!m_geolocation)
         m_geolocation = realm().create<Geolocation::Geolocation>(realm());
     return *m_geolocation;
 }
+#endif
 
 GC::Ref<Serial::Serial> Navigator::serial()
 {

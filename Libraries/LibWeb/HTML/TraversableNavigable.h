@@ -11,7 +11,9 @@
 #include <AK/Vector.h>
 #include <LibWeb/Bindings/NavigationType.h>
 #include <LibWeb/Export.h>
+#if ENABLE_GEOLOCATION
 #include <LibWeb/Geolocation/Geolocation.h>
+#endif
 #include <LibWeb/HTML/Navigable.h>
 #include <LibWeb/HTML/SessionHistoryTraversalQueue.h>
 #include <LibWeb/HTML/VisibilityState.h>
@@ -106,9 +108,11 @@ public:
     StorageAPI::StorageShed& storage_shed() { return m_storage_shed; }
     StorageAPI::StorageShed const& storage_shed() const { return m_storage_shed; }
 
+#if ENABLE_GEOLOCATION
     // https://w3c.github.io/geolocation/#dfn-emulated-position-data
     Geolocation::EmulatedPositionData const& emulated_position_data() const;
     void set_emulated_position_data(Geolocation::EmulatedPositionData data);
+#endif
 
     void process_screenshot_requests();
     void queue_screenshot_task(Optional<UniqueNodeID> node_id)
@@ -180,8 +184,10 @@ private:
 
     String m_window_handle;
 
+#if ENABLE_GEOLOCATION
     // https://w3c.github.io/geolocation/#dfn-emulated-position-data
     Geolocation::EmulatedPositionData m_emulated_position_data;
+#endif
 
     struct ScreenshotTask {
         Optional<Web::UniqueNodeID> node_id;

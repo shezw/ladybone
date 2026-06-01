@@ -62,7 +62,9 @@ public:
     [[nodiscard]] GC::Ref<MimeTypeArray> mime_types();
     [[nodiscard]] GC::Ref<PluginArray> plugins();
     [[nodiscard]] GC::Ref<Clipboard::Clipboard> clipboard();
+#if ENABLE_GEOLOCATION
     [[nodiscard]] GC::Ref<Geolocation::Geolocation> geolocation();
+#endif
     [[nodiscard]] GC::Ref<Serial::Serial> serial();
     [[nodiscard]] GC::Ref<UserActivation> user_activation();
     [[nodiscard]] GC::Ref<CredentialManagement::CredentialsContainer> credentials();
@@ -98,8 +100,10 @@ private:
     // https://w3c.github.io/clipboard-apis/#dom-navigator-clipboard
     GC::Ptr<Clipboard::Clipboard> m_clipboard;
 
+#if ENABLE_GEOLOCATION
     // https://w3c.github.io/geolocation/#navigator_interface
     GC::Ptr<Geolocation::Geolocation> m_geolocation;
+#endif
 
     // https://wicg.github.io/serial/#extensions-to-the-navigator-interface
     GC::Ptr<Serial::Serial> m_serial;

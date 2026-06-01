@@ -23,7 +23,7 @@ namespace Web::PermissionsAPI {
 bool is_permission_supported(String const& name)
 {
     if (name == "geolocation") {
-        return true;
+        return ENABLE_GEOLOCATION;
     }
     return false;
 }

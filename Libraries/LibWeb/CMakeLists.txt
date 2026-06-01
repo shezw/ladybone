@@ -443,12 +443,8 @@ set(SOURCES
     Gamepad/EventNames.cpp
     Gamepad/GamepadButton.cpp
     Gamepad/GamepadEvent.cpp
-    Geolocation/Geolocation.cpp
     Serial/Serial.cpp
     Serial/SerialPort.cpp
-    Geolocation/GeolocationCoordinates.cpp
-    Geolocation/GeolocationPosition.cpp
-    Geolocation/GeolocationPositionError.cpp
     Geometry/DOMMatrix.cpp
     Geometry/DOMMatrixReadOnly.cpp
     Geometry/DOMPoint.cpp
@@ -1247,6 +1243,15 @@ else()
         Gamepad/GamepadHapticActuatorDisabled.cpp
         Gamepad/NavigatorGamepadDisabled.cpp
         Internals/InternalGamepadDisabled.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_GEOLOCATION)
+    list(APPEND SOURCES
+        Geolocation/Geolocation.cpp
+        Geolocation/GeolocationCoordinates.cpp
+        Geolocation/GeolocationPosition.cpp
+        Geolocation/GeolocationPositionError.cpp
     )
 endif()
 

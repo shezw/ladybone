@@ -11,7 +11,9 @@
 #include <LibGfx/SkiaBackendContext.h>
 #include <LibWeb/Bindings/MainThreadVM.h>
 #include <LibWeb/DOM/Document.h>
+#if ENABLE_GEOLOCATION
 #include <LibWeb/Geolocation/GeolocationCoordinates.h>
+#endif
 #include <LibWeb/HTML/BrowsingContext.h>
 #include <LibWeb/HTML/BrowsingContextGroup.h>
 #include <LibWeb/HTML/DocumentState.h>
@@ -49,8 +51,10 @@ TraversableNavigable::~TraversableNavigable() = default;
 void TraversableNavigable::visit_edges(Cell::Visitor& visitor)
 {
     Base::visit_edges(visitor);
+#if ENABLE_GEOLOCATION
     if (m_emulated_position_data.has<GC::Ref<Geolocation::GeolocationCoordinates>>())
         visitor.visit(m_emulated_position_data.get<GC::Ref<Geolocation::GeolocationCoordinates>>());
+#endif
     visitor.visit(m_session_history_traversal_queue);
     visitor.visit(m_storage_shed);
     visitor.visit(m_apply_history_step_state);
@@ -146,6 +150,7 @@ GC::Ref<TraversableNavigable> TraversableNavigable::create_a_fresh_top_level_tra
     auto traversable = create_a_new_top_level_traversable(page, nullptr, {});
     page->set_top_level_traversable(traversable);
 
+#if ENABLE_GEOLOCATION
     // AD-HOC: Set the default top-level emulated position data for the traversable, which points to Market St. SF.
     // FIXME: We should not emulate by default, but ask the user what to do. E.g. disable Geolocation, set an emulated
     //        position, or allow Ladybird to engage with the system's geolocation services. This is completely separate
@@ -163,6 +168,7 @@ GC::Ref<TraversableNavigable> TraversableNavigable::create_a_fresh_top_level_tra
             .speed = 0.0,
         });
     traversable->set_emulated_position_data(emulated_position_coordinates);
+#endif
 
     // AD-HOC: Mark the about:blank document as finished parsing if we're only going to about:blank
     //         Skip the initial navigation as well. This matches the behavior of the window open steps.
@@ -1812,6 +1818,7 @@ GC::Ptr<DOM::Node> TraversableNavigable::currently_focused_area()
     return candidate;
 }
 
+#if ENABLE_GEOLOCATION
 // https://w3c.github.io/geolocation/#dfn-emulated-position-data
 Geolocation::EmulatedPositionData const& TraversableNavigable::emulated_position_data() const
 {
@@ -1825,6 +1832,7 @@ void TraversableNavigable::set_emulated_position_data(Geolocation::EmulatedPosit
     VERIFY(is_top_level_traversable());
     m_emulated_position_data = data;
 }
+#endif
 
 void TraversableNavigable::process_screenshot_requests()
 {
