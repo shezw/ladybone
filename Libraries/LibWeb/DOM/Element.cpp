@@ -111,8 +111,10 @@
 #include <LibWeb/Layout/TreeBuilder.h>
 #include <LibWeb/Layout/Viewport.h>
 #include <LibWeb/Loader/ContentBlocker.h>
+#if ENABLE_MATHML
 #include <LibWeb/MathML/MathMLElement.h>
 #include <LibWeb/MathML/TagNames.h>
+#endif
 #include <LibWeb/Namespace.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Painting/AccumulatedVisualContext.h>
@@ -2662,7 +2664,13 @@ RequestFullscreenError Element::is_element_allowed_to_enter_fullscreen(Fullscree
 {
     // * This’s namespace is the HTML namespace or this is an SVG svg or MathML math element. [SVG] [MATHML]
     // FIXME: This likely wants to use is<MathML::MathMLMathElement> instead.
-    if (!(namespace_uri() == Namespace::HTML || is_svg_svg_element() || (is<MathML::MathMLElement>(*this) && tag_name() == MathML::TagNames::math)))
+    if (!(namespace_uri() == Namespace::HTML || is_svg_svg_element()
+#if ENABLE_MATHML
+            || (is<MathML::MathMLElement>(*this) && tag_name() == MathML::TagNames::math)
+#else
+            || (namespace_uri() == Namespace::MathML && local_name() == "math"sv)
+#endif
+            ))
         return RequestFullscreenError::UnsupportedElement;
 
     // * This is not a dialog element

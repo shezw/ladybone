@@ -157,15 +157,19 @@ Optional<String> StyleComputer::user_agent_style_sheet_source(StringView name)
 {
     extern String default_stylesheet_source;
     extern String quirks_mode_stylesheet_source;
+#if ENABLE_MATHML
     extern String mathml_stylesheet_source;
+#endif
     extern String svg_stylesheet_source;
 
     if (name == "CSS/Default.css"sv)
         return default_stylesheet_source;
     if (name == "CSS/QuirksMode.css"sv)
         return quirks_mode_stylesheet_source;
+#if ENABLE_MATHML
     if (name == "MathML/Default.css"sv)
         return mathml_stylesheet_source;
+#endif
     if (name == "SVG/Default.css"sv)
         return svg_stylesheet_source;
     return {};

@@ -87,10 +87,12 @@
 #include <LibWeb/HTML/Scripting/SimilarOriginWindowAgent.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>
 #include <LibWeb/Infra/Strings.h>
+#if ENABLE_MATHML
 #include <LibWeb/MathML/MathMLElement.h>
 #include <LibWeb/MathML/MathMLMiElement.h>
 #include <LibWeb/MathML/MathMLMspaceElement.h>
 #include <LibWeb/MathML/TagNames.h>
+#endif
 #include <LibWeb/Namespace.h>
 #include <LibWeb/SVG/SVGAElement.h>
 #include <LibWeb/SVG/SVGCircleElement.h>
@@ -587,6 +589,7 @@ static GC::Ref<SVG::SVGElement> create_svg_element(Document& document, Qualified
     return realm.create<SVG::SVGElement>(document, move(qualified_name));
 }
 
+#if ENABLE_MATHML
 static GC::Ref<MathML::MathMLElement> create_mathml_element(Document& document, QualifiedName qualified_name)
 {
     auto& realm = document.realm();
@@ -606,6 +609,7 @@ static GC::Ref<MathML::MathMLElement> create_mathml_element(Document& document, 
 
     return realm.create<MathML::MathMLElement>(document, move(qualified_name));
 }
+#endif
 
 // https://dom.spec.whatwg.org/#create-an-element-internal
 template<typename Interface>
@@ -785,7 +789,11 @@ WebIDL::ExceptionOr<GC::Ref<Element>> create_element(Document& document, FlyStri
         }
 
         else if (namespace_ == Namespace::MathML) {
+#if ENABLE_MATHML
             result = create_element_internal(document, create_mathml_element, local_name, namespace_, prefix, CustomElementState::Uncustomized, is_value, registry);
+#else
+            result = create_element_internal(document, [](auto& document, auto qualified_name) { return document.realm().template create<DOM::Element>(document, qualified_name); }, local_name, namespace_, prefix, CustomElementState::Uncustomized, is_value, registry);
+#endif
         }
 
         else {

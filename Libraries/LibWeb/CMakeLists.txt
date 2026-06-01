@@ -800,11 +800,6 @@ set(SOURCES
     Loader/GeneratedPagesLoader.cpp
     Loader/ProxyMappings.cpp
     Loader/ResourceLoader.cpp
-    MathML/AttributeNames.cpp
-    MathML/MathMLElement.cpp
-    MathML/MathMLMiElement.cpp
-    MathML/MathMLMspaceElement.cpp
-    MathML/TagNames.cpp
     MediaCapabilitiesAPI/MediaCapabilities.cpp
     MediaSourceExtensions/BufferedChangeEvent.cpp
     MediaSourceExtensions/EventNames.cpp
@@ -1216,7 +1211,6 @@ set(GENERATED_SOURCES
     CSS/QuirksModeStyleSheetSource.cpp
     CSS/TransformFunctions.cpp
     CSS/Units.cpp
-    MathML/MathMLStyleSheetSource.cpp
     SVG/SVGStyleSheetSource.cpp
     Worker/WebWorkerClientEndpoint.h
     Worker/WebWorkerServerEndpoint.h
@@ -1262,6 +1256,17 @@ if (LADYBIRD_ENABLE_WEBRTC)
         MediaCapture/MediaStream.cpp
         MediaCapture/MediaStreamTrack.cpp
         MediaCapture/MediaStreamTrackEvent.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_MATHML)
+    list(APPEND SOURCES
+        MathML/AttributeNames.cpp
+        MathML/MathMLElement.cpp
+        MathML/MathMLMiElement.cpp
+        MathML/MathMLMspaceElement.cpp
+        MathML/MathMLStyleSheetSource.cpp
+        MathML/TagNames.cpp
     )
 endif()
 

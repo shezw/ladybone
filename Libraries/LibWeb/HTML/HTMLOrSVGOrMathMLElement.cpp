@@ -13,7 +13,9 @@
 #include <LibWeb/HTML/PolicyContainers.h>
 #include <LibWeb/HTML/SandboxingFlagSet.h>
 #include <LibWeb/HTML/TraversableNavigable.h>
+#if ENABLE_MATHML
 #include <LibWeb/MathML/MathMLElement.h>
+#endif
 #include <LibWeb/SVG/SVGElement.h>
 
 namespace Web::HTML {
@@ -155,7 +157,9 @@ void HTMLOrSVGOrMathMLElement<ElementBase>::visit_edges(JS::Cell::Visitor& visit
 }
 
 template class HTMLOrSVGOrMathMLElement<HTMLElement>;
+#if ENABLE_MATHML
 template class HTMLOrSVGOrMathMLElement<MathML::MathMLElement>;
+#endif
 template class HTMLOrSVGOrMathMLElement<SVG::SVGElement>;
 
 }

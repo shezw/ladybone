@@ -67,7 +67,9 @@
 #include <LibWeb/Layout/Node.h>
 #include <LibWeb/Layout/TextNode.h>
 #include <LibWeb/Layout/TextOffsetMapping.h>
+#if ENABLE_MATHML
 #include <LibWeb/MathML/MathMLElement.h>
+#endif
 #include <LibWeb/Namespace.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Painting/Paintable.h>
@@ -1611,7 +1613,11 @@ bool Node::is_editable() const
         return true;
 
     // or it is an svg or math element,
-    if (is<SVG::SVGElement>(this) || is<MathML::MathMLElement>(this))
+    if (is<SVG::SVGElement>(this)
+#if ENABLE_MATHML
+        || is<MathML::MathMLElement>(this)
+#endif
+    )
         return true;
 
     // or it is not an Element and its parent is an HTML element.

@@ -217,6 +217,7 @@ static CSSStyleSheet& quirks_mode_stylesheet()
     return *sheet;
 }
 
+#if ENABLE_MATHML
 static CSSStyleSheet& mathml_stylesheet()
 {
     static GC::Root<CSSStyleSheet> sheet;
@@ -226,6 +227,7 @@ static CSSStyleSheet& mathml_stylesheet()
     }
     return *sheet;
 }
+#endif
 
 static CSSStyleSheet& svg_stylesheet()
 {
@@ -335,7 +337,9 @@ void StyleScope::for_each_stylesheet(CascadeOrigin cascade_origin, Function<void
         callback(default_stylesheet());
         if (document().in_quirks_mode())
             callback(quirks_mode_stylesheet());
+#if ENABLE_MATHML
         callback(mathml_stylesheet());
+#endif
         callback(svg_stylesheet());
     }
     if (cascade_origin == CascadeOrigin::User) {

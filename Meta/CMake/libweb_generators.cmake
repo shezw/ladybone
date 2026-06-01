@@ -153,13 +153,15 @@ function (generate_css_implementation)
         NAMESPACE "Web::CSS"
     )
 
-    embed_as_string(
-        "MathMLStyleSheetSource.cpp"
-        "${LIBWEB_INPUT_FOLDER}/MathML/Default.css"
-        "MathML/MathMLStyleSheetSource.cpp"
-        "mathml_stylesheet_source"
-        NAMESPACE "Web::CSS"
-    )
+    if (LADYBIRD_ENABLE_MATHML)
+        embed_as_string(
+            "MathMLStyleSheetSource.cpp"
+            "${LIBWEB_INPUT_FOLDER}/MathML/Default.css"
+            "MathML/MathMLStyleSheetSource.cpp"
+            "mathml_stylesheet_source"
+            NAMESPACE "Web::CSS"
+        )
+    endif()
 
     embed_as_string(
         "SVGStyleSheetSource.cpp"

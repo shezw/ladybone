@@ -26,6 +26,7 @@ option(LADYBIRD_ENABLE_WEBXR "Enable the WebXR API" ON)
 option(LADYBIRD_ENABLE_GEOLOCATION "Enable the Geolocation API" ON)
 option(LADYBIRD_ENABLE_NOTIFICATIONS "Enable the Notifications API" ON)
 option(LADYBIRD_ENABLE_WEBRTC "Enable WebRTC and Media Capture APIs" ON)
+option(LADYBIRD_ENABLE_MATHML "Enable MathML DOM bindings and default stylesheet" ON)
 if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
     set(LADYBIRD_ENABLE_GAMEPAD OFF CACHE BOOL "Enable the Web Gamepad API SDL backend" FORCE)
     set(LADYBIRD_ENABLE_3D_GRAPHICS OFF CACHE BOOL "Enable WebGL and GPU-backed Skia rendering" FORCE)
@@ -37,6 +38,7 @@ if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
     set(LADYBIRD_ENABLE_GEOLOCATION OFF CACHE BOOL "Enable the Geolocation API" FORCE)
     set(LADYBIRD_ENABLE_NOTIFICATIONS OFF CACHE BOOL "Enable the Notifications API" FORCE)
     set(LADYBIRD_ENABLE_WEBRTC OFF CACHE BOOL "Enable WebRTC and Media Capture APIs" FORCE)
+    set(LADYBIRD_ENABLE_MATHML OFF CACHE BOOL "Enable MathML DOM bindings and default stylesheet" FORCE)
 endif()
 
 # Pass additional information to vcpkg if we are using it.
@@ -122,6 +124,7 @@ foreach(feature
     GEOLOCATION
     NOTIFICATIONS
     WEBRTC
+    MATHML
 )
     if (LADYBIRD_ENABLE_${feature})
         add_compile_definitions(ENABLE_${feature}=1)
