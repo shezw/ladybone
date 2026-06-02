@@ -41,8 +41,11 @@
 #include <WebContent/PageClient.h>
 #include <WebContent/PageHost.h>
 #include <WebContent/WebContentClientEndpoint.h>
-#include <WebContent/WebDriverConnection.h>
 #include <WebContent/WebUIConnection.h>
+
+#if ENABLE_WEBDRIVER
+#include <WebContent/WebDriverConnection.h>
+#endif
 
 namespace WebContent {
 
@@ -99,8 +102,10 @@ void PageClient::visit_edges(JS::Cell::Visitor& visitor)
     visitor.visit(m_page);
     visitor.visit(m_top_level_document_console_client);
 
+#if ENABLE_WEBDRIVER
     if (m_webdriver)
         m_webdriver->visit_edges(visitor);
+#endif
     if (m_web_ui)
         m_web_ui->visit_edges(visitor);
 }
@@ -202,7 +207,9 @@ void PageClient::set_window_size(Web::DevicePixelSize size)
 void PageClient::compositor_process_reconnected()
 {
     page().top_level_traversable()->repaint_after_compositor_process_reconnect();
+#if ENABLE_CANVAS
     page().republish_all_canvas_element_surfaces();
+#endif
     page().update_all_media_element_video_sinks();
     Web::HTML::main_thread_event_loop().queue_task_to_update_the_rendering();
 }
@@ -450,8 +457,10 @@ void PageClient::page_did_request_alert(String const& message)
 {
     client().async_did_request_alert(m_id, message);
 
+#if ENABLE_WEBDRIVER
     if (m_webdriver)
         m_webdriver->page_did_open_dialog({});
+#endif
 }
 
 void PageClient::alert_closed()
@@ -463,8 +472,10 @@ void PageClient::page_did_request_confirm(String const& message)
 {
     client().async_did_request_confirm(m_id, message);
 
+#if ENABLE_WEBDRIVER
     if (m_webdriver)
         m_webdriver->page_did_open_dialog({});
+#endif
 }
 
 void PageClient::confirm_closed(bool accepted)
@@ -476,8 +487,10 @@ void PageClient::page_did_request_prompt(String const& message, String const& de
 {
     client().async_did_request_prompt(m_id, message, default_);
 
+#if ENABLE_WEBDRIVER
     if (m_webdriver)
         m_webdriver->page_did_open_dialog({});
+#endif
 }
 
 void PageClient::page_did_request_set_prompt_text(String const& text)
@@ -821,10 +834,15 @@ void PageClient::page_did_take_screenshot(Gfx::ShareableBitmap const& screenshot
 
 ErrorOr<void> PageClient::connect_to_webdriver(ByteString const& webdriver_endpoint)
 {
+#if ENABLE_WEBDRIVER
     VERIFY(!m_webdriver);
     m_webdriver = TRY(WebDriverConnection::connect(*this, webdriver_endpoint));
 
     return {};
+#else
+    (void)webdriver_endpoint;
+    return Error::from_string_literal("WebDriver support is disabled");
+#endif
 }
 
 ErrorOr<void> PageClient::connect_to_web_ui(IPC::TransportHandle handle)

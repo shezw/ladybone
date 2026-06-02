@@ -12,7 +12,7 @@
 #include <LibWeb/HTML/Scripting/TemporaryExecutionContext.h>
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/Internals/WebUI.h>
-#include <LibWeb/WebDriver/JSON.h>
+#include <LibWeb/Infra/JSON.h>
 #include <WebContent/WebUIConnection.h>
 
 namespace WebContent {
@@ -64,9 +64,9 @@ void WebUIConnection::send_message(String name, JsonValue data)
     auto& realm = m_document->realm();
     Web::HTML::TemporaryExecutionContext context { realm };
 
-    auto serialized_detail = Web::WebDriver::json_deserialize(*m_document->browsing_context(), detail);
+    auto serialized_detail = Web::Infra::parse_json_string_to_javascript_value(realm, JsonValue { move(detail) }.serialized());
     if (serialized_detail.is_error()) {
-        warnln("Unable to serialize JSON data from browser: {}", serialized_detail.error());
+        warnln("Unable to serialize JSON data from browser");
         return;
     }
 
@@ -81,13 +81,22 @@ void WebUIConnection::received_message_from_web_ui(String const& name, JS::Value
     if (!m_document->browsing_context())
         return;
 
-    auto deserialized_data = Web::WebDriver::json_clone(*m_document->browsing_context(), data);
+    auto& realm = m_document->realm();
+    Web::HTML::TemporaryExecutionContext context { realm };
+
+    auto serialized_data = Web::Infra::serialize_javascript_value_to_json_string(realm.vm(), data);
+    if (serialized_data.is_error()) {
+        warnln("Unable to serialize JS data from WebUI");
+        return;
+    }
+
+    auto deserialized_data = JsonValue::from_string(serialized_data.value());
     if (deserialized_data.is_error()) {
         warnln("Unable to deserialize JS data from WebUI: {}", deserialized_data.error());
         return;
     }
 
-    async_received_message(name, deserialized_data.value());
+    async_received_message(name, deserialized_data.release_value());
 }
 
 }

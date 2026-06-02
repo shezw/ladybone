@@ -226,7 +226,9 @@ private:
 
     Core::AnonymousBuffer m_document_cookie_version_buffer;
 
+#if ENABLE_WEBDRIVER
     RefPtr<WebDriverConnection> m_webdriver;
+#endif
     RefPtr<WebUIConnection> m_web_ui;
 
     GC::Ptr<WebContentConsoleClient> m_top_level_document_console_client;

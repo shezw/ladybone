@@ -9,9 +9,14 @@ set(SOURCES
     PageHost.cpp
     WebContentCompositorHost.cpp
     WebContentConsoleClient.cpp
-    WebDriverConnection.cpp
     WebUIConnection.cpp
 )
+
+if (LADYBIRD_ENABLE_WEBDRIVER)
+    list(APPEND SOURCES
+        WebDriverConnection.cpp
+    )
+endif()
 
 if (ANDROID)
     add_library(webcontentservice SHARED
@@ -54,5 +59,11 @@ target_sources(webcontentservice PUBLIC FILE_SET server TYPE HEADERS
           PageHost.h
           WebContentCompositorHost.h
           WebContentConsoleClient.h
-          WebDriverConnection.h
 )
+
+if (LADYBIRD_ENABLE_WEBDRIVER)
+    target_sources(webcontentservice PUBLIC FILE_SET server TYPE HEADERS
+        BASE_DIRS ${LADYBIRD_SOURCE_DIR}/Services
+        FILES WebDriverConnection.h
+    )
+endif()

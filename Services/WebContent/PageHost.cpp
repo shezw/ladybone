@@ -13,7 +13,6 @@
 #include <WebContent/PageClient.h>
 #include <WebContent/PageHost.h>
 #include <WebContent/WebContentCompositorHost.h>
-#include <WebContent/WebDriverConnection.h>
 
 namespace WebContent {
 
