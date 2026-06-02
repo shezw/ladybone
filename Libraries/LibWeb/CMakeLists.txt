@@ -937,32 +937,6 @@ set(SOURCES
     UserTiming/PerformanceMark.cpp
     UserTiming/PerformanceMeasure.cpp
     ViewTransition/ViewTransition.cpp
-    WebAudio/AnalyserNode.cpp
-    WebAudio/AudioBuffer.cpp
-    WebAudio/AudioBufferSourceNode.cpp
-    WebAudio/AudioContext.cpp
-    WebAudio/AudioDestinationNode.cpp
-    WebAudio/AudioListener.cpp
-    WebAudio/AudioNode.cpp
-    WebAudio/AudioParam.cpp
-    WebAudio/AudioScheduledSourceNode.cpp
-    WebAudio/BaseAudioContext.cpp
-    WebAudio/BiquadFilterNode.cpp
-    WebAudio/ChannelMergerNode.cpp
-    WebAudio/ChannelSplitterNode.cpp
-    WebAudio/ConstantSourceNode.cpp
-    WebAudio/ControlMessageQueue.cpp
-    WebAudio/DelayNode.cpp
-    WebAudio/DynamicsCompressorNode.cpp
-    WebAudio/GainNode.cpp
-    WebAudio/MediaElementAudioSourceNode.cpp
-    WebAudio/OfflineAudioCompletionEvent.cpp
-    WebAudio/OfflineAudioContext.cpp
-    WebAudio/OscillatorNode.cpp
-    WebAudio/PannerNode.cpp
-    WebAudio/PeriodicWave.cpp
-    WebAudio/ScriptProcessorNode.cpp
-    WebAudio/StereoPannerNode.cpp
     WebIDL/AbstractOperations.cpp
     WebIDL/AsyncIterator.cpp
     WebIDL/Buffers.cpp
@@ -1305,6 +1279,37 @@ if (LADYBIRD_ENABLE_WASM)
         WebAssembly/Table.cpp
         WebAssembly/WebAssembly.cpp
         WebAssembly/WebAssemblyModule.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_WEB_AUDIO)
+    list(APPEND SOURCES
+        WebAudio/AnalyserNode.cpp
+        WebAudio/AudioBuffer.cpp
+        WebAudio/AudioBufferSourceNode.cpp
+        WebAudio/AudioContext.cpp
+        WebAudio/AudioDestinationNode.cpp
+        WebAudio/AudioListener.cpp
+        WebAudio/AudioNode.cpp
+        WebAudio/AudioParam.cpp
+        WebAudio/AudioScheduledSourceNode.cpp
+        WebAudio/BaseAudioContext.cpp
+        WebAudio/BiquadFilterNode.cpp
+        WebAudio/ChannelMergerNode.cpp
+        WebAudio/ChannelSplitterNode.cpp
+        WebAudio/ConstantSourceNode.cpp
+        WebAudio/ControlMessageQueue.cpp
+        WebAudio/DelayNode.cpp
+        WebAudio/DynamicsCompressorNode.cpp
+        WebAudio/GainNode.cpp
+        WebAudio/MediaElementAudioSourceNode.cpp
+        WebAudio/OfflineAudioCompletionEvent.cpp
+        WebAudio/OfflineAudioContext.cpp
+        WebAudio/OscillatorNode.cpp
+        WebAudio/PannerNode.cpp
+        WebAudio/PeriodicWave.cpp
+        WebAudio/ScriptProcessorNode.cpp
+        WebAudio/StereoPannerNode.cpp
     )
 endif()
 

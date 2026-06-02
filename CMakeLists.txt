@@ -142,6 +142,7 @@ foreach(feature
     SVG
     CANVAS
     WASM
+    WEB_AUDIO
     WEBDRIVER
 )
     if (LADYBIRD_ENABLE_${feature})
