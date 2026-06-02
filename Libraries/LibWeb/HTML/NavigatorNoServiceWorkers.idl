@@ -27,3 +27,42 @@ interface Navigator {
     // https://w3c.github.io/permissions/#navigator-and-workernavigator-extension
     [SameObject, Experimental] readonly attribute Permissions permissions;
 };
+
+// NOTE: As NavigatorContentUtils, NavigatorCookies, NavigatorPlugins, and NavigatorAutomationInformation
+//       are not used in WorkerNavigator, we define them here.
+
+// https://html.spec.whatwg.org/multipage/system-state.html#navigatorcontentutils
+interface mixin NavigatorContentUtils {
+    [FIXME, SecureContext] undefined registerProtocolHandler(DOMString scheme, USVString url);
+    [FIXME, SecureContext] undefined unregisterProtocolHandler(DOMString scheme, USVString url);
+};
+
+// https://html.spec.whatwg.org/multipage/system-state.html#navigatorcookies
+interface mixin NavigatorCookies {
+    readonly attribute boolean cookieEnabled;
+};
+
+// https://html.spec.whatwg.org/multipage/system-state.html#navigatorplugins
+interface mixin NavigatorPlugins {
+    [SameObject] readonly attribute PluginArray plugins;
+    [SameObject] readonly attribute MimeTypeArray mimeTypes;
+    boolean javaEnabled();
+    readonly attribute boolean pdfViewerEnabled;
+};
+
+// https://w3c.github.io/webdriver/#dom-navigatorautomationinformation
+interface mixin NavigatorAutomationInformation {
+    readonly attribute boolean webdriver;
+};
+
+Navigator includes GlobalPrivacyControl;
+Navigator includes NavigatorID;
+Navigator includes NavigatorLanguage;
+Navigator includes NavigatorOnLine;
+Navigator includes NavigatorContentUtils;
+Navigator includes NavigatorCookies;
+Navigator includes NavigatorPlugins;
+Navigator includes NavigatorConcurrentHardware;
+Navigator includes NavigatorAutomationInformation;
+Navigator includes NavigatorStorage;
+Navigator includes NavigatorDeviceMemory;
