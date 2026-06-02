@@ -3111,6 +3111,7 @@ static void generate_html_constructor(SourceGenerator& generator, IDL::Construct
     includes.add_header("LibWeb/HTML/CustomElements/CustomElementDefinition.h"sv);
     includes.add_header("LibWeb/HTML/CustomElements/CustomElementRegistry.h"sv);
     includes.add_header("LibWeb/HTML/Scripting/SimilarOriginWindowAgent.h"sv);
+    includes.add_header("LibWeb/Namespace.h"sv);
     includes.add_header("LibWeb/WebIDL/AbstractOperations.h"sv);
 
     auto constructor_generator = generator.fork();

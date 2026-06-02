@@ -470,15 +470,6 @@ set(SOURCES
     HTML/BroadcastChannelMessage.cpp
     HTML/BrowsingContext.cpp
     HTML/BrowsingContextGroup.cpp
-    HTML/Canvas/CanvasDrawImage.cpp
-    HTML/Canvas/CanvasFillStrokeStyles.cpp
-    HTML/Canvas/CanvasPath.cpp
-    HTML/Canvas/CanvasState.cpp
-    HTML/Canvas/CanvasTextDrawingStyles.cpp
-    HTML/Canvas/SerializeBitmap.cpp
-    HTML/CanvasGradient.cpp
-    HTML/CanvasPattern.cpp
-    HTML/CanvasRenderingContext2D.cpp
     HTML/CloseEvent.cpp
     HTML/CloseWatcher.cpp
     HTML/CloseWatcherManager.cpp
@@ -530,7 +521,6 @@ set(SOURCES
     HTML/HTMLBodyElement.cpp
     HTML/HTMLBRElement.cpp
     HTML/HTMLButtonElement.cpp
-    HTML/HTMLCanvasElement.cpp
     HTML/HTMLDataElement.cpp
     HTML/HTMLDataListElement.cpp
     HTML/HTMLDetailsElement.cpp
@@ -602,8 +592,6 @@ set(SOURCES
     HTML/HTMLUListElement.cpp
     HTML/HTMLUnknownElement.cpp
     HTML/HTMLVideoElement.cpp
-    HTML/ImageBitmap.cpp
-    HTML/ImageData.cpp
     HTML/ImageRequest.cpp
     HTML/ListOfAvailableImages.cpp
     HTML/Location.cpp
@@ -630,8 +618,6 @@ set(SOURCES
     HTML/NavigatorDeviceMemory.cpp
     HTML/NavigatorID.cpp
     HTML/Numbers.cpp
-    HTML/OffscreenCanvas.cpp
-    HTML/OffscreenCanvasRenderingContext2D.cpp
     HTML/PageTransitionEvent.cpp
     HTML/Parser/Entities.cpp
     HTML/Parser/HTMLEncodingDetection.cpp
@@ -640,7 +626,6 @@ set(SOURCES
     HTML/Parser/HTMLTokenizer.cpp
     HTML/Parser/IncrementalDocumentParser.cpp
     HTML/Parser/SpeculativeHTMLParser.cpp
-    HTML/Path2D.cpp
     HTML/Plugin.cpp
     HTML/PluginArray.cpp
     HTML/PolicyContainers.cpp
@@ -750,7 +735,6 @@ set(SOURCES
     Layout/BlockFormattingContext.cpp
     Layout/Box.cpp
     Layout/BreakNode.cpp
-    Layout/CanvasBox.cpp
     Layout/CheckBox.cpp
     Layout/FieldSetBox.cpp
     Layout/FlexFormattingContext.cpp
@@ -773,18 +757,6 @@ set(SOURCES
     Layout/RadioButton.cpp
     Layout/ReplacedBox.cpp
     Layout/ReplacedWithChildrenFormattingContext.cpp
-    Layout/SVGBox.cpp
-    Layout/SVGClipBox.cpp
-    Layout/SVGForeignObjectBox.cpp
-    Layout/SVGFormattingContext.cpp
-    Layout/SVGGeometryBox.cpp
-    Layout/SVGGraphicsBox.cpp
-    Layout/SVGImageBox.cpp
-    Layout/SVGMaskBox.cpp
-    Layout/SVGPatternBox.cpp
-    Layout/SVGSVGBox.cpp
-    Layout/SVGTextBox.cpp
-    Layout/SVGTextPathBox.cpp
     Layout/TableFormattingContext.cpp
     Layout/TableGrid.cpp
     Layout/TableWrapper.cpp
@@ -835,7 +807,6 @@ set(SOURCES
     Painting/BorderRadiusCornerClipper.cpp
     Painting/BordersData.cpp
     Painting/BoxModelMetrics.cpp
-    Painting/CanvasPaintable.cpp
     Painting/CheckBoxPaintable.cpp
     Painting/DisplayList.cpp
     Painting/DisplayListCommand.cpp
@@ -863,15 +834,6 @@ set(SOURCES
     Painting/ScrollState.cpp
     Painting/ShadowPainting.cpp
     Painting/StackingContext.cpp
-    Painting/SVGClipPaintable.cpp
-    Painting/SVGForeignObjectPaintable.cpp
-    Painting/SVGGraphicsPaintable.cpp
-    Painting/SVGMaskable.cpp
-    Painting/SVGMaskPaintable.cpp
-    Painting/SVGPaintable.cpp
-    Painting/SVGPatternPaintable.cpp
-    Painting/SVGPathPaintable.cpp
-    Painting/SVGSVGPaintable.cpp
     Painting/TableBordersPainting.cpp
     Painting/TextPaintable.cpp
     Painting/VideoPaintable.cpp
@@ -952,86 +914,6 @@ set(SOURCES
     Streams/WritableStreamDefaultController.cpp
     Streams/WritableStreamDefaultWriter.cpp
     Streams/WritableStreamOperations.cpp
-    SVG/AttributeNames.cpp
-    SVG/AttributeParser.cpp
-    SVG/Path.cpp
-    SVG/SVGAElement.cpp
-    SVG/SVGAnimatedEnumeration.cpp
-    SVG/SVGAnimatedInteger.cpp
-    SVG/SVGAnimatedLength.cpp
-    SVG/SVGAnimatedLengthList.cpp
-    SVG/SVGAnimatedNumber.cpp
-    SVG/SVGAnimatedNumberList.cpp
-    SVG/SVGAnimatedRect.cpp
-    SVG/SVGAnimatedString.cpp
-    SVG/SVGAnimatedTransformList.cpp
-    SVG/SVGAnimationElement.cpp
-    SVG/SVGCircleElement.cpp
-    SVG/SVGClipPathElement.cpp
-    SVG/SVGComponentTransferFunctionElement.cpp
-    SVG/SVGDecodedImageData.cpp
-    SVG/SVGDefsElement.cpp
-    SVG/SVGDescElement.cpp
-    SVG/SVGElement.cpp
-    SVG/SVGEllipseElement.cpp
-    SVG/SVGFEBlendElement.cpp
-    SVG/SVGFEColorMatrixElement.cpp
-    SVG/SVGFEComponentTransferElement.cpp
-    SVG/SVGFECompositeElement.cpp
-    SVG/SVGFEDisplacementMapElement.cpp
-    SVG/SVGFEDropShadowElement.cpp
-    SVG/SVGFEFloodElement.cpp
-    SVG/SVGFEFuncAElement.cpp
-    SVG/SVGFEFuncBElement.cpp
-    SVG/SVGFEFuncGElement.cpp
-    SVG/SVGFEFuncRElement.cpp
-    SVG/SVGFEGaussianBlurElement.cpp
-    SVG/SVGFEImageElement.cpp
-    SVG/SVGFEMergeElement.cpp
-    SVG/SVGFEMergeNodeElement.cpp
-    SVG/SVGFEMorphologyElement.cpp
-    SVG/SVGFEOffsetElement.cpp
-    SVG/SVGFETurbulenceElement.cpp
-    SVG/SVGFilterElement.cpp
-    SVG/SVGFilterPrimitiveStandardAttributes.cpp
-    SVG/SVGFitToViewBox.cpp
-    SVG/SVGForeignObjectElement.cpp
-    SVG/SVGGElement.cpp
-    SVG/SVGGeometryElement.cpp
-    SVG/SVGGradientElement.cpp
-    SVG/SVGGraphicsElement.cpp
-    SVG/SVGImageElement.cpp
-    SVG/SVGLength.cpp
-    SVG/SVGLengthList.cpp
-    SVG/SVGLinearGradientElement.cpp
-    SVG/SVGLineElement.cpp
-    SVG/SVGList.cpp
-    SVG/SVGMaskElement.cpp
-    SVG/SVGMetadataElement.cpp
-    SVG/SVGNumber.cpp
-    SVG/SVGNumberList.cpp
-    SVG/SVGPathElement.cpp
-    SVG/SVGPatternElement.cpp
-    SVG/SVGPolygonElement.cpp
-    SVG/SVGPolylineElement.cpp
-    SVG/SVGRadialGradientElement.cpp
-    SVG/SVGRectElement.cpp
-    SVG/SVGScriptElement.cpp
-    SVG/SVGStopElement.cpp
-    SVG/SVGStyleElement.cpp
-    SVG/SVGSVGElement.cpp
-    SVG/SVGSymbolElement.cpp
-    SVG/SVGTextContentElement.cpp
-    SVG/SVGTextElement.cpp
-    SVG/SVGTextPathElement.cpp
-    SVG/SVGTextPositioningElement.cpp
-    SVG/SVGTitleElement.cpp
-    SVG/SVGTransform.cpp
-    SVG/SVGTransformList.cpp
-    SVG/SVGTSpanElement.cpp
-    SVG/SVGUseElement.cpp
-    SVG/SVGViewElement.cpp
-    SVG/TagNames.cpp
     TrustedTypes/InjectionSink.cpp
     TrustedTypes/RequireTrustedTypesForDirective.cpp
     TrustedTypes/TrustedHTML.cpp
@@ -1088,22 +970,6 @@ set(SOURCES
     WebAudio/PeriodicWave.cpp
     WebAudio/ScriptProcessorNode.cpp
     WebAudio/StereoPannerNode.cpp
-    WebDriver/Actions.cpp
-    WebDriver/Capabilities.cpp
-    WebDriver/Client.cpp
-    WebDriver/Contexts.cpp
-    WebDriver/ElementLocationStrategies.cpp
-    WebDriver/ElementReference.cpp
-    WebDriver/Error.cpp
-    WebDriver/ExecuteScript.cpp
-    WebDriver/InputSource.cpp
-    WebDriver/InputState.cpp
-    WebDriver/JSON.cpp
-    WebDriver/Proxy.cpp
-    WebDriver/Response.cpp
-    WebDriver/Screenshot.cpp
-    WebDriver/TimeoutsConfiguration.cpp
-    WebDriver/UserPrompt.cpp
     WebIDL/AbstractOperations.cpp
     WebIDL/AsyncIterator.cpp
     WebIDL/Buffers.cpp
@@ -1171,7 +1037,6 @@ set(GENERATED_SOURCES
     CSS/QuirksModeStyleSheetSource.cpp
     CSS/TransformFunctions.cpp
     CSS/Units.cpp
-    SVG/SVGStyleSheetSource.cpp
     Worker/WebWorkerClientEndpoint.h
     Worker/WebWorkerServerEndpoint.h
     HTML/MediaControlsDOM.cpp
@@ -1264,6 +1129,27 @@ if (LADYBIRD_ENABLE_3D_GRAPHICS)
     )
 endif()
 
+if (LADYBIRD_ENABLE_WEBDRIVER)
+    list(APPEND SOURCES
+        WebDriver/Actions.cpp
+        WebDriver/Capabilities.cpp
+        WebDriver/Client.cpp
+        WebDriver/Contexts.cpp
+        WebDriver/ElementLocationStrategies.cpp
+        WebDriver/ElementReference.cpp
+        WebDriver/Error.cpp
+        WebDriver/ExecuteScript.cpp
+        WebDriver/InputSource.cpp
+        WebDriver/InputState.cpp
+        WebDriver/JSON.cpp
+        WebDriver/Proxy.cpp
+        WebDriver/Response.cpp
+        WebDriver/Screenshot.cpp
+        WebDriver/TimeoutsConfiguration.cpp
+        WebDriver/UserPrompt.cpp
+    )
+endif()
+
 if (LADYBIRD_ENABLE_MATHML)
     list(APPEND SOURCES
         MathML/AttributeNames.cpp
@@ -1272,6 +1158,135 @@ if (LADYBIRD_ENABLE_MATHML)
         MathML/MathMLMspaceElement.cpp
         MathML/MathMLStyleSheetSource.cpp
         MathML/TagNames.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_CANVAS)
+    list(APPEND SOURCES
+        HTML/Canvas/CanvasDrawImage.cpp
+        HTML/Canvas/CanvasFillStrokeStyles.cpp
+        HTML/Canvas/CanvasPath.cpp
+        HTML/Canvas/CanvasState.cpp
+        HTML/Canvas/CanvasTextDrawingStyles.cpp
+        HTML/Canvas/SerializeBitmap.cpp
+        HTML/CanvasGradient.cpp
+        HTML/CanvasPattern.cpp
+        HTML/CanvasRenderingContext2D.cpp
+        HTML/HTMLCanvasElement.cpp
+        HTML/ImageBitmap.cpp
+        HTML/ImageData.cpp
+        HTML/OffscreenCanvas.cpp
+        HTML/OffscreenCanvasRenderingContext2D.cpp
+        HTML/Path2D.cpp
+        Layout/CanvasBox.cpp
+        Painting/CanvasPaintable.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_SVG)
+    list(APPEND SOURCES
+        Layout/SVGBox.cpp
+        Layout/SVGClipBox.cpp
+        Layout/SVGForeignObjectBox.cpp
+        Layout/SVGFormattingContext.cpp
+        Layout/SVGGeometryBox.cpp
+        Layout/SVGGraphicsBox.cpp
+        Layout/SVGImageBox.cpp
+        Layout/SVGMaskBox.cpp
+        Layout/SVGPatternBox.cpp
+        Layout/SVGSVGBox.cpp
+        Layout/SVGTextBox.cpp
+        Layout/SVGTextPathBox.cpp
+        Painting/SVGClipPaintable.cpp
+        Painting/SVGForeignObjectPaintable.cpp
+        Painting/SVGGraphicsPaintable.cpp
+        Painting/SVGMaskable.cpp
+        Painting/SVGMaskPaintable.cpp
+        Painting/SVGPaintable.cpp
+        Painting/SVGPatternPaintable.cpp
+        Painting/SVGPathPaintable.cpp
+        Painting/SVGSVGPaintable.cpp
+        SVG/AttributeNames.cpp
+        SVG/AttributeParser.cpp
+        SVG/Path.cpp
+        SVG/SVGAElement.cpp
+        SVG/SVGAnimatedEnumeration.cpp
+        SVG/SVGAnimatedInteger.cpp
+        SVG/SVGAnimatedLength.cpp
+        SVG/SVGAnimatedLengthList.cpp
+        SVG/SVGAnimatedNumber.cpp
+        SVG/SVGAnimatedNumberList.cpp
+        SVG/SVGAnimatedRect.cpp
+        SVG/SVGAnimatedString.cpp
+        SVG/SVGAnimatedTransformList.cpp
+        SVG/SVGAnimationElement.cpp
+        SVG/SVGCircleElement.cpp
+        SVG/SVGClipPathElement.cpp
+        SVG/SVGComponentTransferFunctionElement.cpp
+        SVG/SVGDecodedImageData.cpp
+        SVG/SVGDefsElement.cpp
+        SVG/SVGDescElement.cpp
+        SVG/SVGElement.cpp
+        SVG/SVGEllipseElement.cpp
+        SVG/SVGFEBlendElement.cpp
+        SVG/SVGFEColorMatrixElement.cpp
+        SVG/SVGFEComponentTransferElement.cpp
+        SVG/SVGFECompositeElement.cpp
+        SVG/SVGFEDisplacementMapElement.cpp
+        SVG/SVGFEDropShadowElement.cpp
+        SVG/SVGFEFloodElement.cpp
+        SVG/SVGFEFuncAElement.cpp
+        SVG/SVGFEFuncBElement.cpp
+        SVG/SVGFEFuncGElement.cpp
+        SVG/SVGFEFuncRElement.cpp
+        SVG/SVGFEGaussianBlurElement.cpp
+        SVG/SVGFEImageElement.cpp
+        SVG/SVGFEMergeElement.cpp
+        SVG/SVGFEMergeNodeElement.cpp
+        SVG/SVGFEMorphologyElement.cpp
+        SVG/SVGFEOffsetElement.cpp
+        SVG/SVGFETurbulenceElement.cpp
+        SVG/SVGFilterElement.cpp
+        SVG/SVGFilterPrimitiveStandardAttributes.cpp
+        SVG/SVGFitToViewBox.cpp
+        SVG/SVGForeignObjectElement.cpp
+        SVG/SVGGElement.cpp
+        SVG/SVGGeometryElement.cpp
+        SVG/SVGGradientElement.cpp
+        SVG/SVGGraphicsElement.cpp
+        SVG/SVGImageElement.cpp
+        SVG/SVGLength.cpp
+        SVG/SVGLengthList.cpp
+        SVG/SVGLinearGradientElement.cpp
+        SVG/SVGLineElement.cpp
+        SVG/SVGList.cpp
+        SVG/SVGMaskElement.cpp
+        SVG/SVGMetadataElement.cpp
+        SVG/SVGNumber.cpp
+        SVG/SVGNumberList.cpp
+        SVG/SVGPathElement.cpp
+        SVG/SVGPatternElement.cpp
+        SVG/SVGPolygonElement.cpp
+        SVG/SVGPolylineElement.cpp
+        SVG/SVGRadialGradientElement.cpp
+        SVG/SVGRectElement.cpp
+        SVG/SVGScriptElement.cpp
+        SVG/SVGStopElement.cpp
+        SVG/SVGStyleElement.cpp
+        SVG/SVGSVGElement.cpp
+        SVG/SVGStyleSheetSource.cpp
+        SVG/SVGSymbolElement.cpp
+        SVG/SVGTextContentElement.cpp
+        SVG/SVGTextElement.cpp
+        SVG/SVGTextPathElement.cpp
+        SVG/SVGTextPositioningElement.cpp
+        SVG/SVGTitleElement.cpp
+        SVG/SVGTransform.cpp
+        SVG/SVGTransformList.cpp
+        SVG/SVGTSpanElement.cpp
+        SVG/SVGUseElement.cpp
+        SVG/SVGViewElement.cpp
+        SVG/TagNames.cpp
     )
 endif()
 

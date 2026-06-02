@@ -88,8 +88,12 @@ def to_pascal_case(string: str) -> str:
     return non_identifier_character_regex.sub(" ", string).title().replace(" ", "")
 
 
-def resolve_tag(tag_name: str, in_svg: bool, html_tags: Dict[str, str], svg_tags: Dict[str, str]) -> Tuple[str, str]:
+def resolve_tag(
+    tag_name: str, in_svg: bool, html_tags: Dict[str, str], svg_tags: Dict[str, str], use_svg_literals: bool
+) -> Tuple[str, str]:
     if in_svg and tag_name in svg_tags:
+        if use_svg_literals:
+            return "Namespace::SVG", f'"{tag_name}"_fly_string'
         return "Namespace::SVG", f"SVG::TagNames::{svg_tags[tag_name]}"
 
     assert tag_name in html_tags
@@ -97,9 +101,15 @@ def resolve_tag(tag_name: str, in_svg: bool, html_tags: Dict[str, str], svg_tags
 
 
 def resolve_attribute(
-    attribute_name: str, in_svg: bool, html_attributes: Dict[str, str], svg_attributes: Dict[str, str]
+    attribute_name: str,
+    in_svg: bool,
+    html_attributes: Dict[str, str],
+    svg_attributes: Dict[str, str],
+    use_svg_literals: bool,
 ) -> str:
     if in_svg and attribute_name in svg_attributes:
+        if use_svg_literals:
+            return f'"{attribute_name}"_fly_string'
         return f"SVG::AttributeNames::{svg_attributes[attribute_name]}"
 
     assert attribute_name in html_attributes
@@ -131,6 +141,7 @@ class DOMTreeParser(HTMLParser):
         svg_tags: Dict[str, str],
         svg_attributes: Dict[str, str],
         input_dir: str,
+        use_svg_literals: bool,
     ):
         super().__init__(convert_charrefs=False)
         self.struct_name = struct_name
@@ -139,6 +150,7 @@ class DOMTreeParser(HTMLParser):
         self.svg_tags = svg_tags
         self.svg_attributes = svg_attributes
         self.input_dir = input_dir
+        self.use_svg_literals = use_svg_literals
 
         self.lines: List[str] = []
         self.named_fields: List[str] = []
@@ -214,7 +226,7 @@ class DOMTreeParser(HTMLParser):
             var_name = self._next_var()
             is_named = False
 
-        namespace_expr, tag_expr = resolve_tag(tag, in_svg, self.html_tags, self.svg_tags)
+        namespace_expr, tag_expr = resolve_tag(tag, in_svg, self.html_tags, self.svg_tags, self.use_svg_literals)
         deref_parent = self._deref_parent()
 
         self._add_line(f"auto {var_name} = MUST(DOM::create_element(document, {tag_expr}, {namespace_expr}));")
@@ -225,7 +237,7 @@ class DOMTreeParser(HTMLParser):
         for attribute_name, attribute_value in attribute_dict.items():
             if attribute_value is None:
                 attribute_value = ""
-            attribute_expr = resolve_attribute(attribute_name, in_svg, self.html_attributes, self.svg_attributes)
+            attribute_expr = resolve_attribute(attribute_name, in_svg, self.html_attributes, self.svg_attributes, self.use_svg_literals)
             self._add_line(f'{var_name}->set_attribute_value({attribute_expr}, "{attribute_value}"_string);')
 
         self._add_line(f"MUST({deref_parent}append_child({var_name}));")
@@ -292,6 +304,7 @@ def generate(
     html_attributes_path: str,
     svg_tags_path: str,
     svg_attributes_path: str,
+    use_svg_literals: bool,
 ) -> Tuple[str, str]:
     html_tags = parse_html_tag_header(html_tags_path)
     html_attributes = parse_html_attribute_header(html_attributes_path)
@@ -302,7 +315,7 @@ def generate(
     with open(input_html, "r", encoding="utf-8") as f:
         html_content = f.read()
 
-    parser = DOMTreeParser(struct_name, html_tags, html_attributes, svg_tags, svg_attributes, input_dir)
+    parser = DOMTreeParser(struct_name, html_tags, html_attributes, svg_tags, svg_attributes, input_dir, use_svg_literals)
     parser.feed(html_content)
 
     if not parser.lines[-1]:
@@ -353,7 +366,7 @@ def generate(
     impl_lines.append("#include <LibWeb/HTML/AttributeNames.h>")
     impl_lines.append("#include <LibWeb/HTML/TagNames.h>")
     impl_lines.append("#include <LibWeb/Namespace.h>")
-    if parser.has_svg:
+    if parser.has_svg and not use_svg_literals:
         impl_lines.append("#include <LibWeb/SVG/AttributeNames.h>")
         impl_lines.append("#include <LibWeb/SVG/TagNames.h>")
     impl_lines.append("")
@@ -400,6 +413,7 @@ def main() -> None:
     parser.add_argument("--html-attributes", required=True)
     parser.add_argument("--svg-tags", required=True)
     parser.add_argument("--svg-attributes", required=True)
+    parser.add_argument("--svg-literals", action="store_true")
     args = parser.parse_args()
 
     header_path = os.path.relpath(args.header_output, os.path.dirname(str(args.impl_output)))
@@ -415,6 +429,7 @@ def main() -> None:
         args.html_attributes,
         args.svg_tags,
         args.svg_attributes,
+        args.svg_literals,
     )
 
     with open(args.header_output, "w", encoding="utf-8") as f:

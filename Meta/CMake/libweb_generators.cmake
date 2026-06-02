@@ -163,13 +163,15 @@ function (generate_css_implementation)
         )
     endif()
 
-    embed_as_string(
-        "SVGStyleSheetSource.cpp"
-        "${LIBWEB_INPUT_FOLDER}/SVG/Default.css"
-        "SVG/SVGStyleSheetSource.cpp"
-        "svg_stylesheet_source"
-        NAMESPACE "Web::CSS"
-    )
+    if (LADYBIRD_ENABLE_SVG)
+        embed_as_string(
+            "SVGStyleSheetSource.cpp"
+            "${LIBWEB_INPUT_FOLDER}/SVG/Default.css"
+            "SVG/SVGStyleSheetSource.cpp"
+            "svg_stylesheet_source"
+            NAMESPACE "Web::CSS"
+        )
+    endif()
 
     set(CSS_GENERATED_HEADERS
        "CSS/Enums.h"
@@ -195,7 +197,7 @@ function (generate_css_implementation)
         "GeneratedCSSStyleProperties.idl"
         "GeneratedCSSNumericFactoryMethods.idl"
     )
-    if (NOT LADYBIRD_ENABLE_3D_GRAPHICS)
+    if (LADYBIRD_ENABLE_CANVAS AND NOT LADYBIRD_ENABLE_3D_GRAPHICS)
         set(no_webgl_canvas_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/HTMLCanvasElement.idl")
         add_custom_command(
             OUTPUT "${no_webgl_canvas_idl}"
@@ -221,12 +223,61 @@ function (generate_css_implementation)
             "OffscreenCanvasBase.idl"
         )
     endif()
+    if (NOT LADYBIRD_ENABLE_SVG)
+        set(no_svg_document_idl "${CMAKE_CURRENT_BINARY_DIR}/DOM/Document.idl")
+        add_custom_command(
+            OUTPUT "${no_svg_document_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/DOM"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/DOM/DocumentNoSVG.idl" "${no_svg_document_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/DOM/DocumentNoSVG.idl"
+        )
+        add_custom_target("generate_Document.idl" DEPENDS "${no_svg_document_idl}")
+
+        list(APPEND LIBWEB_ALL_GENERATED_IDL
+            "Document.idl"
+        )
+        if (LADYBIRD_ENABLE_CANVAS)
+            set(no_svg_canvas_draw_image_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/Canvas/CanvasDrawImage.idl")
+            add_custom_command(
+                OUTPUT "${no_svg_canvas_draw_image_idl}"
+                COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML/Canvas"
+                COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/Canvas/CanvasDrawImageNoSVG.idl" "${no_svg_canvas_draw_image_idl}"
+                VERBATIM
+                DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/Canvas/CanvasDrawImageNoSVG.idl"
+            )
+            add_custom_target("generate_CanvasDrawImage.idl" DEPENDS "${no_svg_canvas_draw_image_idl}")
+
+            list(APPEND LIBWEB_ALL_GENERATED_IDL
+                "CanvasDrawImage.idl"
+            )
+        endif()
+    endif()
+    if (NOT LADYBIRD_ENABLE_CANVAS)
+        set(no_canvas_window_or_worker_global_scope_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/WindowOrWorkerGlobalScope.idl")
+        add_custom_command(
+            OUTPUT "${no_canvas_window_or_worker_global_scope_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoCanvas.idl" "${no_canvas_window_or_worker_global_scope_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoCanvas.idl"
+        )
+        add_custom_target("generate_WindowOrWorkerGlobalScope.idl" DEPENDS "${no_canvas_window_or_worker_global_scope_idl}")
+
+        list(APPEND LIBWEB_ALL_GENERATED_IDL
+            "WindowOrWorkerGlobalScope.idl"
+        )
+    endif()
     list(APPEND LIBWEB_ALL_GENERATED_IDL ${CSS_GENERATED_IDL})
     set(LIBWEB_ALL_GENERATED_IDL ${LIBWEB_ALL_GENERATED_IDL} PARENT_SCOPE)
 endfunction()
 
 function (generate_html_implementation)
     set(LIBWEB_INPUT_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}")
+    set(MEDIA_CONTROLS_DOM_SVG_ARGUMENTS)
+    if (NOT LADYBIRD_ENABLE_SVG)
+        list(APPEND MEDIA_CONTROLS_DOM_SVG_ARGUMENTS "--svg-literals")
+    endif()
 
     invoke_py_generator(
         "NamedCharacterReferences.cpp"
@@ -250,6 +301,7 @@ function (generate_html_implementation)
                   --html-attributes "${LIBWEB_INPUT_FOLDER}/HTML/AttributeNames.h"
                   --svg-tags "${LIBWEB_INPUT_FOLDER}/SVG/TagNames.h"
                   --svg-attributes "${LIBWEB_INPUT_FOLDER}/SVG/AttributeNames.h"
+                  ${MEDIA_CONTROLS_DOM_SVG_ARGUMENTS}
         dependencies "${LIBWEB_INPUT_FOLDER}/HTML/TagNames.h"
                      "${LIBWEB_INPUT_FOLDER}/HTML/AttributeNames.h"
                      "${LIBWEB_INPUT_FOLDER}/SVG/TagNames.h"
