@@ -192,7 +192,9 @@ public:
     [[nodiscard]] GC::Ref<Navigator> navigator();
     [[nodiscard]] GC::Ref<CloseWatcherManager> close_watcher_manager();
     [[nodiscard]] GC::Ref<CookieStore::CookieStore> cookie_store();
+#if ENABLE_SPEECH
     [[nodiscard]] GC::Ref<Speech::SpeechSynthesis> speech_synthesis();
+#endif
 
     void alert(String const& message = {});
     bool confirm(Optional<String> const& message);
@@ -317,7 +319,9 @@ private:
     GC::Ptr<Location> m_location;
     GC::Ptr<CloseWatcherManager> m_close_watcher_manager;
     GC::Ptr<CookieStore::CookieStore> m_cookie_store;
+#if ENABLE_SPEECH
     GC::Ptr<Speech::SpeechSynthesis> m_speech_synthesis;
+#endif
 
     // https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigation-api
     GC::Ptr<Navigation> m_navigation;

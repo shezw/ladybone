@@ -75,7 +75,9 @@
 #include <LibWeb/Painting/PaintableBox.h>
 #include <LibWeb/RequestIdleCallback/IdleDeadline.h>
 #include <LibWeb/Selection/Selection.h>
+#if ENABLE_SPEECH
 #include <LibWeb/Speech/SpeechSynthesis.h>
+#endif
 #include <LibWeb/StorageAPI/StorageBottle.h>
 #include <LibWeb/StorageAPI/StorageEndpoint.h>
 #include <LibWeb/ViewTransition/ViewTransition.h>
@@ -164,7 +166,9 @@ void Window::visit_edges(JS::Cell::Visitor& visitor)
     visitor.visit(m_pdf_viewer_mime_type_objects);
     visitor.visit(m_close_watcher_manager);
     visitor.visit(m_cookie_store);
+#if ENABLE_SPEECH
     visitor.visit(m_speech_synthesis);
+#endif
     visitor.visit(m_locationbar);
     visitor.visit(m_menubar);
     visitor.visit(m_personalbar);
@@ -1189,12 +1193,14 @@ GC::Ref<CookieStore::CookieStore> Window::cookie_store()
 }
 
 // https://wicg.github.io/speech-api/#tts-section
+#if ENABLE_SPEECH
 GC::Ref<Speech::SpeechSynthesis> Window::speech_synthesis()
 {
     if (!m_speech_synthesis)
         m_speech_synthesis = Speech::SpeechSynthesis::create(realm());
     return *m_speech_synthesis;
 }
+#endif
 
 // https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-alert
 void Window::alert(String const& message)

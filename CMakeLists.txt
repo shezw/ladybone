@@ -143,6 +143,7 @@ foreach(feature
     WASM
     WEB_AUDIO
     INDEXEDDB
+    SPEECH
     WEBDRIVER
 )
     if (LADYBIRD_ENABLE_${feature})
