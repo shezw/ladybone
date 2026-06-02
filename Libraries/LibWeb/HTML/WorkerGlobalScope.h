@@ -11,6 +11,7 @@
 #include <AK/RefCounted.h>
 #include <LibCore/Socket.h>
 #include <LibURL/URL.h>
+#include <LibWeb/Bindings/Worker.h>
 #include <LibWeb/DOM/EventTarget.h>
 #include <LibWeb/Export.h>
 #include <LibWeb/Forward.h>

@@ -18,6 +18,7 @@
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/HTML/Worker.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
+#include <LibWeb/StorageAPI/StorageKey.h>
 #include <LibWeb/TrustedTypes/RequireTrustedTypesForDirective.h>
 #include <LibWeb/TrustedTypes/TrustedTypePolicy.h>
 

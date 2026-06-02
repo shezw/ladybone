@@ -144,6 +144,7 @@ foreach(feature
     WEB_AUDIO
     INDEXEDDB
     SPEECH
+    SERVICE_WORKERS
     WEBDRIVER
 )
     if (LADYBIRD_ENABLE_${feature})

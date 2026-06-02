@@ -275,6 +275,43 @@ function (generate_css_implementation)
             "WindowOrWorkerGlobalScope.idl"
         )
     endif()
+    if (NOT LADYBIRD_ENABLE_SERVICE_WORKERS)
+        set(no_service_workers_navigator_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/Navigator.idl")
+        add_custom_command(
+            OUTPUT "${no_service_workers_navigator_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/NavigatorNoServiceWorkers.idl" "${no_service_workers_navigator_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/NavigatorNoServiceWorkers.idl"
+        )
+        add_custom_target("generate_Navigator.idl" DEPENDS "${no_service_workers_navigator_idl}")
+
+        set(no_service_workers_worker_navigator_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/WorkerNavigator.idl")
+        add_custom_command(
+            OUTPUT "${no_service_workers_worker_navigator_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/WorkerNavigatorNoServiceWorkers.idl" "${no_service_workers_worker_navigator_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/WorkerNavigatorNoServiceWorkers.idl"
+        )
+        add_custom_target("generate_WorkerNavigator.idl" DEPENDS "${no_service_workers_worker_navigator_idl}")
+
+        set(no_service_workers_cookie_store_idl "${CMAKE_CURRENT_BINARY_DIR}/CookieStore/CookieStore.idl")
+        add_custom_command(
+            OUTPUT "${no_service_workers_cookie_store_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/CookieStore"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/CookieStore/CookieStoreNoServiceWorkers.idl" "${no_service_workers_cookie_store_idl}"
+            VERBATIM
+            DEPENDS "${LIBWEB_INPUT_FOLDER}/CookieStore/CookieStoreNoServiceWorkers.idl"
+        )
+        add_custom_target("generate_CookieStore.idl" DEPENDS "${no_service_workers_cookie_store_idl}")
+
+        list(APPEND LIBWEB_ALL_GENERATED_IDL
+            "CookieStore.idl"
+            "Navigator.idl"
+            "WorkerNavigator.idl"
+        )
+    endif()
     list(APPEND LIBWEB_ALL_GENERATED_IDL ${CSS_GENERATED_IDL})
     set(LIBWEB_ALL_GENERATED_IDL ${LIBWEB_ALL_GENERATED_IDL} PARENT_SCOPE)
 endfunction()

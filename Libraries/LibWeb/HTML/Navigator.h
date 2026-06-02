@@ -76,7 +76,9 @@ public:
 #endif
     [[nodiscard]] GC::Ref<PermissionsAPI::Permissions> permissions();
 
+#if ENABLE_SERVICE_WORKERS
     GC::Ref<ServiceWorker::ServiceWorkerContainer> service_worker();
+#endif
 
     GC::Ref<MediaCapabilitiesAPI::MediaCapabilities> media_capabilities();
 #if ENABLE_WEBRTC
@@ -115,8 +117,10 @@ private:
     // https://html.spec.whatwg.org/multipage/interaction.html#dom-navigator-useractivation
     GC::Ptr<UserActivation> m_user_activation;
 
+#if ENABLE_SERVICE_WORKERS
     // https://w3c.github.io/ServiceWorker/#navigator-serviceworker
     GC::Ptr<ServiceWorker::ServiceWorkerContainer> m_service_worker_container;
+#endif
 
     // https://w3c.github.io/media-capabilities/#dom-navigator-mediacapabilities
     GC::Ptr<MediaCapabilitiesAPI::MediaCapabilities> m_media_capabilities;

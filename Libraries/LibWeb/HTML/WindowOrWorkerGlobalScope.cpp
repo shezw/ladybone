@@ -53,7 +53,9 @@
 #include <LibWeb/Platform/EventLoopPlugin.h>
 #include <LibWeb/Platform/ImageCodecPlugin.h>
 #include <LibWeb/ResourceTiming/PerformanceResourceTiming.h>
+#if ENABLE_SERVICE_WORKERS
 #include <LibWeb/ServiceWorker/CacheStorage.h>
+#endif
 #include <LibWeb/TrustedTypes/TrustedTypePolicyFactory.h>
 #include <LibWeb/UserTiming/PerformanceMark.h>
 #include <LibWeb/UserTiming/PerformanceMeasure.h>
@@ -100,7 +102,9 @@ void WindowOrWorkerGlobalScopeMixin::visit_edges(JS::Cell::Visitor& visitor)
         entry.value.visit_edges(visitor);
     visitor.visit(m_registered_event_sources);
     visitor.visit(m_crypto);
+#if ENABLE_SERVICE_WORKERS
     visitor.visit(m_cache_storage);
+#endif
     visitor.visit(m_resource_timing_secondary_buffer);
     visitor.visit(m_trusted_type_policy_factory);
 }
@@ -1306,6 +1310,7 @@ GC::Ref<Crypto::Crypto> WindowOrWorkerGlobalScopeMixin::crypto()
     return GC::Ref { *m_crypto };
 }
 
+#if ENABLE_SERVICE_WORKERS
 // https://w3c.github.io/ServiceWorker/#cache-storage-interface
 GC::Ref<ServiceWorker::CacheStorage> WindowOrWorkerGlobalScopeMixin::caches()
 {
@@ -1316,6 +1321,7 @@ GC::Ref<ServiceWorker::CacheStorage> WindowOrWorkerGlobalScopeMixin::caches()
         m_cache_storage = realm.create<ServiceWorker::CacheStorage>(realm);
     return GC::Ref { *m_cache_storage };
 }
+#endif
 
 // https://w3c.github.io/trusted-types/dist/spec/#extensions-to-the-windoworworkerglobalscope-interface
 GC::Ref<TrustedTypes::TrustedTypePolicyFactory> WindowOrWorkerGlobalScopeMixin::trusted_types()

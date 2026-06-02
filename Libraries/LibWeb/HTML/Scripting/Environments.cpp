@@ -24,8 +24,10 @@
 #include <LibWeb/HTML/WorkerGlobalScope.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/SecureContexts/AbstractOperations.h>
+#if ENABLE_SERVICE_WORKERS
 #include <LibWeb/ServiceWorker/ServiceWorker.h>
 #include <LibWeb/ServiceWorker/ServiceWorkerRegistration.h>
+#endif
 #include <LibWeb/StorageAPI/StorageManager.h>
 
 namespace Web::HTML {
@@ -67,8 +69,10 @@ void EnvironmentSettingsObject::visit_edges(Cell::Visitor& visitor)
     visitor.visit(m_module_map);
     m_realm_execution_context->visit_edges(visitor);
     visitor.visit(m_storage_manager);
+#if ENABLE_SERVICE_WORKERS
     visitor.visit(m_service_worker_registration_object_map);
     visitor.visit(m_service_worker_object_map);
+#endif
     visitor.visit(m_worker_agents_to_keep_alive_while_starting);
 }
 
@@ -548,6 +552,7 @@ GC::Ref<StorageAPI::StorageManager> EnvironmentSettingsObject::storage_manager()
     return *m_storage_manager;
 }
 
+#if ENABLE_SERVICE_WORKERS
 // https://w3c.github.io/ServiceWorker/#get-the-service-worker-registration-object
 GC::Ref<ServiceWorker::ServiceWorkerRegistration> EnvironmentSettingsObject::get_service_worker_registration_object(ServiceWorker::Registration const& registration)
 {
@@ -606,5 +611,6 @@ GC::Ref<ServiceWorker::ServiceWorker> EnvironmentSettingsObject::get_service_wor
     // 3. Return objectMap[serviceWorker].
     return *object_map.get(service_worker);
 }
+#endif
 
 }

@@ -46,7 +46,9 @@
 #include <LibWeb/HTML/WindowProxy.h>
 #include <LibWeb/HTML/WorkletGlobalScope.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
+#if ENABLE_SERVICE_WORKERS
 #include <LibWeb/ServiceWorker/ServiceWorkerGlobalScope.h>
+#endif
 #if ENABLE_WASM
 #include <LibWeb/WebAssembly/WebAssembly.h>
 #include <LibWeb/WebAssembly/WebAssemblyModule.h>
@@ -435,7 +437,12 @@ void initialize_main_thread_vm(AgentType type)
         GC::Ref<HTML::EnvironmentSettingsObject> settings_object = HTML::current_settings_object();
 
         // 2. If settingsObject's global object implements WorkletGlobalScope or ServiceWorkerGlobalScope and loadState is undefined, then:
-        if ((is<HTML::WorkletGlobalScope>(settings_object->global_object()) || is<ServiceWorker::ServiceWorkerGlobalScope>(settings_object->global_object())) && !load_state) {
+        auto const is_import_restricted_global = is<HTML::WorkletGlobalScope>(settings_object->global_object())
+#if ENABLE_SERVICE_WORKERS
+            || is<ServiceWorker::ServiceWorkerGlobalScope>(settings_object->global_object())
+#endif
+            ;
+        if (is_import_restricted_global && !load_state) {
             // 1. Perform FinishLoadingImportedModule(referrer, moduleRequest, payload, ThrowCompletion(a new TypeError)).
             auto completion = JS::throw_completion(JS::TypeError::create(settings_object->realm(), "Dynamic Import not available for Worklets or ServiceWorkers"_string));
             JS::finish_loading_imported_module(referrer, module_request, payload, completion);

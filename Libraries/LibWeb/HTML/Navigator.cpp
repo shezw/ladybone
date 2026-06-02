@@ -28,7 +28,9 @@
 #endif
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/PermissionsAPI/Permissions.h>
+#if ENABLE_SERVICE_WORKERS
 #include <LibWeb/ServiceWorker/ServiceWorkerContainer.h>
+#endif
 #if ENABLE_WEBXR
 #include <LibWeb/WebXR/XRSystem.h>
 #endif
@@ -90,7 +92,9 @@ void Navigator::visit_edges(Cell::Visitor& visitor)
 #endif
     visitor.visit(m_serial);
     visitor.visit(m_user_activation);
+#if ENABLE_SERVICE_WORKERS
     visitor.visit(m_service_worker_container);
+#endif
     visitor.visit(m_media_capabilities);
 #if ENABLE_WEBRTC
     visitor.visit(m_media_devices);
@@ -174,12 +178,14 @@ WebIDL::Long Navigator::max_touch_points()
     return 0;
 }
 
+#if ENABLE_SERVICE_WORKERS
 GC::Ref<ServiceWorker::ServiceWorkerContainer> Navigator::service_worker()
 {
     if (!m_service_worker_container)
         m_service_worker_container = realm().create<ServiceWorker::ServiceWorkerContainer>(realm());
     return *m_service_worker_container;
 }
+#endif
 
 GC::Ref<MediaCapabilitiesAPI::MediaCapabilities> Navigator::media_capabilities()
 {

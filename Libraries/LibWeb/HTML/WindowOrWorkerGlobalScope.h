@@ -110,7 +110,9 @@ public:
 
     [[nodiscard]] GC::Ref<Crypto::Crypto> crypto();
 
+#if ENABLE_SERVICE_WORKERS
     [[nodiscard]] GC::Ref<ServiceWorker::CacheStorage> caches();
+#endif
 
     [[nodiscard]] GC::Ref<TrustedTypes::TrustedTypePolicyFactory> trusted_types();
 
@@ -169,7 +171,9 @@ private:
 
     GC::Ptr<Crypto::Crypto> m_crypto;
 
+#if ENABLE_SERVICE_WORKERS
     GC::Ptr<ServiceWorker::CacheStorage> m_cache_storage;
+#endif
 
     GC::Ptr<TrustedTypes::TrustedTypePolicyFactory> m_trusted_type_policy_factory;
 

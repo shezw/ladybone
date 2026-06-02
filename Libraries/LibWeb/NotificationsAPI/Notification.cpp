@@ -11,7 +11,9 @@
 #include <LibWeb/Bindings/Notification.h>
 #include <LibWeb/HTML/StructuredSerialize.h>
 #include <LibWeb/NotificationsAPI/Notification.h>
+#if ENABLE_SERVICE_WORKERS
 #include <LibWeb/ServiceWorker/ServiceWorkerGlobalScope.h>
+#endif
 
 namespace Web::NotificationsAPI {
 
@@ -167,11 +169,13 @@ WebIDL::ExceptionOr<GC::Ref<Notification>> Notification::construct_impl(
 {
     auto this_notification = realm.create<Notification>(realm);
     auto& relevant_settings_object = HTML::relevant_settings_object(this_notification);
+#if ENABLE_SERVICE_WORKERS
     auto& relevant_global_object = HTML::relevant_global_object(this_notification);
 
     // 1. If this’s relevant global object is a ServiceWorkerGlobalScope object, then throw a TypeError.
     if (is<ServiceWorker::ServiceWorkerGlobalScope>(relevant_global_object))
         return WebIDL::SimpleException { WebIDL::SimpleExceptionType::TypeError, "This’s relevant global object is a ServiceWorkerGlobalScope object"sv };
+#endif
 
     // 2. If options["actions"] is not empty, then throw a TypeError.
     if (!options.actions.is_empty())

@@ -39,7 +39,9 @@ void WorkerNavigator::visit_edges(Cell::Visitor& visitor)
     Base::visit_edges(visitor);
     visitor.visit(m_media_capabilities);
     visitor.visit(m_serial);
+#if ENABLE_SERVICE_WORKERS
     visitor.visit(m_service_worker_container);
+#endif
     visitor.visit(m_permissions);
 }
 
@@ -57,12 +59,14 @@ GC::Ref<Serial::Serial> WorkerNavigator::serial()
     return *m_serial;
 }
 
+#if ENABLE_SERVICE_WORKERS
 GC::Ref<ServiceWorker::ServiceWorkerContainer> WorkerNavigator::service_worker()
 {
     if (!m_service_worker_container)
         m_service_worker_container = realm().create<ServiceWorker::ServiceWorkerContainer>(realm());
     return *m_service_worker_container;
 }
+#endif
 
 GC::Ref<PermissionsAPI::Permissions> WorkerNavigator::permissions()
 {

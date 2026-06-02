@@ -1,0 +1,29 @@
+// https://html.spec.whatwg.org/multipage/system-state.html#navigator
+[Exposed=Window]
+interface Navigator {
+    // objects implementing this interface also implement the interfaces given below
+
+    // https://w3c.github.io/clipboard-apis/#navigator-interface
+    [SecureContext, SameObject] readonly attribute Clipboard clipboard;
+
+    // https://w3c.github.io/pointerevents/#extensions-to-the-navigator-interface
+    readonly attribute long maxTouchPoints;
+
+    // https://wicg.github.io/serial/#extensions-to-the-navigator-interface
+    [SameObject] readonly attribute Serial serial;
+
+    // https://html.spec.whatwg.org/multipage/interaction.html#useractivation
+    [SameObject] readonly attribute UserActivation userActivation;
+
+    // https://w3c.github.io/media-capabilities/#dom-navigator-mediacapabilities
+    [SameObject] readonly attribute MediaCapabilities mediaCapabilities;
+
+    // https://w3c.github.io/webappsec-credential-management/#framework-credential-management
+    [SecureContext, SameObject] readonly attribute CredentialsContainer credentials;
+
+    // https://w3c.github.io/battery/
+    [SecureContext, Experimental] Promise<BatteryManager> getBattery();
+
+    // https://w3c.github.io/permissions/#navigator-and-workernavigator-extension
+    [SameObject, Experimental] readonly attribute Permissions permissions;
+};

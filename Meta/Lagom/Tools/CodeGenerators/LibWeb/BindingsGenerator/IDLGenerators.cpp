@@ -1040,8 +1040,10 @@ static void generate_to_string(SourceGenerator& scoped_generator, ParameterType 
 )~~~");
 }
 
-static void generate_from_integral(SourceGenerator& scoped_generator, IDL::Type const& type, bool const optional_integral_type)
+static void generate_from_integral(SourceGenerator& scoped_generator, IDL::Type const& type, bool const optional_integral_type, GeneratedIncludes& includes)
 {
+    includes.add_header("LibWeb/WebIDL/Types.h"sv);
+
     struct TypeMap {
         StringView idl_type;
         StringView cpp_type;
@@ -1113,6 +1115,7 @@ static void generate_to_integral(SourceGenerator& scoped_generator, ParameterTyp
 )~~~");
     } else {
         includes.add_header("LibWeb/WebIDL/AbstractOperations.h"sv);
+        includes.add_header("LibWeb/WebIDL/Types.h"sv);
 
         scoped_generator.append(R"~~~(
     @cpp_name@ = TRY(WebIDL::convert_to_int<@cpp_type@>(vm, @js_name@@js_suffix@, WebIDL::EnforceRange::@enforce_range@, WebIDL::Clamp::@clamp@));
@@ -1334,6 +1337,7 @@ static void generate_array_buffer_view_to_cpp(SourceGenerator& scoped_generator,
     includes.add_header("AK/TypeCasts.h"sv);
     includes.add_header("LibJS/Runtime/DataView.h"sv);
     includes.add_header("LibJS/Runtime/TypedArray.h"sv);
+    includes.add_header("LibWeb/WebIDL/Buffers.h"sv);
 
     scoped_generator.append(R"~~~(
         if (!@js_name@@js_suffix@.is_object() || !(is<JS::TypedArrayBase>(@js_name@@js_suffix@.as_object()) || is<JS::DataView>(@js_name@@js_suffix@.as_object())))
@@ -2357,7 +2361,7 @@ static void generate_wrap_statement(SourceGenerator& generator, ByteString const
 )~~~");
         }
     } else if (type.is_integer()) {
-        generate_from_integral(scoped_generator, type, generate_optional_integral_type);
+        generate_from_integral(scoped_generator, type, generate_optional_integral_type, includes);
     } else if (type.name() == "Location" || type.name() == "Uint8Array" || type.name() == "Uint8ClampedArray" || type.name() == "any") {
         if (is_javascript_builtin_buffer_source_type(type))
             add_javascript_builtin_buffer_source_type_include(type, includes);

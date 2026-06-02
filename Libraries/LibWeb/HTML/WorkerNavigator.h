@@ -16,7 +16,9 @@
 #include <LibWeb/HTML/NavigatorOnLine.h>
 #include <LibWeb/MediaCapabilitiesAPI/MediaCapabilities.h>
 #include <LibWeb/Serial/Serial.h>
+#if ENABLE_SERVICE_WORKERS
 #include <LibWeb/ServiceWorker/ServiceWorkerContainer.h>
+#endif
 #include <LibWeb/StorageAPI/NavigatorStorage.h>
 
 namespace Web::HTML {
@@ -36,7 +38,9 @@ class WorkerNavigator
 public:
     [[nodiscard]] static GC::Ref<WorkerNavigator> create(WorkerGlobalScope&);
 
+#if ENABLE_SERVICE_WORKERS
     GC::Ref<ServiceWorker::ServiceWorkerContainer> service_worker();
+#endif
 
     virtual ~WorkerNavigator() override;
 
@@ -61,7 +65,9 @@ private:
     // https://wicg.github.io/serial/#extensions-to-the-workernavigator-interface
     GC::Ptr<Serial::Serial> m_serial;
 
+#if ENABLE_SERVICE_WORKERS
     GC::Ptr<ServiceWorker::ServiceWorkerContainer> m_service_worker_container;
+#endif
 
     // https://w3c.github.io/permissions/#navigator-and-workernavigator-extension
     GC::Ptr<PermissionsAPI::Permissions> m_permissions;

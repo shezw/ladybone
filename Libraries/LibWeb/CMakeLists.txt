@@ -844,17 +844,6 @@ set(SOURCES
     ResourceTiming/PerformanceResourceTiming.cpp
     SecureContexts/AbstractOperations.cpp
     Selection/Selection.cpp
-    ServiceWorker/Cache.cpp
-    ServiceWorker/CacheStorage.cpp
-    ServiceWorker/EventNames.cpp
-    ServiceWorker/Job.cpp
-    ServiceWorker/NameToCacheMap.cpp
-    ServiceWorker/Registration.cpp
-    ServiceWorker/ServiceWorker.cpp
-    ServiceWorker/ServiceWorkerContainer.cpp
-    ServiceWorker/ServiceWorkerGlobalScope.cpp
-    ServiceWorker/ServiceWorkerRecord.cpp
-    ServiceWorker/ServiceWorkerRegistration.cpp
     SRI/SRI.cpp
     StorageAPI/NavigatorStorage.cpp
     StorageAPI/StorageBottle.cpp
@@ -1289,6 +1278,22 @@ if (LADYBIRD_ENABLE_SPEECH)
         Speech/SpeechSynthesis.cpp
         Speech/SpeechSynthesisUtterance.cpp
         Speech/SpeechSynthesisVoice.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_SERVICE_WORKERS)
+    list(APPEND SOURCES
+        ServiceWorker/Cache.cpp
+        ServiceWorker/CacheStorage.cpp
+        ServiceWorker/EventNames.cpp
+        ServiceWorker/Job.cpp
+        ServiceWorker/NameToCacheMap.cpp
+        ServiceWorker/Registration.cpp
+        ServiceWorker/ServiceWorker.cpp
+        ServiceWorker/ServiceWorkerContainer.cpp
+        ServiceWorker/ServiceWorkerGlobalScope.cpp
+        ServiceWorker/ServiceWorkerRecord.cpp
+        ServiceWorker/ServiceWorkerRegistration.cpp
     )
 endif()
 
