@@ -371,7 +371,9 @@ private:
     Function<void(NonnullOwnPtr<IPC::Transport>)> m_on_browser_process_transport;
 #endif
 
+#if ENABLE_DEVTOOLS
     OwnPtr<DevTools::DevToolsServer> m_devtools;
+#endif
 
     mutable HashMap<u64, u64> m_navigation_listener_ids;
 };

@@ -1,3 +1,5 @@
+if (LADYBIRD_ENABLE_DEVTOOLS)
+
 set(SOURCES
     Actor.cpp
     Actors/AccessibilityActor.cpp
@@ -31,3 +33,5 @@ set(SOURCES
 
 ladybird_lib(LibDevTools devtools EXPLICIT_SYMBOL_EXPORT)
 target_link_libraries(LibDevTools PRIVATE LibCore LibWeb)
+
+endif()

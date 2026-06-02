@@ -16,7 +16,9 @@
 #include <LibCore/System.h>
 #include <LibCore/TimeZoneWatcher.h>
 #include <LibDatabase/Database.h>
-#include <LibDevTools/DevToolsServer.h>
+#if ENABLE_DEVTOOLS
+#    include <LibDevTools/DevToolsServer.h>
+#endif
 #include <LibFileSystem/FileSystem.h>
 #include <LibImageDecoderClient/Client.h>
 #include <LibWeb/CSS/PropertyID.h>
@@ -881,6 +883,7 @@ ErrorOr<void> Application::launch_image_decoder_server()
 
 ErrorOr<void> Application::launch_devtools_server()
 {
+#if ENABLE_DEVTOOLS
     VERIFY(!m_devtools);
 
     if (!m_browser_options.devtools_port.has_value())
@@ -890,6 +893,9 @@ ErrorOr<void> Application::launch_devtools_server()
     on_devtools_enabled();
 
     return {};
+#else
+    return Error::from_string_literal("DevTools support is disabled");
+#endif
 }
 
 static NonnullRefPtr<Core::Timer> load_page_for_screenshot_and_exit(Core::EventLoop& event_loop, HeadlessWebView& view, URL::URL const& url, u32 screenshot_timeout)
@@ -1631,6 +1637,7 @@ NonnullRefPtr<Application::BookmarkFolderPromise> Application::display_edit_book
 
 ErrorOr<void> Application::toggle_devtools_enabled()
 {
+#if ENABLE_DEVTOOLS
     if (m_devtools) {
         m_devtools.clear();
         on_devtools_disabled();
@@ -1639,6 +1646,9 @@ ErrorOr<void> Application::toggle_devtools_enabled()
     }
 
     return {};
+#else
+    return Error::from_string_literal("DevTools support is disabled");
+#endif
 }
 
 void Application::on_devtools_enabled() const
@@ -1653,9 +1663,11 @@ void Application::on_devtools_disabled() const
 
 void Application::refresh_tab_list()
 {
+#if ENABLE_DEVTOOLS
     if (!m_devtools)
         return;
     m_devtools->refresh_tab_list();
+#endif
 }
 
 Optional<Core::TimeZoneWatcher&> Application::time_zone_watcher()

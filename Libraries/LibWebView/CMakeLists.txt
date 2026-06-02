@@ -86,7 +86,10 @@ compile_ipc(${LADYBIRD_SOURCE_DIR}/Services/WebContent/WebUIClient.ipc ${CMAKE_B
 compile_ipc(${LADYBIRD_SOURCE_DIR}/Services/WebContent/WebUIServer.ipc ${CMAKE_BINARY_DIR}/Services/WebContent/WebUIServerEndpoint.h)
 
 ladybird_lib(LibWebView webview EXPLICIT_SYMBOL_EXPORT)
-target_link_libraries(LibWebView PRIVATE LibCore LibDatabase LibDevTools LibFileSystem LibGfx LibHTTP LibImageDecoderClient LibIPC LibRequests LibJS LibWeb LibUnicode LibURL LibSync LibSyntax LibTextCodec)
+target_link_libraries(LibWebView PRIVATE LibCore LibDatabase LibFileSystem LibGfx LibHTTP LibImageDecoderClient LibIPC LibRequests LibJS LibWeb LibUnicode LibURL LibSync LibSyntax LibTextCodec)
+if (LADYBIRD_ENABLE_DEVTOOLS)
+    target_link_libraries(LibWebView PRIVATE LibDevTools)
+endif()
 
 # Third-party
 if (HAS_FONTCONFIG)
