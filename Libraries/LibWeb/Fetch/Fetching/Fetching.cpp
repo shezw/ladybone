@@ -283,10 +283,18 @@ GC::Ref<Infrastructure::FetchController> fetch(JS::Realm& realm, Infrastructure:
             // -> "image"
             case Infrastructure::Request::Destination::Image:
                 // `image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5`
-                // AD-HOC: The spec default omits AVIF and WebP, which causes CDNs that perform format negotiation to
+                // AD-HOC: The spec default omits modern image formats, which causes CDNs that perform format negotiation to
                 //         potentially fall back to non alpha-preserving formats.
                 //         Spec issue: https://github.com/whatwg/fetch/issues/1740
+#if ENABLE_IMAGE_AVIF && ENABLE_SVG
                 value = "image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5"sv;
+#elif ENABLE_IMAGE_AVIF
+                value = "image/avif,image/webp,image/png,image/*;q=0.8,*/*;q=0.5"sv;
+#elif ENABLE_SVG
+                value = "image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5"sv;
+#else
+                value = "image/webp,image/png,image/*;q=0.8,*/*;q=0.5"sv;
+#endif
                 break;
             // -> "json"
             case Infrastructure::Request::Destination::JSON:
