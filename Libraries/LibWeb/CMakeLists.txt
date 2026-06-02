@@ -937,13 +937,6 @@ set(SOURCES
     UserTiming/PerformanceMark.cpp
     UserTiming/PerformanceMeasure.cpp
     ViewTransition/ViewTransition.cpp
-    WebAssembly/Global.cpp
-    WebAssembly/Instance.cpp
-    WebAssembly/Memory.cpp
-    WebAssembly/Module.cpp
-    WebAssembly/Table.cpp
-    WebAssembly/WebAssembly.cpp
-    WebAssembly/WebAssemblyModule.cpp
     WebAudio/AnalyserNode.cpp
     WebAudio/AudioBuffer.cpp
     WebAudio/AudioBufferSourceNode.cpp
@@ -1303,9 +1296,24 @@ if (LADYBIRD_ENABLE_WEBXR)
     )
 endif()
 
+if (LADYBIRD_ENABLE_WASM)
+    list(APPEND SOURCES
+        WebAssembly/Global.cpp
+        WebAssembly/Instance.cpp
+        WebAssembly/Memory.cpp
+        WebAssembly/Module.cpp
+        WebAssembly/Table.cpp
+        WebAssembly/WebAssembly.cpp
+        WebAssembly/WebAssemblyModule.cpp
+    )
+endif()
+
 ladybird_lib(LibWeb web EXPLICIT_SYMBOL_EXPORT)
 
-target_link_libraries(LibWeb PRIVATE LibCore LibCompress LibCrypto LibJS LibHTTP LibGfx LibIPC LibRegex LibSyntax LibTextCodec LibUnicode LibMedia LibWasm LibXML LibIDL LibURL LibTLS LibRequests LibGC LibSync LibThreading skia ${ANGLE_TARGETS} LibXml2::LibXml2)
+target_link_libraries(LibWeb PRIVATE LibCore LibCompress LibCrypto LibJS LibHTTP LibGfx LibIPC LibRegex LibSyntax LibTextCodec LibUnicode LibMedia LibXML LibIDL LibURL LibTLS LibRequests LibGC LibSync LibThreading skia ${ANGLE_TARGETS} LibXml2::LibXml2)
+if (LADYBIRD_ENABLE_WASM)
+    target_link_libraries(LibWeb PRIVATE LibWasm)
+endif()
 if (LADYBIRD_ENABLE_GAMEPAD)
     target_link_libraries(LibWeb PRIVATE SDL3::SDL3)
 endif()

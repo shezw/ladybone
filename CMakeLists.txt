@@ -141,6 +141,7 @@ foreach(feature
     MATHML
     SVG
     CANVAS
+    WASM
     WEBDRIVER
 )
     if (LADYBIRD_ENABLE_${feature})

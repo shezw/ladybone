@@ -19,7 +19,6 @@
 #include <LibJS/Runtime/VM.h>
 #include <LibJS/Runtime/Value.h>
 #include <LibJS/Runtime/ValueInlines.h>
-#include <LibWasm/Opcode.h>
 
 namespace JS::Bytecode {
 

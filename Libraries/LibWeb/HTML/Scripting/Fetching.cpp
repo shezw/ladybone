@@ -47,7 +47,9 @@
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/Loader/ResourceLoader.h>
 #include <LibWeb/MimeSniff/MimeType.h>
+#if ENABLE_WASM
 #include <LibWeb/WebAssembly/WebAssemblyModule.h>
+#endif
 
 namespace Web::HTML {
 
@@ -152,10 +154,12 @@ static Core::ImmutableBytes take_body_bytes(Fetch::Infrastructure::FetchAlgorith
     return move(body_bytes.get<Core::ImmutableBytes>());
 }
 
+#if ENABLE_WASM
 static ByteBuffer take_body_bytes_as_byte_buffer(Fetch::Infrastructure::FetchAlgorithms::BodyBytes& body_bytes)
 {
     return body_bytes.get<Core::ImmutableBytes>().copy_to_byte_buffer().release_value_but_fixme_should_propagate_errors();
 }
+#endif
 
 static ErrorOr<DecodedSourceTextInfo> decoded_source_text_info(TextCodec::Decoder& fallback_decoder, ReadonlyBytes bytes)
 {
@@ -361,7 +365,9 @@ static void compile_remaining_module_functions_off_thread(ModuleScript& module_s
     module_script.record().visit(
         [](Empty) {},
         [](GC::Ref<JS::SyntheticModule>) {},
+#if ENABLE_WASM
         [](GC::Ref<WebAssembly::WebAssemblyModule>) {},
+#endif
         [source_code = move(source_code)](GC::Ref<JS::SourceTextModule> module) mutable {
             if (auto* executable = module->cached_executable()) {
                 compile_remaining_functions_off_thread(*executable, source_code);
@@ -1156,12 +1162,14 @@ void fetch_single_module_script(JS::Realm& realm,
         //     to the result of creating a WebAssembly module script given bodyBytes, moduleMapRealm, response's URL, and
         //     options.
         // FIXME: Pass options.
+#if ENABLE_WASM
         if (mime_type.has_value() && mime_type->essence() == "application/wasm"sv && module_type == "javascript-or-wasm") {
             module_script = ModuleScript::create_a_webassembly_module_script(url.to_byte_string(), take_body_bytes_as_byte_buffer(body_bytes), settings_object, response->url().value_or({})).release_value_but_fixme_should_propagate_errors();
         }
 
         // 7. Otherwise
         else {
+#endif
             // 2. If mimeType is a JavaScript MIME type and moduleType is "javascript-or-wasm", then set moduleScript to
             //    the result of creating a JavaScript module script given sourceText, moduleMapRealm, response's URL,
             //    and options.
@@ -1221,8 +1229,12 @@ void fetch_single_module_script(JS::Realm& realm,
                                 module_script->record().visit(
                                     [](Empty) {},
                                     [&](GC::Ref<JS::SourceTextModule> module) { install_target.module = module; },
-                                    [](GC::Ref<JS::SyntheticModule>) {},
-                                    [](GC::Ref<WebAssembly::WebAssemblyModule>) {});
+                                    [](GC::Ref<JS::SyntheticModule>) {}
+#if ENABLE_WASM
+                                    ,
+                                    [](GC::Ref<WebAssembly::WebAssemblyModule>) {}
+#endif
+                                );
                                 if (!should_generate_bytecode_cache)
                                     compile_remaining_module_functions_off_thread(*module_script, source_code_for_cache);
                             }
@@ -1259,7 +1271,9 @@ void fetch_single_module_script(JS::Realm& realm,
                 auto source_text = decode_source_text(*decoder, body_bytes_view(body_bytes)).release_value_but_fixme_should_propagate_errors();
                 module_script = ModuleScript::create_a_json_module_script(url.to_byte_string(), source_text, settings_object).release_value_but_fixme_should_propagate_errors();
             }
+#if ENABLE_WASM
         }
+#endif
 
         // 8. Set moduleMap[(url, moduleType)] to moduleScript, and run onComplete given moduleScript.
         module_map.set(url, module_type.to_byte_string(), { ModuleMap::EntryType::ModuleScript, module_script });

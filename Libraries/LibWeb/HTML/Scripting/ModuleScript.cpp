@@ -12,7 +12,9 @@
 #include <LibWeb/HTML/Scripting/ModuleScript.h>
 #include <LibWeb/HTML/Scripting/TemporaryExecutionContext.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>
+#if ENABLE_WASM
 #include <LibWeb/WebAssembly/WebAssemblyModule.h>
+#endif
 #include <LibWeb/WebIDL/DOMException.h>
 #include <LibWeb/WebIDL/ExceptionOr.h>
 #include <LibWeb/WebIDL/QuotaExceededError.h>
@@ -198,6 +200,7 @@ WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> ModuleScript::create_a_json_module_sc
 }
 
 // https://html.spec.whatwg.org/multipage/webappapis.html#creating-a-webassembly-module-script
+#if ENABLE_WASM
 WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> ModuleScript::create_a_webassembly_module_script(ByteString const& filename, ByteBuffer body_bytes, EnvironmentSettingsObject& settings, URL::URL base_url)
 {
     auto& realm = settings.realm();
@@ -240,6 +243,7 @@ WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> ModuleScript::create_a_webassembly_mo
     // 10. Return script.
     return script;
 }
+#endif
 
 // https://html.spec.whatwg.org/multipage/webappapis.html#run-a-module-script
 WebIDL::Promise* ModuleScript::run(PreventErrorReporting prevent_error_reporting)

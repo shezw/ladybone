@@ -21,7 +21,11 @@ struct DecodedBytecodeCacheBlob;
 
 namespace Web::HTML {
 
+#if ENABLE_WASM
 using ModuleScriptRecord = Variant<Empty, GC::Ref<JS::SourceTextModule>, GC::Ref<JS::SyntheticModule>, GC::Ref<WebAssembly::WebAssemblyModule>>;
+#else
+using ModuleScriptRecord = Variant<Empty, GC::Ref<JS::SourceTextModule>, GC::Ref<JS::SyntheticModule>>;
+#endif
 
 // https://html.spec.whatwg.org/multipage/webappapis.html#module-script
 class WEB_API ModuleScript : public Script {
@@ -38,7 +42,9 @@ public:
     static WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> create_a_javascript_module_script(ByteString const& filename, StringView source, EnvironmentSettingsObject&, URL::URL base_url);
     static WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> create_a_css_module_script(ByteString const& filename, StringView source, EnvironmentSettingsObject&);
     static WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> create_a_json_module_script(ByteString const& filename, StringView source, EnvironmentSettingsObject&);
+#if ENABLE_WASM
     static WebIDL::ExceptionOr<GC::Ptr<ModuleScript>> create_a_webassembly_module_script(ByteString const& filename, ByteBuffer body_bytes, EnvironmentSettingsObject&, URL::URL base_url);
+#endif
 
     enum class PreventErrorReporting {
         Yes,

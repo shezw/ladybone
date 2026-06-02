@@ -47,8 +47,10 @@
 #include <LibWeb/HTML/WorkletGlobalScope.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
 #include <LibWeb/ServiceWorker/ServiceWorkerGlobalScope.h>
+#if ENABLE_WASM
 #include <LibWeb/WebAssembly/WebAssembly.h>
 #include <LibWeb/WebAssembly/WebAssemblyModule.h>
+#endif
 #include <LibWeb/WebIDL/AbstractOperations.h>
 
 namespace Web::Bindings {
@@ -653,6 +655,7 @@ void initialize_main_thread_vm(AgentType type)
         dbgln("Unable to parse date string: \"{}\"", date);
     };
 
+#if ENABLE_WASM
     s_main_thread_vm->host_resize_array_buffer = [default_host_resize_array_buffer = move(s_main_thread_vm->host_resize_array_buffer)](JS::ArrayBuffer& buffer, size_t new_byte_length) -> JS::ThrowCompletionOr<JS::HandledByHost> {
         auto wasm_handled = TRY(WebAssembly::Detail::host_resize_array_buffer(*s_main_thread_vm, buffer, new_byte_length));
         if (wasm_handled == JS::HandledByHost::Handled)
@@ -668,6 +671,7 @@ void initialize_main_thread_vm(AgentType type)
 
         return default_host_grow_shared_array_buffer(buffer, new_byte_length);
     };
+#endif
 }
 
 JS::VM& main_thread_vm()
