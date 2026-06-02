@@ -1048,8 +1048,10 @@ RefPtr<StyleValue const> CSSStyleProperties::style_value_for_computed_property(L
 
         return get_computed_value(property_id);
     }
+#if LADYBIRD_ENABLE_WEBKITCSS_PREFIX
     case PropertyID::WebkitTextFillColor:
         return resolve_color_style_value(get_computed_value(property_id), layout_node.computed_values().webkit_text_fill_color());
+#endif
     case PropertyID::LetterSpacing: {
         // https://drafts.csswg.org/css-text-4/#letter-spacing-property
         // For legacy reasons, a computed letter-spacing of zero yields a resolved value (getComputedStyle() return value) of normal.

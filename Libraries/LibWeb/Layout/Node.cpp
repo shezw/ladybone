@@ -831,7 +831,9 @@ void NodeWithStyle::apply_style(CSS::ComputedProperties const& computed_style)
     computed_values.set_text_decoration_color(computed_style.color(CSS::PropertyID::TextDecorationColor, color_resolution_context));
     computed_values.set_text_decoration_thickness(computed_style.text_decoration_thickness());
 
+#if LADYBIRD_ENABLE_WEBKITCSS_PREFIX
     computed_values.set_webkit_text_fill_color(computed_style.color(CSS::PropertyID::WebkitTextFillColor, color_resolution_context));
+#endif
 
     computed_values.set_text_shadow(computed_style.text_shadow(*this));
 
