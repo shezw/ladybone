@@ -44,7 +44,11 @@
 
 namespace GC {
 
+#if USE_LOW_MEM_MODE
+static constexpr size_t GC_MIN_BYTES_THRESHOLD { 2 * 1024 * 1024 };
+#else
 static constexpr size_t GC_MIN_BYTES_THRESHOLD { 8 * 1024 * 1024 };
+#endif
 static constexpr size_t GC_HEAP_GROWTH_FACTOR_NUMERATOR { 7 };
 static constexpr size_t GC_HEAP_GROWTH_FACTOR_DENOMINATOR { 4 };
 

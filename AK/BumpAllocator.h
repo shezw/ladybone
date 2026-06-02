@@ -22,7 +22,11 @@ extern "C" __declspec(dllimport) bool __stdcall VirtualFree(void* lpAddress, siz
 
 namespace AK {
 
+#if USE_LOW_MEM_MODE
+template<bool use_mmap = false, size_t chunk_size = use_mmap ? 2 * MiB : 2 * KiB>
+#else
 template<bool use_mmap = false, size_t chunk_size = use_mmap ? 4 * MiB : 4 * KiB>
+#endif
 class BumpAllocator {
 public:
     BumpAllocator()
@@ -169,7 +173,11 @@ protected:
     static Atomic<FlatPtr> s_unused_allocation_cache;
 };
 
+#if USE_LOW_MEM_MODE
+template<typename T, bool use_mmap = false, size_t chunk_size = use_mmap ? 2 * MiB : 2 * KiB>
+#else
 template<typename T, bool use_mmap = false, size_t chunk_size = use_mmap ? 4 * MiB : 4 * KiB>
+#endif
 class UniformBumpAllocator : protected BumpAllocator<use_mmap, chunk_size> {
     using Allocator = BumpAllocator<use_mmap, chunk_size>;
 

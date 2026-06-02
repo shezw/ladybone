@@ -19,8 +19,11 @@ class InterpreterStack {
     AK_MAKE_NONMOVABLE(InterpreterStack);
 
 public:
+#if USE_LOW_MEM_MODE
+    static constexpr size_t stack_size = 2 * MiB;
+#else
     static constexpr size_t stack_size = 8 * MiB;
-
+#endif
     InterpreterStack();
     ~InterpreterStack();
 

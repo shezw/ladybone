@@ -71,7 +71,11 @@ StackInfo::StackInfo()
         rlimit limit {};
         getrlimit(RLIMIT_STACK, &limit);
         if (limit.rlim_cur == RLIM_INFINITY) {
+#if USE_LOW_MEM_MODE
+            m_size = 2 * MiB;
+#else
             m_size = 8 * MiB;
+#endif
         } else {
             m_size = limit.rlim_cur;
         }

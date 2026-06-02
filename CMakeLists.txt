@@ -27,7 +27,10 @@ option(LADYBIRD_ENABLE_GEOLOCATION "Enable the Geolocation API" ON)
 option(LADYBIRD_ENABLE_NOTIFICATIONS "Enable the Notifications API" ON)
 option(LADYBIRD_ENABLE_WEBRTC "Enable WebRTC and Media Capture APIs" ON)
 option(LADYBIRD_ENABLE_MATHML "Enable MathML DOM bindings and default stylesheet" ON)
+option(LADYBIRD_ENABLE_SVG "Enable SVG support" ON)
 if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
+    set(USE_LOW_MEM_MODE ON CACHE BOOL "Enable low memory mode" FORCE)
+    add_compile_definitions(USE_LOW_MEM_MODE=1)
     set(LADYBIRD_ENABLE_GAMEPAD OFF CACHE BOOL "Enable the Web Gamepad API SDL backend" FORCE)
     set(LADYBIRD_ENABLE_3D_GRAPHICS OFF CACHE BOOL "Enable WebGL and GPU-backed Skia rendering" FORCE)
     set(LADYBIRD_ENABLE_PDF_VIEWER OFF CACHE BOOL "Enable the bundled PDF.js viewer" FORCE)
@@ -39,6 +42,17 @@ if (LADYBIRD_GUI_FRAMEWORK STREQUAL "JW")
     set(LADYBIRD_ENABLE_NOTIFICATIONS OFF CACHE BOOL "Enable the Notifications API" FORCE)
     set(LADYBIRD_ENABLE_WEBRTC OFF CACHE BOOL "Enable WebRTC and Media Capture APIs" FORCE)
     set(LADYBIRD_ENABLE_MATHML OFF CACHE BOOL "Enable MathML DOM bindings and default stylesheet" FORCE)
+    set(LADYBIRD_ENABLE_DEVTOOLS OFF CACHE BOOL "Enable DevTools" FORCE)
+    set(LADYBIRD_ENABLE_WEBKITCSS_PREFIX OFF CACHE BOOL "Enable webkit css properties" FORCE)
+    set(LADYBIRD_ENABLE_SVG OFF CACHE BOOL "Enable SVG support" FORCE)
+    set(LADYBIRD_ENABLE_CANVAS OFF CACHE BOOL "Enable CANVAS support" FORCE)
+    set(LADYBIRD_ENABLE_WASM OFF CACHE BOOL "Enable WebAssembly support" FORCE)
+    set(LADYBIRD_ENABLE_WEB_AUDIO OFF CACHE BOOL "Enable the Web Audio API" FORCE)
+    set(LADYBIRD_ENABLE_INDEXEDDB OFF CACHE BOOL "Enable IndexedDB support" FORCE)
+    set(LADYBIRD_ENABLE_CLIPBOARD OFF CACHE BOOL "Enable the Clipboard API" FORCE)
+    set(LADYBIRD_ENABLE_SPEECH OFF CACHE BOOL "Enable the Web Speech API" FORCE)
+    set(LADYBIRD_ENABLE_SERVICE_WORKERS OFF CACHE BOOL "Enable Service Workers" FORCE)
+    set(LADYBIRD_ENABLE_WEBDRIVER OFF CACHE BOOL "Enable WebDriver support" FORCE)
 endif()
 
 # Pass additional information to vcpkg if we are using it.
@@ -125,6 +139,9 @@ foreach(feature
     NOTIFICATIONS
     WEBRTC
     MATHML
+    SVG
+    CANVAS
+    WEBDRIVER
 )
     if (LADYBIRD_ENABLE_${feature})
         add_compile_definitions(ENABLE_${feature}=1)

@@ -7,7 +7,11 @@
 #include <LibThreading/ThreadPool.h>
 
 static constexpr size_t THREAD_COUNT = 4;
+#if USE_LOW_MEM_MODE
+static constexpr size_t THREAD_STACK_SIZE = 2 * MiB;
+#else
 static constexpr size_t THREAD_STACK_SIZE = 8 * MiB;
+#endif
 
 namespace Threading {
 
