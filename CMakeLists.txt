@@ -143,6 +143,7 @@ foreach(feature
     CANVAS
     WASM
     WEB_AUDIO
+    INDEXEDDB
     WEBDRIVER
 )
     if (LADYBIRD_ENABLE_${feature})

@@ -5288,7 +5288,9 @@ void Document::run_unloading_cleanup_steps()
     //         making LibJS notify us of that would undoubtedly be very costly to performance. All other browsers also
     //         opt not to follow the spec exactly in regards to this, instead letting the connection stay open until
     //         GC collects it. However, we need to be proactive about this when navigating for the sake of test-web.
+#if ENABLE_INDEXEDDB
     window.close_all_idb_connections();
+#endif
 
     FileAPI::run_unloading_cleanup_steps(*this);
     fully_exit_fullscreen();

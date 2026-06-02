@@ -702,24 +702,6 @@ set(SOURCES
     HTML/WorkerNavigator.cpp
     HTML/WorkletGlobalScope.cpp
     HTML/XMLSerializer.cpp
-    IndexedDB/IDBCursor.cpp
-    IndexedDB/IDBDatabase.cpp
-    IndexedDB/IDBFactory.cpp
-    IndexedDB/IDBIndex.cpp
-    IndexedDB/IDBKeyRange.cpp
-    IndexedDB/IDBObjectStore.cpp
-    IndexedDB/IDBOpenDBRequest.cpp
-    IndexedDB/IDBRecord.cpp
-    IndexedDB/IDBRequest.cpp
-    IndexedDB/IDBTransaction.cpp
-    IndexedDB/IDBVersionChangeEvent.cpp
-    IndexedDB/Internal/Algorithms.cpp
-    IndexedDB/Internal/Database.cpp
-    IndexedDB/Internal/Index.cpp
-    IndexedDB/Internal/Key.cpp
-    IndexedDB/Internal/MutationLog.cpp
-    IndexedDB/Internal/ObjectStore.cpp
-    IndexedDB/Internal/RequestList.cpp
     Infra/ByteSequences.cpp
     Infra/JSON.cpp
     Infra/Strings.cpp
@@ -1279,6 +1261,29 @@ if (LADYBIRD_ENABLE_WASM)
         WebAssembly/Table.cpp
         WebAssembly/WebAssembly.cpp
         WebAssembly/WebAssemblyModule.cpp
+    )
+endif()
+
+if (LADYBIRD_ENABLE_INDEXEDDB)
+    list(APPEND SOURCES
+        IndexedDB/IDBCursor.cpp
+        IndexedDB/IDBDatabase.cpp
+        IndexedDB/IDBFactory.cpp
+        IndexedDB/IDBIndex.cpp
+        IndexedDB/IDBKeyRange.cpp
+        IndexedDB/IDBObjectStore.cpp
+        IndexedDB/IDBOpenDBRequest.cpp
+        IndexedDB/IDBRecord.cpp
+        IndexedDB/IDBRequest.cpp
+        IndexedDB/IDBTransaction.cpp
+        IndexedDB/IDBVersionChangeEvent.cpp
+        IndexedDB/Internal/Algorithms.cpp
+        IndexedDB/Internal/Database.cpp
+        IndexedDB/Internal/Index.cpp
+        IndexedDB/Internal/Key.cpp
+        IndexedDB/Internal/MutationLog.cpp
+        IndexedDB/Internal/ObjectStore.cpp
+        IndexedDB/Internal/RequestList.cpp
     )
 endif()
 

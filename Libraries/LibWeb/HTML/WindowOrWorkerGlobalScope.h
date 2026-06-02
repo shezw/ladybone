@@ -96,7 +96,9 @@ public:
 
     GC::Ref<JS::Object> supported_entry_types() const;
 
+#if ENABLE_INDEXEDDB
     GC::Ref<IndexedDB::IDBFactory> indexed_db();
+#endif
 
     void report_error(JS::Value e);
 
@@ -159,7 +161,9 @@ private:
 
     GC::Ptr<HighResolutionTime::Performance> m_performance;
 
+#if ENABLE_INDEXEDDB
     GC::Ptr<IndexedDB::IDBFactory> m_indexed_db;
+#endif
 
     mutable GC::Ptr<JS::Object> m_supported_entry_types_array;
 

@@ -25,7 +25,9 @@
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/HighResolutionTime/Performance.h>
 #include <LibWeb/HighResolutionTime/TimeOrigin.h>
+#if ENABLE_INDEXEDDB
 #include <LibWeb/IndexedDB/Internal/Algorithms.h>
+#endif
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Painting/PaintableBox.h>
 #include <LibWeb/Painting/ViewportPaintable.h>
@@ -680,7 +682,9 @@ void EventLoop::perform_a_microtask_checkpoint()
     }
 
     // 5. Cleanup Indexed Database transactions.
+#if ENABLE_INDEXEDDB
     IndexedDB::cleanup_indexed_database_transactions(*this);
+#endif
 
     // 6. Perform ClearKeptObjects().
     vm().finish_execution_generation();

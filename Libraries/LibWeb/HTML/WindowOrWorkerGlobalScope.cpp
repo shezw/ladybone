@@ -39,9 +39,11 @@
 #include <LibWeb/HTML/WorkerGlobalScope.h>
 #include <LibWeb/HighResolutionTime/Performance.h>
 #include <LibWeb/HighResolutionTime/SupportedPerformanceTypes.h>
+#if ENABLE_INDEXEDDB
 #include <LibWeb/IndexedDB/IDBDatabase.h>
 #include <LibWeb/IndexedDB/IDBFactory.h>
 #include <LibWeb/IndexedDB/Internal/Algorithms.h>
+#endif
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/PerformanceTimeline/EntryTypes.h>
@@ -91,7 +93,9 @@ void WindowOrWorkerGlobalScopeMixin::visit_edges(JS::Cell::Visitor& visitor)
     visitor.visit(m_supported_entry_types_array);
     visitor.visit(m_timers);
     visitor.visit(m_registered_performance_observer_objects);
+#if ENABLE_INDEXEDDB
     visitor.visit(m_indexed_db);
+#endif
     for (auto& entry : m_performance_entry_buffer_map)
         entry.value.visit_edges(visitor);
     visitor.visit(m_registered_event_sources);
@@ -1074,6 +1078,7 @@ void WindowOrWorkerGlobalScopeMixin::forcibly_close_all_event_sources()
 
 void WindowOrWorkerGlobalScopeMixin::close_all_idb_connections()
 {
+#if ENABLE_INDEXEDDB
     IndexedDB::Database::for_each_database([&](IndexedDB::Database& database) {
         for (auto& connection : database.associated_connections_as_root_vector()) {
             if (connection->close_pending())
@@ -1082,6 +1087,7 @@ void WindowOrWorkerGlobalScopeMixin::close_all_idb_connections()
                 IndexedDB::close_a_database_connection(connection);
         }
     });
+#endif
 }
 
 void WindowOrWorkerGlobalScopeMixin::register_web_socket(Badge<WebSockets::WebSocket>, GC::Ref<WebSockets::WebSocket> web_socket)
@@ -1166,6 +1172,7 @@ GC::Ref<HighResolutionTime::Performance> WindowOrWorkerGlobalScopeMixin::perform
     return GC::Ref { *m_performance };
 }
 
+#if ENABLE_INDEXEDDB
 GC::Ref<IndexedDB::IDBFactory> WindowOrWorkerGlobalScopeMixin::indexed_db()
 {
     auto& realm = this_impl().realm();
@@ -1174,6 +1181,7 @@ GC::Ref<IndexedDB::IDBFactory> WindowOrWorkerGlobalScopeMixin::indexed_db()
         m_indexed_db = realm.create<IndexedDB::IDBFactory>(realm);
     return *m_indexed_db;
 }
+#endif
 
 // https://w3c.github.io/performance-timeline/#dfn-frozen-array-of-supported-entry-types
 GC::Ref<JS::Object> WindowOrWorkerGlobalScopeMixin::supported_entry_types() const

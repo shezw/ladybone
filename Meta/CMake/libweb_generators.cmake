@@ -253,14 +253,21 @@ function (generate_css_implementation)
             )
         endif()
     endif()
-    if (NOT LADYBIRD_ENABLE_CANVAS)
+    if (NOT LADYBIRD_ENABLE_CANVAS OR NOT LADYBIRD_ENABLE_INDEXEDDB)
+        if (NOT LADYBIRD_ENABLE_CANVAS AND NOT LADYBIRD_ENABLE_INDEXEDDB)
+            set(window_or_worker_global_scope_idl_source "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoCanvasNoIndexedDB.idl")
+        elseif (NOT LADYBIRD_ENABLE_CANVAS)
+            set(window_or_worker_global_scope_idl_source "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoCanvas.idl")
+        else()
+            set(window_or_worker_global_scope_idl_source "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoIndexedDB.idl")
+        endif()
         set(no_canvas_window_or_worker_global_scope_idl "${CMAKE_CURRENT_BINARY_DIR}/HTML/WindowOrWorkerGlobalScope.idl")
         add_custom_command(
             OUTPUT "${no_canvas_window_or_worker_global_scope_idl}"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/HTML"
-            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoCanvas.idl" "${no_canvas_window_or_worker_global_scope_idl}"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${window_or_worker_global_scope_idl_source}" "${no_canvas_window_or_worker_global_scope_idl}"
             VERBATIM
-            DEPENDS "${LIBWEB_INPUT_FOLDER}/HTML/WindowOrWorkerGlobalScopeNoCanvas.idl"
+            DEPENDS "${window_or_worker_global_scope_idl_source}"
         )
         add_custom_target("generate_WindowOrWorkerGlobalScope.idl" DEPENDS "${no_canvas_window_or_worker_global_scope_idl}")
 
