@@ -35,7 +35,6 @@
 #include <LibWeb/HTML/HTMLTextAreaElement.h>
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/Namespace.h>
-#include <LibWeb/SVG/SVGAElement.h>
 
 namespace Web::SelectorEngine {
 

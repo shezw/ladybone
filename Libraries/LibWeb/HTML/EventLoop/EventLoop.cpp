@@ -524,10 +524,12 @@ void EventLoop::update_the_rendering()
 
     // FIXME: 21. For each doc of docs, mark paint timing for doc.
 
+#if ENABLE_CANVAS
     // AD-HOC: Present all canvas element surfaces in documents' pages after callbacks
     // have had a chance to update them, and before painting snapshots the frame.
     for (auto& document : docs)
         document->page().present_all_canvas_element_surfaces();
+#endif
 
     // 22. For each doc of docs, update the rendering or user interface of doc and its node navigable to reflect the current state.
     for (auto& doc : docs.in_reverse()) {

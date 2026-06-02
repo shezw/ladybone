@@ -14,7 +14,6 @@
 #include <LibWeb/HTML/TagNames.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>
 #include <LibWeb/Namespace.h>
-#include <LibWeb/SVG/TagNames.h>
 #include <LibWeb/TrustedTypes/RequireTrustedTypesForDirective.h>
 #include <LibWeb/TrustedTypes/TrustedHTML.h>
 #include <LibWeb/TrustedTypes/TrustedScript.h>
@@ -414,7 +413,7 @@ ElementInterface element_interface(Utf16String const& local_name, FlyString cons
         return { "HTMLIFrameElement"_utf16, element_ns };
     if (local_name == HTML::TagNames::script && element_ns == Namespace::HTML)
         return { "HTMLScriptElement"_utf16, element_ns };
-    if (local_name == SVG::TagNames::script && element_ns == Namespace::SVG)
+    if (local_name == "script"_utf16 && element_ns == Namespace::SVG)
         return { "SVGScriptElement"_utf16, element_ns };
 
     return { "Element"_utf16, element_ns };

@@ -18,7 +18,6 @@
 #include <LibWeb/HTML/SharedResourceRequest.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Platform/ImageCodecPlugin.h>
-#include <LibWeb/SVG/SVGDecodedImageData.h>
 
 namespace Web::HTML {
 

@@ -12,6 +12,8 @@
 #include <LibWeb/Editing/CommandNames.h>
 #include <LibWeb/Editing/Commands.h>
 #include <LibWeb/Editing/Internal/Algorithms.h>
+#include <LibWeb/HTML/EventNames.h>
+#include <LibWeb/HTML/HTMLElement.h>
 #include <LibWeb/Selection/Selection.h>
 #include <LibWeb/UIEvents/InputEvent.h>
 

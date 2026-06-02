@@ -15,6 +15,7 @@
 #include <LibWeb/CSS/CSSAnimation.h>
 #include <LibWeb/CSS/CSSNumericValue.h>
 #include <LibWeb/DOM/Document.h>
+#include <LibWeb/HTML/EventNames.h>
 #include <LibWeb/HTML/Scripting/TemporaryExecutionContext.h>
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/HighResolutionTime/Performance.h>

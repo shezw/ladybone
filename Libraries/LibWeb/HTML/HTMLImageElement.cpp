@@ -44,7 +44,6 @@
 #include <LibWeb/Painting/ViewportPaintable.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
 #include <LibWeb/Platform/ImageCodecPlugin.h>
-#include <LibWeb/SVG/SVGDecodedImageData.h>
 
 namespace Web::HTML {
 

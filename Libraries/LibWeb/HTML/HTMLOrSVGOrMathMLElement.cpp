@@ -16,7 +16,9 @@
 #if ENABLE_MATHML
 #include <LibWeb/MathML/MathMLElement.h>
 #endif
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGElement.h>
+#endif
 
 namespace Web::HTML {
 
@@ -160,6 +162,8 @@ template class HTMLOrSVGOrMathMLElement<HTMLElement>;
 #if ENABLE_MATHML
 template class HTMLOrSVGOrMathMLElement<MathML::MathMLElement>;
 #endif
+#if ENABLE_SVG
 template class HTMLOrSVGOrMathMLElement<SVG::SVGElement>;
+#endif
 
 }

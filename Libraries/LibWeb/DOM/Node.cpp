@@ -74,8 +74,10 @@
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Painting/Paintable.h>
 #include <LibWeb/Painting/PaintableBox.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGElement.h>
 #include <LibWeb/SVG/SVGTitleElement.h>
+#endif
 #include <LibWeb/XLink/AttributeNames.h>
 
 namespace Web::DOM {
@@ -1613,7 +1615,12 @@ bool Node::is_editable() const
         return true;
 
     // or it is an svg or math element,
-    if (is<SVG::SVGElement>(this)
+    if (
+#if ENABLE_SVG
+        is<SVG::SVGElement>(this)
+#else
+        false
+#endif
 #if ENABLE_MATHML
         || is<MathML::MathMLElement>(this)
 #endif
@@ -3140,6 +3147,7 @@ ErrorOr<String> Node::name_or_description(NameOrDescription target, Document con
         if (is<HTML::HTMLImageElement>(*element) && element->has_attribute(HTML::AttributeNames::alt))
             return element->get_attribute(HTML::AttributeNames::alt).value();
 
+#if ENABLE_SVG
         // https://w3c.github.io/svg-aam/#mapping_additional_nd
         Optional<String> title_element_text;
         if (element->is_svg_element()) {
@@ -3157,6 +3165,7 @@ ErrorOr<String> Node::name_or_description(NameOrDescription target, Document con
             if (auto title_attribute = element->get_attribute_ns(Namespace::XLink, XLink::AttributeNames::title); title_attribute.has_value())
                 return title_attribute.release_value();
         }
+#endif
 
         // https://w3c.github.io/html-aam/#table-element-accessible-name-computation
         // 2. If the accessible name is still empty, then: if the table element has a child that is a caption element,

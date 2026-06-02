@@ -37,9 +37,11 @@
 #include <LibWeb/Layout/ListItemBox.h>
 #include <LibWeb/Layout/ListItemMarkerBox.h>
 #include <LibWeb/Layout/Node.h>
+#if ENABLE_SVG
 #include <LibWeb/Layout/SVGClipBox.h>
 #include <LibWeb/Layout/SVGMaskBox.h>
 #include <LibWeb/Layout/SVGPatternBox.h>
+#endif
 #include <LibWeb/Layout/TableGrid.h>
 #include <LibWeb/Layout/TableWrapper.h>
 #include <LibWeb/Layout/TextNode.h>
@@ -790,7 +792,12 @@ static bool is_ignorable_whitespace(Layout::Node const& node)
 
 static bool is_svg_resource_box(Node const& layout_node)
 {
+#if ENABLE_SVG
     return is<SVGPatternBox>(layout_node) || is<SVGMaskBox>(layout_node) || is<SVGClipBox>(layout_node);
+#else
+    (void)layout_node;
+    return false;
+#endif
 }
 
 static bool layout_node_is_attached_to_dom_subtree(Node const& layout_node, DOM::Node const& subtree_root)
@@ -909,6 +916,7 @@ void TreeBuilder::update_layout_tree(DOM::Node& dom_node, TreeBuilder::Context& 
             if (display.is_none())
                 return;
             // TODO: Implement changing element contents with the `content` property.
+#if ENABLE_SVG
             if (context.layout_svg_mask_or_clip_path) {
                 if (is<SVG::SVGMaskElement>(dom_node))
                     layout_node = document.heap().allocate<Layout::SVGMaskBox>(document, static_cast<SVG::SVGMaskElement&>(dom_node), *style);
@@ -922,8 +930,11 @@ void TreeBuilder::update_layout_tree(DOM::Node& dom_node, TreeBuilder::Context& 
                 layout_node = document.heap().allocate<Layout::SVGPatternBox>(document, as<SVG::SVGPatternElement>(dom_node), *style);
                 context.layout_svg_pattern = false;
             } else {
+#endif
                 layout_node = element.create_layout_node(*style);
+#if ENABLE_SVG
             }
+#endif
         } else if (is<DOM::Document>(dom_node)) {
             style = style_computer.create_document_style();
             display = style->display();
@@ -1154,6 +1165,7 @@ void TreeBuilder::update_layout_tree_before_children(DOM::Node& dom_node, GC::Re
 
 void TreeBuilder::update_layout_tree_after_children(DOM::Node& dom_node, GC::Ref<Layout::Node> layout_node, TreeBuilder::Context& context, bool element_has_content_visibility_hidden)
 {
+#if ENABLE_SVG
     if (is<SVG::SVGGraphicsElement>(dom_node)) {
         auto& graphics_element = static_cast<SVG::SVGGraphicsElement&>(dom_node);
         // Create the layout tree for the SVG mask/clip paths as a child of the masked element.
@@ -1205,6 +1217,9 @@ void TreeBuilder::update_layout_tree_after_children(DOM::Node& dom_node, GC::Ref
         if (auto stroke = graphics_element.stroke_pattern())
             layout_pattern(stroke);
     }
+#else
+    (void)context;
+#endif
 
     // Add nodes for the ::after pseudo-element.
     if (is<DOM::Element>(dom_node) && layout_node->can_have_children() && !element_has_content_visibility_hidden) {

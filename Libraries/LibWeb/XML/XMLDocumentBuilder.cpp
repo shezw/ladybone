@@ -15,8 +15,10 @@
 #include <LibWeb/HTML/Parser/NamedCharacterReferences.h>
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/HighResolutionTime/TimeOrigin.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGScriptElement.h>
 #include <LibWeb/SVG/TagNames.h>
+#endif
 #include <LibWeb/XML/XMLDocumentBuilder.h>
 
 namespace Web {
@@ -229,6 +231,7 @@ void XMLDocumentBuilder::element_end(XML::Name const& name)
             // 5. Set the pending parsing-blocking script to null.
             m_document->set_pending_parsing_blocking_script(nullptr);
         }
+#if ENABLE_SVG
     } else if (m_scripting_support == XMLScriptingSupport::Enabled && m_current_node->is_svg_script_element()) {
         // https://www.w3.org/TR/SVGMobile12/struct.html#ProgressiveRendering
         // When an end element event occurs for a 'script' element, that element is processed according to the
@@ -236,6 +239,7 @@ void XMLDocumentBuilder::element_end(XML::Name const& name)
         // until processing of the 'script' is complete.
         auto& script_element = static_cast<SVG::SVGScriptElement&>(*m_current_node);
         script_element.process_the_script_element();
+#endif
     };
 
     auto* parent = m_current_node->parent_node();

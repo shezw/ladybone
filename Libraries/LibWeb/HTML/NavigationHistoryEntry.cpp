@@ -10,6 +10,7 @@
 #include <LibWeb/Bindings/NavigationHistoryEntry.h>
 #include <LibWeb/DOM/Document.h>
 #include <LibWeb/HTML/DocumentState.h>
+#include <LibWeb/HTML/EventNames.h>
 #include <LibWeb/HTML/Navigable.h>
 #include <LibWeb/HTML/Navigation.h>
 #include <LibWeb/HTML/NavigationHistoryEntry.h>

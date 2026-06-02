@@ -160,7 +160,9 @@ Optional<String> StyleComputer::user_agent_style_sheet_source(StringView name)
 #if ENABLE_MATHML
     extern String mathml_stylesheet_source;
 #endif
+#if ENABLE_SVG
     extern String svg_stylesheet_source;
+#endif
 
     if (name == "CSS/Default.css"sv)
         return default_stylesheet_source;
@@ -170,8 +172,10 @@ Optional<String> StyleComputer::user_agent_style_sheet_source(StringView name)
     if (name == "MathML/Default.css"sv)
         return mathml_stylesheet_source;
 #endif
+#if ENABLE_SVG
     if (name == "SVG/Default.css"sv)
         return svg_stylesheet_source;
+#endif
     return {};
 }
 

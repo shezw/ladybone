@@ -12,7 +12,9 @@
 #include <LibWeb/Layout/Box.h>
 #include <LibWeb/Layout/LineBox.h>
 #include <LibWeb/Painting/PaintableBox.h>
+#if ENABLE_SVG
 #include <LibWeb/Painting/SVGGraphicsPaintable.h>
+#endif
 
 namespace Web::Layout {
 
@@ -256,12 +258,14 @@ struct LayoutState {
             return &*m_rare->computed_svg_path;
         }
 
+#if ENABLE_SVG
         void set_computed_svg_transforms(Painting::SVGGraphicsPaintable::ComputedTransforms const& computed_transforms) { ensure_rare_data().computed_svg_transforms = computed_transforms; }
         Optional<Painting::SVGGraphicsPaintable::ComputedTransforms> const& computed_svg_transforms() const
         {
             static Optional<Painting::SVGGraphicsPaintable::ComputedTransforms> const empty;
             return m_rare ? m_rare->computed_svg_transforms : empty;
         }
+#endif
 
         void set_grid_template_columns(RefPtr<CSS::GridTrackSizeListStyleValue const> used_values_for_grid_template_columns) { ensure_rare_data().grid_template_columns = move(used_values_for_grid_template_columns); }
         RefPtr<CSS::GridTrackSizeListStyleValue const> const& grid_template_columns() const
@@ -313,7 +317,9 @@ struct LayoutState {
             RefPtr<CSS::GridTrackSizeListStyleValue const> grid_template_rows;
             Optional<CSSPixelSize> grid_area_size;
             Optional<Painting::PaintableBox::BordersDataWithElementKind> override_borders_data;
+#if ENABLE_SVG
             Optional<Painting::SVGGraphicsPaintable::ComputedTransforms> computed_svg_transforms;
+#endif
             Optional<StaticPositionRect> static_position_rect;
             Optional<StaticPositionRect> inline_end_static_position_rect;
         };

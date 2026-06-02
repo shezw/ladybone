@@ -21,8 +21,10 @@
 #include <LibWeb/Layout/InlineNode.h>
 #include <LibWeb/Layout/ReplacedBox.h>
 #include <LibWeb/Layout/ReplacedWithChildrenFormattingContext.h>
+#if ENABLE_SVG
 #include <LibWeb/Layout/SVGFormattingContext.h>
 #include <LibWeb/Layout/SVGSVGBox.h>
+#endif
 #include <LibWeb/Layout/TableFormattingContext.h>
 #include <LibWeb/Layout/TextInputBox.h>
 #include <LibWeb/Layout/TextNode.h>
@@ -290,8 +292,10 @@ bool FormattingContext::creates_block_formatting_context(Box const& box)
 
 Optional<FormattingContext::Type> FormattingContext::formatting_context_type_created_by_box(Box const& box)
 {
+#if ENABLE_SVG
     if (is<SVGSVGBox>(box))
         return Type::SVG;
+#endif
 
     if (box.is_replaced_box_with_children())
         return Type::ReplacedWithChildren;
@@ -368,7 +372,11 @@ OwnPtr<FormattingContext> FormattingContext::create_independent_formatting_conte
     case Type::Block:
         return make<BlockFormattingContext>(state, layout_mode, as<BlockContainer>(child_box), this);
     case Type::SVG:
+#if ENABLE_SVG
         return make<SVGFormattingContext>(state, layout_mode, child_box, this);
+#else
+        VERIFY_NOT_REACHED();
+#endif
     case Type::Flex:
         return make<FlexFormattingContext>(state, layout_mode, child_box, this);
     case Type::Grid:

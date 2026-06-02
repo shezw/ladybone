@@ -7,6 +7,7 @@
 #include <AK/Debug.h>
 #include <LibJS/Runtime/Realm.h>
 #include <LibWeb/Bindings/Worker.h>
+#include <LibWeb/HTML/EventNames.h>
 #include <LibWeb/HTML/MessagePort.h>
 #include <LibWeb/HTML/Scripting/Environments.h>
 #include <LibWeb/HTML/Scripting/WindowEnvironmentSettingsObject.h>

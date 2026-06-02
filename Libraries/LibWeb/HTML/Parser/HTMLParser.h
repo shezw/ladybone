@@ -17,11 +17,11 @@
 
 struct RustFfiHtmlParserHandle;
 
+#if ENABLE_SVG
 namespace Web::SVG {
-
 class SVGScriptElement;
-
 }
+#endif
 
 namespace Web::HTML {
 
@@ -67,12 +67,16 @@ public:
 
     void configure_element_created_by_rust_parser(DOM::Element&);
     GC::Ref<DOM::Element> create_element_for_rust_parser(HTMLToken const&, Optional<FlyString> const& namespace_, DOM::Node& intended_parent, bool had_duplicate_attribute, GC::Ptr<HTMLFormElement>, bool has_template_element_on_stack);
+#if ENABLE_SVG
     void prepare_svg_script_for_rust_parser(SVG::SVGScriptElement&, size_t source_line_number);
+#endif
     void set_script_source_line_from_rust_parser(DOM::Element&, size_t source_line_number);
     void mark_script_already_started_from_rust_parser(HTMLScriptElement&);
     void stop_parsing_from_rust_parser();
     bool process_script_end_tag_from_rust_parser(HTMLScriptElement&);
+#if ENABLE_SVG
     bool process_svg_script_end_tag_from_rust_parser(SVG::SVGScriptElement&);
+#endif
 
     // https://html.spec.whatwg.org/multipage/parsing.html#abort-a-parser
     void abort();

@@ -33,15 +33,19 @@
 #include <LibWeb/Painting/DisplayListRecordingContext.h>
 #include <LibWeb/Painting/PaintableBox.h>
 #include <LibWeb/Painting/ResizeHandle.h>
+#if ENABLE_SVG
 #include <LibWeb/Painting/SVGPaintable.h>
 #include <LibWeb/Painting/SVGSVGPaintable.h>
+#endif
 #include <LibWeb/Painting/Scrollbar.h>
 #include <LibWeb/Painting/ShadowPainting.h>
 #include <LibWeb/Painting/StackingContext.h>
 #include <LibWeb/Painting/TableBordersPainting.h>
 #include <LibWeb/Painting/ViewportPaintable.h>
 #include <LibWeb/Platform/FontPlugin.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGFilterElement.h>
+#endif
 
 namespace Web::Painting {
 
@@ -322,6 +326,7 @@ ResolvedCSSFilter resolve_css_filter(CSS::Filter const& computed_filter, Paintab
                 });
             },
             [&](CSS::URL const& css_url) {
+#if ENABLE_SVG
                 auto& url_string = css_url.url();
                 if (url_string.is_empty() || !url_string.starts_with('#'))
                     return;
@@ -341,6 +346,9 @@ ResolvedCSSFilter resolve_css_filter(CSS::Filter const& computed_filter, Paintab
                     if (!bounds.is_empty())
                         result.svg_filter_bounds = bounds;
                 }
+#else
+                (void)css_url;
+#endif
             });
     }
     return result;
@@ -801,8 +809,10 @@ bool PaintableBox::overflow_property_applies() const
     // Overflow properties apply to block containers, flex containers and grid containers.
     // FIXME: Ideally we would check whether overflow applies positively rather than listing exceptions. However,
     //        not all elements that should support overflow are currently identifiable that way.
+#if ENABLE_SVG
     if (is<SVGPaintable>(*this))
         return false;
+#endif
     auto const& display = computed_values().display();
     if (layout_node().is_inline_node())
         return false;
@@ -1605,6 +1615,7 @@ CSSPixelRect PaintableBox::transform_reference_box() const
     // border-box is stroke-box.
     // FIXME: This currently detects any SVG element except the <svg> one. Is that correct?
     //        And is it correct to use `else` below?
+#if ENABLE_SVG
     if (is<Painting::SVGPaintable>(*this)) {
         switch (transform_box) {
         case CSS::TransformBox::ContentBox:
@@ -1620,6 +1631,7 @@ CSSPixelRect PaintableBox::transform_reference_box() const
     // For elements with associated CSS layout box, the used value for fill-box is content-box and for
     // stroke-box and view-box is border-box.
     else {
+#endif
         switch (transform_box) {
         case CSS::TransformBox::FillBox:
             transform_box = CSS::TransformBox::ContentBox;
@@ -1631,7 +1643,9 @@ CSSPixelRect PaintableBox::transform_reference_box() const
         default:
             break;
         }
+#if ENABLE_SVG
     }
+#endif
 
     switch (transform_box) {
     case CSS::TransformBox::ContentBox:
@@ -1651,6 +1665,7 @@ CSSPixelRect PaintableBox::transform_reference_box() const
         // FIXME: For now we're using the border rect as an approximation.
         return absolute_border_box_rect();
     case CSS::TransformBox::ViewBox:
+#if ENABLE_SVG
         // Uses the nearest SVG viewport as reference box.
         // FIXME: If a viewBox attribute is specified for the SVG viewport creating element:
         //  - The reference box is positioned at the origin of the coordinate system established by the viewBox attribute.
@@ -1659,6 +1674,9 @@ CSSPixelRect PaintableBox::transform_reference_box() const
         if (!svg_paintable)
             return absolute_border_box_rect();
         return svg_paintable->absolute_rect();
+#else
+        return absolute_border_box_rect();
+#endif
     }
     VERIFY_NOT_REACHED();
 }

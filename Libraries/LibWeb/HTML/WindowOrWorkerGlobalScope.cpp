@@ -17,20 +17,17 @@
 #include <LibGfx/ScalingMode.h>
 #include <LibJS/Runtime/Array.h>
 #include <LibJS/Runtime/TypedArray.h>
-#include <LibWeb/Bindings/ImageBitmap.h>
 #include <LibWeb/Bindings/MainThreadVM.h>
 #include <LibWeb/Bindings/PerformanceObserver.h>
 #include <LibWeb/ContentSecurityPolicy/BlockingAlgorithms.h>
 #include <LibWeb/Crypto/Crypto.h>
 #include <LibWeb/Fetch/FetchMethod.h>
-#include <LibWeb/HTML/CanvasRenderingContext2D.h>
 #include <LibWeb/HTML/DedicatedWorkerGlobalScope.h>
 #include <LibWeb/HTML/ErrorEvent.h>
 #include <LibWeb/HTML/ErrorInformation.h>
 #include <LibWeb/HTML/EventLoop/EventLoop.h>
 #include <LibWeb/HTML/EventSource.h>
 #include <LibWeb/HTML/HTMLImageElement.h>
-#include <LibWeb/HTML/ImageBitmap.h>
 #include <LibWeb/HTML/Scripting/ClassicScript.h>
 #include <LibWeb/HTML/Scripting/Environments.h>
 #include <LibWeb/HTML/Scripting/ExceptionReporter.h>
@@ -54,7 +51,6 @@
 #include <LibWeb/Platform/EventLoopPlugin.h>
 #include <LibWeb/Platform/ImageCodecPlugin.h>
 #include <LibWeb/ResourceTiming/PerformanceResourceTiming.h>
-#include <LibWeb/SVG/SVGImageElement.h>
 #include <LibWeb/ServiceWorker/CacheStorage.h>
 #include <LibWeb/TrustedTypes/TrustedTypePolicyFactory.h>
 #include <LibWeb/UserTiming/PerformanceMark.h>
@@ -64,6 +60,12 @@
 #include <LibWeb/WebIDL/ExceptionOr.h>
 #include <LibWeb/WebIDL/Types.h>
 #include <LibWeb/WebSockets/WebSocket.h>
+
+#if ENABLE_CANVAS
+#    include <LibWeb/Bindings/ImageBitmap.h>
+#    include <LibWeb/HTML/CanvasRenderingContext2D.h>
+#    include <LibWeb/HTML/ImageBitmap.h>
+#endif
 
 namespace Web::HTML {
 
@@ -126,6 +128,7 @@ bool WindowOrWorkerGlobalScopeMixin::cross_origin_isolated() const
 }
 
 // https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#dom-createimagebitmap
+#if ENABLE_CANVAS
 GC::Ref<WebIDL::Promise> WindowOrWorkerGlobalScopeMixin::create_image_bitmap(ImageBitmapSource image, Optional<Bindings::ImageBitmapOptions> options) const
 {
     return create_image_bitmap_impl(image, {}, {}, {}, {}, options);
@@ -499,6 +502,7 @@ GC::Ref<WebIDL::Promise> WindowOrWorkerGlobalScopeMixin::create_image_bitmap_imp
     // 7. Return promise.
     return p;
 }
+#endif
 
 GC::Ref<WebIDL::Promise> WindowOrWorkerGlobalScopeMixin::fetch(Fetch::RequestInfo const& input, Bindings::RequestInit const& init) const
 {

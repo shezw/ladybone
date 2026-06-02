@@ -7,7 +7,9 @@
 #pragma once
 
 #include <LibWeb/Layout/ImageBox.h>
+#if ENABLE_SVG
 #include <LibWeb/Layout/SVGImageBox.h>
+#endif
 #include <LibWeb/Painting/PaintableBox.h>
 
 namespace Web::Painting {
@@ -15,7 +17,9 @@ namespace Web::Painting {
 class ImagePaintable final : public PaintableBox {
 public:
     static NonnullRefPtr<ImagePaintable> create(Layout::ImageBox const& layout_box);
+#if ENABLE_SVG
     static NonnullRefPtr<ImagePaintable> create(Layout::SVGImageBox const& layout_box);
+#endif
     virtual StringView class_name() const override { return "ImagePaintable"sv; }
 
     virtual void paint(DisplayListRecordingContext&, PaintPhase) const override;

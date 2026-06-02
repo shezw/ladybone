@@ -18,10 +18,11 @@
 #include <LibWeb/Painting/DisplayListRecorder.h>
 #include <LibWeb/Painting/PaintableBox.h>
 #include <LibWeb/Painting/PaintableWithLines.h>
-#include <LibWeb/Painting/SVGSVGPaintable.h>
 #include <LibWeb/Painting/StackingContext.h>
 #include <LibWeb/Painting/ViewportPaintable.h>
-#include <LibWeb/SVG/SVGMaskElement.h>
+#if ENABLE_SVG
+#    include <LibWeb/Painting/SVGSVGPaintable.h>
+#endif
 
 namespace Web::Painting {
 
@@ -94,6 +95,7 @@ void StackingContext::set_last_paint_generation_id(u64 generation_id)
     m_last_paint_generation_id = generation_id;
 }
 
+#if ENABLE_SVG
 static PaintPhase to_paint_phase(StackingContext::StackingContextPaintPhase phase)
 {
     // There are not a fully correct mapping since some stacking context phases are combined.
@@ -108,6 +110,7 @@ static PaintPhase to_paint_phase(StackingContext::StackingContextPaintPhase phas
         VERIFY_NOT_REACHED();
     }
 }
+#endif
 
 static bool establishes_inline_level_painting_context(Paintable const& paintable)
 {
@@ -137,10 +140,12 @@ static void paint_inline_level_non_positioned_descendant(DisplayListRecordingCon
 
 void StackingContext::paint_node_as_stacking_context(Paintable const& paintable, DisplayListRecordingContext& context)
 {
+#if ENABLE_SVG
     if (paintable.is_svg_svg_paintable()) {
         paint_svg(context, static_cast<PaintableBox const&>(paintable), PaintPhase::Foreground);
         return;
     }
+#endif
 
     paint_node(paintable, context, PaintPhase::Background);
     paint_node(paintable, context, PaintPhase::Border);
@@ -155,12 +160,19 @@ void StackingContext::paint_node_as_stacking_context(Paintable const& paintable,
 
 void StackingContext::paint_svg(DisplayListRecordingContext& context, PaintableBox const& paintable, PaintPhase phase)
 {
+#if ENABLE_SVG
     if (phase != PaintPhase::Foreground)
         return;
 
     paint_node(paintable, context, PaintPhase::Background);
     paint_node(paintable, context, PaintPhase::Border);
     SVGSVGPaintable::paint_svg_box(context, paintable, phase);
+#else
+    (void)context;
+    (void)paintable;
+    (void)phase;
+    VERIFY_NOT_REACHED();
+#endif
 }
 
 void StackingContext::paint_descendants(DisplayListRecordingContext& context, Paintable const& paintable, StackingContextPaintPhase phase)
@@ -176,10 +188,12 @@ void StackingContext::paint_descendants(DisplayListRecordingContext& context, Pa
         if (child.is_positioned() && z_index().value_or(0) == 0)
             return IterationDecision::Continue;
 
+#if ENABLE_SVG
         if (child.is_svg_svg_paintable()) {
             paint_svg(context, static_cast<PaintableBox const&>(child), to_paint_phase(phase));
             return IterationDecision::Continue;
         }
+#endif
 
         // NOTE: Flex and grid items should be treated the same way as CSS2 defines for inline-blocks:
         //       - https://drafts.csswg.org/css-flexbox-1/#painting
@@ -249,13 +263,16 @@ void StackingContext::paint_descendants(DisplayListRecordingContext& context, Pa
 
 void StackingContext::paint_child(DisplayListRecordingContext& context, StackingContext const& child)
 {
+#if ENABLE_SVG
     VERIFY(!child.paintable_box().is_svg_paintable());
+#endif
     const_cast<StackingContext&>(child).set_last_paint_generation_id(context.paint_generation_id());
     child.paint(context);
 }
 
 void StackingContext::paint_internal(DisplayListRecordingContext& context) const
 {
+#if ENABLE_SVG
     VERIFY(!paintable_box().is_svg_paintable());
     if (paintable_box().is_svg_svg_paintable()) {
         auto const& svg_svg_paintable = static_cast<SVGSVGPaintable const&>(paintable_box());
@@ -270,6 +287,7 @@ void StackingContext::paint_internal(DisplayListRecordingContext& context) const
         }
         return;
     }
+#endif
 
     // For a more elaborate description of the algorithm, see CSS 2.1 Appendix E
     // Draw the background and borders for the context root (steps 1, 2)

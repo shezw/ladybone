@@ -18,7 +18,6 @@
 #include <LibWeb/HTML/HTMLBaseElement.h>
 #include <LibWeb/HTML/HTMLBodyElement.h>
 #include <LibWeb/HTML/HTMLButtonElement.h>
-#include <LibWeb/HTML/HTMLCanvasElement.h>
 #include <LibWeb/HTML/HTMLDListElement.h>
 #include <LibWeb/HTML/HTMLDataElement.h>
 #include <LibWeb/HTML/HTMLDataListElement.h>
@@ -87,6 +86,9 @@
 #include <LibWeb/HTML/Scripting/SimilarOriginWindowAgent.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>
 #include <LibWeb/Infra/Strings.h>
+#if ENABLE_CANVAS
+#include <LibWeb/HTML/HTMLCanvasElement.h>
+#endif
 #if ENABLE_MATHML
 #include <LibWeb/MathML/MathMLElement.h>
 #include <LibWeb/MathML/MathMLMiElement.h>
@@ -94,6 +96,7 @@
 #include <LibWeb/MathML/TagNames.h>
 #endif
 #include <LibWeb/Namespace.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGAElement.h>
 #include <LibWeb/SVG/SVGCircleElement.h>
 #include <LibWeb/SVG/SVGClipPathElement.h>
@@ -144,6 +147,7 @@
 #include <LibWeb/SVG/SVGUseElement.h>
 #include <LibWeb/SVG/SVGViewElement.h>
 #include <LibWeb/SVG/TagNames.h>
+#endif
 #include <LibWeb/WebIDL/AbstractOperations.h>
 
 namespace Web::DOM {
@@ -164,8 +168,10 @@ ErrorOr<FixedArray<FlyString>> valid_local_names_for_given_html_element_interfac
         return FixedArray<FlyString>::create({ HTML::TagNames::br });
     if (html_element_interface_name == "HTMLButtonElement"sv)
         return FixedArray<FlyString>::create({ HTML::TagNames::button });
+#if ENABLE_CANVAS
     if (html_element_interface_name == "HTMLCanvasElement"sv)
         return FixedArray<FlyString>::create({ HTML::TagNames::canvas });
+#endif
     if (html_element_interface_name == "HTMLDataElement"sv)
         return FixedArray<FlyString>::create({ HTML::TagNames::data });
     if (html_element_interface_name == "HTMLDataListElement"sv)
@@ -340,8 +346,10 @@ static GC::Ref<Element> create_html_element(Document& document, QualifiedName qu
         return realm.create<HTML::HTMLBRElement>(document, move(qualified_name));
     if (tag_name == HTML::TagNames::button)
         return realm.create<HTML::HTMLButtonElement>(document, move(qualified_name));
+#if ENABLE_CANVAS
     if (tag_name == HTML::TagNames::canvas)
         return realm.create<HTML::HTMLCanvasElement>(document, move(qualified_name));
+#endif
     if (tag_name == HTML::TagNames::data)
         return realm.create<HTML::HTMLDataElement>(document, move(qualified_name));
     if (tag_name == HTML::TagNames::datalist)
@@ -478,6 +486,7 @@ static GC::Ref<Element> create_html_element(Document& document, QualifiedName qu
     return realm.create<HTML::HTMLUnknownElement>(document, move(qualified_name));
 }
 
+#if ENABLE_SVG
 static GC::Ref<SVG::SVGElement> create_svg_element(Document& document, QualifiedName qualified_name)
 {
     auto& realm = document.realm();
@@ -588,6 +597,7 @@ static GC::Ref<SVG::SVGElement> create_svg_element(Document& document, Qualified
     // specification supported by the software must nonetheless implement the SVGElement interface.
     return realm.create<SVG::SVGElement>(document, move(qualified_name));
 }
+#endif
 
 #if ENABLE_MATHML
 static GC::Ref<MathML::MathMLElement> create_mathml_element(Document& document, QualifiedName qualified_name)
@@ -785,7 +795,11 @@ WebIDL::ExceptionOr<GC::Ref<Element>> create_element(Document& document, FlyStri
         }
 
         else if (namespace_ == Namespace::SVG) {
+#if ENABLE_SVG
             result = create_element_internal(document, create_svg_element, local_name, namespace_, prefix, CustomElementState::Uncustomized, is_value, registry);
+#else
+            result = create_element_internal(document, [](auto& document, auto qualified_name) { return document.realm().template create<DOM::Element>(document, qualified_name); }, local_name, namespace_, prefix, CustomElementState::Uncustomized, is_value, registry);
+#endif
         }
 
         else if (namespace_ == Namespace::MathML) {

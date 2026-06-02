@@ -723,14 +723,14 @@ void HTMLSelectElement::create_shadow_tree_if_needed()
         margin-left: 4px;
     )~~~"_string);
 
-    auto chevron_svg_element = DOM::create_element(document(), SVG::TagNames::svg, Namespace::SVG).release_value_but_fixme_should_propagate_errors();
-    chevron_svg_element->set_attribute_value(SVG::AttributeNames::xmlns, Namespace::SVG.to_string());
-    chevron_svg_element->set_attribute_value(SVG::AttributeNames::viewBox, "0 0 24 24"_string);
+    auto chevron_svg_element = DOM::create_element(document(), "svg"_fly_string, Namespace::SVG).release_value_but_fixme_should_propagate_errors();
+    chevron_svg_element->set_attribute_value("xmlns"_fly_string, Namespace::SVG.to_string());
+    chevron_svg_element->set_attribute_value("viewBox"_fly_string, "0 0 24 24"_string);
     MUST(m_chevron_icon_element->append_child(chevron_svg_element));
 
-    auto chevron_path_element = DOM::create_element(document(), SVG::TagNames::path, Namespace::SVG).release_value_but_fixme_should_propagate_errors();
-    chevron_path_element->set_attribute_value(SVG::AttributeNames::fill, "currentcolor"_string);
-    chevron_path_element->set_attribute_value(SVG::AttributeNames::d, "M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"_string);
+    auto chevron_path_element = DOM::create_element(document(), "path"_fly_string, Namespace::SVG).release_value_but_fixme_should_propagate_errors();
+    chevron_path_element->set_attribute_value("fill"_fly_string, "currentcolor"_string);
+    chevron_path_element->set_attribute_value("d"_fly_string, "M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"_string);
     MUST(chevron_svg_element->append_child(chevron_path_element));
 
     MUST(border->append_child(*m_chevron_icon_element));

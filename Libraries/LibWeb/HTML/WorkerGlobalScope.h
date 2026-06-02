@@ -59,7 +59,9 @@ public:
     using UniversalGlobalScopeMixin::structured_clone;
     using WindowOrWorkerGlobalScopeMixin::clear_interval;
     using WindowOrWorkerGlobalScopeMixin::clear_timeout;
+#if ENABLE_CANVAS
     using WindowOrWorkerGlobalScopeMixin::create_image_bitmap;
+#endif
     using WindowOrWorkerGlobalScopeMixin::fetch;
     using WindowOrWorkerGlobalScopeMixin::performance;
     using WindowOrWorkerGlobalScopeMixin::set_interval;

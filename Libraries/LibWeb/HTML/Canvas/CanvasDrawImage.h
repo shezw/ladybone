@@ -15,14 +15,20 @@
 #include <LibWeb/HTML/HTMLImageElement.h>
 #include <LibWeb/HTML/HTMLVideoElement.h>
 #include <LibWeb/HTML/OffscreenCanvas.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGImageElement.h>
+#endif
 #include <LibWeb/WebIDL/ExceptionOr.h>
 
 namespace Web::HTML {
 
 // https://html.spec.whatwg.org/multipage/canvas.html#canvasimagesource
 // NOTE: This is the Variant created by the IDL wrapper generator, and needs to be updated accordingly.
+#if ENABLE_SVG
 using CanvasImageSource = Variant<GC::Ref<HTMLImageElement>, GC::Ref<SVG::SVGImageElement>, GC::Ref<HTMLCanvasElement>, GC::Ref<ImageBitmap>, GC::Ref<OffscreenCanvas>, GC::Ref<HTMLVideoElement>>;
+#else
+using CanvasImageSource = Variant<GC::Ref<HTMLImageElement>, GC::Ref<HTMLCanvasElement>, GC::Ref<ImageBitmap>, GC::Ref<OffscreenCanvas>, GC::Ref<HTMLVideoElement>>;
+#endif
 
 Gfx::IntSize canvas_image_source_dimensions(CanvasImageSource const&);
 Optional<Gfx::DecodedImageFrame> canvas_image_source_frame(CanvasImageSource const&);

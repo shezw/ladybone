@@ -16,7 +16,9 @@
 #include <LibWeb/Layout/LayoutState.h>
 #include <LibWeb/Layout/Viewport.h>
 #include <LibWeb/Painting/PaintableWithLines.h>
+#if ENABLE_SVG
 #include <LibWeb/Painting/SVGPathPaintable.h>
+#endif
 #include <LibWeb/Painting/TextPaintable.h>
 
 namespace Web::Layout {
@@ -554,6 +556,7 @@ void LayoutState::commit(Box& root)
                 }
             }
 
+#if ENABLE_SVG
             if (auto* svg_graphics_paintable = as_if<Painting::SVGGraphicsPaintable>(paintable.ptr());
                 svg_graphics_paintable && used_values.computed_svg_transforms().has_value()) {
                 svg_graphics_paintable->set_computed_transforms(*used_values.computed_svg_transforms());
@@ -563,6 +566,7 @@ void LayoutState::commit(Box& root)
                 if (auto* path = used_values.computed_svg_path())
                     svg_path_paintable->set_computed_path(move(*path));
             }
+#endif
 
             if (node.display().is_grid_inside()) {
                 paintable_box->set_used_values_for_grid_template_columns(used_values.grid_template_columns());
@@ -959,8 +963,10 @@ void LayoutState::UsedValues::materialize_from_paintable(Painting::PaintableBox 
     inset_top = box_model.inset.top;
     inset_bottom = box_model.inset.bottom;
 
+#if ENABLE_SVG
     if (auto const* svg_graphics_paintable = as_if<Painting::SVGGraphicsPaintable>(paintable))
         set_computed_svg_transforms(svg_graphics_paintable->computed_transforms());
+#endif
 }
 
 void LayoutState::UsedValues::set_content_width(CSSPixels width)

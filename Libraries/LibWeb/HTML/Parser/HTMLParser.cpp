@@ -35,6 +35,7 @@
 #include <LibWeb/HTML/HTMLFormElement.h>
 #include <LibWeb/HTML/HTMLHtmlElement.h>
 #include <LibWeb/HTML/HTMLLinkElement.h>
+#include <LibWeb/HTML/HTMLMediaElement.h>
 #include <LibWeb/HTML/HTMLOptionElement.h>
 #include <LibWeb/HTML/HTMLScriptElement.h>
 #include <LibWeb/HTML/HTMLTemplateElement.h>
@@ -51,7 +52,9 @@
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/Namespace.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGScriptElement.h>
+#endif
 
 namespace Web::HTML {
 
@@ -165,8 +168,10 @@ void HTMLParser::run(HTMLTokenizer::StopAtInsertionPoint stop_at_insertion_point
         if (result == RustFfiHtmlParserRunResult::ExecuteSvgScript) {
             auto script = rust_html_parser_take_pending_svg_script(m_rust_parser);
             VERIFY(script);
+#if ENABLE_SVG
             if (process_svg_script_end_tag_from_rust_parser(as<SVG::SVGScriptElement>(node_from_html_parser_ffi(script))))
                 break;
+#endif
             continue;
         }
 
@@ -297,6 +302,7 @@ bool HTMLParser::process_script_end_tag_from_rust_parser(HTMLScriptElement& scri
     return m_parser_pause_flag;
 }
 
+#if ENABLE_SVG
 void HTMLParser::prepare_svg_script_for_rust_parser(SVG::SVGScriptElement& script, size_t source_line_number)
 {
     // AD-HOC: For SVG script elements, set the parser-inserted flag before the element is inserted into the DOM.
@@ -310,6 +316,7 @@ void HTMLParser::prepare_svg_script_for_rust_parser(SVG::SVGScriptElement& scrip
         script.set_parser_inserted({});
     script.set_source_line_number({}, source_line_number);
 }
+#endif
 
 void HTMLParser::set_script_source_line_from_rust_parser(DOM::Element& element, size_t source_line_number)
 {
@@ -317,8 +324,10 @@ void HTMLParser::set_script_source_line_from_rust_parser(DOM::Element& element, 
         html_script_element->set_source_line_number({}, source_line_number);
         return;
     }
+#if ENABLE_SVG
     if (auto* svg_script_element = as_if<SVG::SVGScriptElement>(element))
         svg_script_element->set_source_line_number({}, source_line_number);
+#endif
 }
 
 void HTMLParser::mark_script_already_started_from_rust_parser(HTMLScriptElement& script)
@@ -331,6 +340,7 @@ void HTMLParser::stop_parsing_from_rust_parser()
     stop_parsing();
 }
 
+#if ENABLE_SVG
 bool HTMLParser::process_svg_script_end_tag_from_rust_parser(SVG::SVGScriptElement& script)
 {
     // Let the old insertion point have the same value as the current insertion point.
@@ -369,6 +379,7 @@ bool HTMLParser::process_svg_script_end_tag_from_rust_parser(SVG::SVGScriptEleme
 
     return m_parser_pause_flag;
 }
+#endif
 
 void HTMLParser::run_until_completion(HTMLTokenizer::StopAtInsertionPoint stop_at_insertion_point)
 {
@@ -777,12 +788,16 @@ void HTMLParser::resume_after_parser_blocking_script()
         return;
 
     auto pending = document().pending_parsing_blocking_script();
+#if ENABLE_SVG
     auto pending_svg = document().pending_parsing_blocking_svg_script();
+#endif
     bool ready = false;
     if (pending)
         ready = pending->is_ready_to_be_parser_executed();
+#if ENABLE_SVG
     else if (pending_svg)
         ready = pending_svg->is_ready_to_be_parser_executed();
+#endif
     else
         return;
 
@@ -831,8 +846,10 @@ void HTMLParser::resume_after_parser_blocking_script()
     // 11. Execute the script element the script.
     if (pending)
         document().take_pending_parsing_blocking_script({})->execute_script();
+#if ENABLE_SVG
     else
         document().take_pending_parsing_blocking_svg_script({})->execute_pending_parser_blocking_script({});
+#endif
 
     // 12. Decrement the parser's script nesting level by one.
     decrement_script_nesting_level();
@@ -1963,7 +1980,13 @@ extern "C" void ladybird_html_parser_handle_element_popped(size_t element)
 
 extern "C" void ladybird_html_parser_prepare_svg_script(void* parser, size_t element, size_t source_line_number)
 {
+#if ENABLE_SVG
     parser_from_html_parser_ffi(parser).prepare_svg_script_for_rust_parser(as<SVG::SVGScriptElement>(node_from_html_parser_ffi(element)), source_line_number);
+#else
+    (void)parser;
+    (void)element;
+    (void)source_line_number;
+#endif
 }
 
 extern "C" void ladybird_html_parser_set_script_source_line(void* parser, size_t element, size_t source_line_number)

@@ -26,7 +26,6 @@
 #include <LibWeb/Layout/TextNode.h>
 #include <LibWeb/Painting/Paintable.h>
 #include <LibWeb/Platform/FontPlugin.h>
-#include <LibWeb/SVG/SVGImageElement.h>
 #include <LibWeb/WebIDL/ExceptionOr.h>
 
 namespace Web::HTML {

@@ -46,13 +46,17 @@
 #include <LibWeb/Layout/InlineNode.h>
 #include <LibWeb/Layout/NavigableContainerViewport.h>
 #include <LibWeb/Layout/Node.h>
+#if ENABLE_SVG
 #include <LibWeb/Layout/SVGBox.h>
+#endif
 #include <LibWeb/Layout/TextNode.h>
 #include <LibWeb/Layout/Viewport.h>
 #include <LibWeb/Namespace.h>
 #include <LibWeb/Painting/PaintableWithLines.h>
 #include <LibWeb/Painting/TextPaintable.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGDecodedImageData.h>
+#endif
 
 namespace Web {
 
@@ -120,6 +124,7 @@ void dump_tree(StringBuilder& builder, DOM::Node const& node)
     ++indent;
     if (auto const* element = as_if<DOM::Element>(node); element && element->shadow_root())
         dump_tree(builder, *element->shadow_root());
+#if ENABLE_SVG
     if (auto const* image = as_if<HTML::HTMLImageElement>(node)) {
         if (auto const* svg_data = as_if<SVG::SVGDecodedImageData>(image->current_request().image_data().ptr())) {
             ++indent;
@@ -130,6 +135,7 @@ void dump_tree(StringBuilder& builder, DOM::Node const& node)
             --indent;
         }
     }
+#endif
     if (auto const* template_element = as_if<HTML::HTMLTemplateElement>(node)) {
         for (int i = 0; i < indent; ++i)
             builder.append("  "sv);
@@ -252,7 +258,11 @@ void dump_tree(StringBuilder& builder, Layout::Node const& layout_node, bool sho
         dump_box_model();
     } else {
         auto& box = as<Layout::Box>(layout_node);
-        StringView color_on = is<Layout::SVGBox>(box) ? svg_box_color_on : box_color_on;
+        StringView color_on =
+#if ENABLE_SVG
+            is<Layout::SVGBox>(box) ? svg_box_color_on :
+#endif
+                                     box_color_on;
 
         builder.appendff("{}{}{} <{}{}{}{}> ",
             color_on,
@@ -346,6 +356,7 @@ void dump_tree(StringBuilder& builder, Layout::Node const& layout_node, bool sho
 
     builder.append("\n"sv);
 
+#if ENABLE_SVG
     if (layout_node.dom_node() && is<HTML::HTMLImageElement>(*layout_node.dom_node())) {
         if (auto image_data = static_cast<HTML::HTMLImageElement const&>(*layout_node.dom_node()).current_request().image_data()) {
             if (is<SVG::SVGDecodedImageData>(*image_data)) {
@@ -363,6 +374,7 @@ void dump_tree(StringBuilder& builder, Layout::Node const& layout_node, bool sho
             }
         }
     }
+#endif
 
     auto dump_fragment = [&](auto& fragment, size_t fragment_index) {
         builder.append_repeated("  "sv, indent);

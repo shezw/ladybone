@@ -23,7 +23,9 @@
 #include <LibWeb/Loader/ResourceLoader.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Platform/ImageCodecPlugin.h>
-#include <LibWeb/SVG/SVGDecodedImageData.h>
+#if ENABLE_SVG
+#    include <LibWeb/SVG/SVGDecodedImageData.h>
+#endif
 
 namespace Web::HTML {
 
@@ -193,6 +195,7 @@ void SharedResourceRequest::handle_successful_fetch(URL::URL const& url_string, 
         || (mime_type.is_empty() && url_string.basename().ends_with(".svg"sv));
 
     if (is_svg_image) {
+#if ENABLE_SVG
         auto result = SVG::SVGDecodedImageData::create(m_document->realm(), m_page, url_string, data);
         if (result.is_error()) {
             handle_failed_fetch();
@@ -200,6 +203,9 @@ void SharedResourceRequest::handle_successful_fetch(URL::URL const& url_string, 
             m_image_data = result.release_value();
             handle_successful_resource_load();
         }
+#else
+        handle_failed_fetch();
+#endif
         return;
     }
 

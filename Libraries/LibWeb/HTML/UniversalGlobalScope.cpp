@@ -16,6 +16,7 @@
 #include <LibTextCodec/Decoder.h>
 #include <LibWeb/Bindings/MessagePort.h>
 #include <LibWeb/Bindings/PromiseRejectionEvent.h>
+#include <LibWeb/HTML/EventNames.h>
 #include <LibWeb/HTML/PromiseRejectionEvent.h>
 #include <LibWeb/HTML/Scripting/ExceptionReporter.h>
 #include <LibWeb/HTML/StructuredSerialize.h>

@@ -23,7 +23,9 @@
 #include <LibWeb/HTML/HTMLSelectedContentElement.h>
 #include <LibWeb/HighResolutionTime/TimeOrigin.h>
 #include <LibWeb/Infra/Strings.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGScriptElement.h>
+#endif
 
 namespace Web::HTML {
 
@@ -121,7 +123,11 @@ void HTMLOptionElement::set_value(Utf16String const& value)
 
 static void concatenate_descendants_text_content(DOM::Node const* node, StringBuilder& builder)
 {
-    if (is<HTMLScriptElement>(node) || is<SVG::SVGScriptElement>(node))
+    if (is<HTMLScriptElement>(node)
+#if ENABLE_SVG
+        || is<SVG::SVGScriptElement>(node)
+#endif
+    )
         return;
     if (is<DOM::Text>(node))
         builder.append(as<DOM::Text>(node)->data());

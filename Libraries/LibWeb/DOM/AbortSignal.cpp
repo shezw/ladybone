@@ -11,6 +11,7 @@
 #include <LibWeb/DOM/AbortSignal.h>
 #include <LibWeb/DOM/Document.h>
 #include <LibWeb/DOM/EventDispatcher.h>
+#include <LibWeb/HTML/EventNames.h>
 #include <LibWeb/HTML/EventHandler.h>
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>

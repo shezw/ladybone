@@ -36,14 +36,14 @@
 #include <LibWeb/Layout/ImageBox.h>
 #include <LibWeb/Layout/InlineNode.h>
 #include <LibWeb/Layout/Node.h>
+#if ENABLE_SVG
 #include <LibWeb/Layout/SVGSVGBox.h>
+#endif
 #include <LibWeb/Layout/TableWrapper.h>
 #include <LibWeb/Layout/TextNode.h>
 #include <LibWeb/Layout/Viewport.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Painting/PaintableBox.h>
-#include <LibWeb/SVG/SVGFilterElement.h>
-#include <LibWeb/SVG/SVGForeignObjectElement.h>
 
 namespace Web::Layout {
 
@@ -1575,7 +1575,7 @@ bool NodeWithStyleAndBoxModelMetrics::should_create_inline_continuation() const
         return false;
 
     // Parent element must not be <foreignObject>
-    if (is<SVG::SVGForeignObjectElement>(parent()->dom_node()))
+    if (parent()->dom_node() && parent()->dom_node()->is_svg_foreign_object_element())
         return false;
 
     // Non-root SVG elements and foreign object boxes should never be split.
@@ -1640,10 +1640,12 @@ void Node::set_needs_layout_update(DOM::SetNeedsLayoutReason reason)
         if (ancestor->m_needs_layout_update)
             break;
         ancestor->m_needs_layout_update = true;
+#if ENABLE_SVG
         if (auto* svg_box = as_if<SVGSVGBox>(ancestor)) {
             document().mark_svg_root_as_needing_relayout(*svg_box);
             break;
         }
+#endif
     }
 
     // Reset intrinsic size caches for ancestors up to abspos or SVG root boundary.

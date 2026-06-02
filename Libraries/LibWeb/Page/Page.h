@@ -218,11 +218,13 @@ public:
 
     void update_all_media_element_video_sinks();
 
+#if ENABLE_CANVAS
     void register_canvas_element(Badge<HTML::HTMLCanvasElement>, UniqueNodeID canvas_id);
     void unregister_canvas_element(Badge<HTML::HTMLCanvasElement>, UniqueNodeID canvas_id);
 
     void present_all_canvas_element_surfaces();
     void republish_all_canvas_element_surfaces();
+#endif
 
     struct MediaContextMenu {
         URL::URL media_url;
@@ -294,8 +296,10 @@ private:
     template<typename Callback>
     void for_each_media_element(Callback&& callback);
 
+#if ENABLE_CANVAS
     template<typename Callback>
     void for_each_canvas_element(Callback&& callback);
+#endif
 
     Vector<GC::Root<DOM::Document>> documents_in_active_window() const;
 
@@ -348,7 +352,9 @@ private:
     u64 m_next_clipboard_request_id { 0 };
 
     Vector<UniqueNodeID> m_media_elements;
+#if ENABLE_CANVAS
     Vector<UniqueNodeID> m_canvas_elements;
+#endif
     Optional<UniqueNodeID> m_media_context_menu_element_id;
 
     Web::HTML::MuteState m_mute_state { Web::HTML::MuteState::Unmuted };

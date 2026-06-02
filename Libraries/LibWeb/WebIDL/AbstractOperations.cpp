@@ -8,6 +8,7 @@
 
 #include <AK/ByteBuffer.h>
 #include <AK/Enumerate.h>
+#include <AK/Math.h>
 #include <AK/NumericLimits.h>
 #include <LibJS/Runtime/AbstractOperations.h>
 #include <LibJS/Runtime/Array.h>
@@ -16,6 +17,7 @@
 #include <LibJS/Runtime/FunctionObject.h>
 #include <LibJS/Runtime/TypedArray.h>
 #include <LibJS/Runtime/ValueInlines.h>
+#include <LibWeb/DOM/Element.h>
 #include <LibWeb/Export.h>
 #include <LibWeb/HTML/Scripting/Environments.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>

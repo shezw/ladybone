@@ -10,6 +10,7 @@
 #include <AK/Badge.h>
 #include <AK/Function.h>
 #include <AK/IterationDecision.h>
+#include <AK/Math.h>
 #include <AK/RefPtr.h>
 #include <LibGC/Heap.h>
 #include <LibWeb/Bindings/IdleRequest.h>
@@ -24,6 +25,7 @@
 #include <LibWeb/HTML/MimeType.h>
 #include <LibWeb/HTML/Plugin.h>
 #include <LibWeb/HTML/ScrollOptions.h>
+#include <LibWeb/HTML/TokenizedFeatures.h>
 #include <LibWeb/HTML/UniversalGlobalScope.h>
 #include <LibWeb/HTML/WindowEventHandlers.h>
 #include <LibWeb/HTML/WindowOrWorkerGlobalScope.h>
@@ -76,7 +78,9 @@ public:
     using UniversalGlobalScopeMixin::structured_clone;
     using WindowOrWorkerGlobalScopeMixin::clear_interval;
     using WindowOrWorkerGlobalScopeMixin::clear_timeout;
+#if ENABLE_CANVAS
     using WindowOrWorkerGlobalScopeMixin::create_image_bitmap;
+#endif
     using WindowOrWorkerGlobalScopeMixin::fetch;
     using WindowOrWorkerGlobalScopeMixin::report_error;
     using WindowOrWorkerGlobalScopeMixin::set_interval;

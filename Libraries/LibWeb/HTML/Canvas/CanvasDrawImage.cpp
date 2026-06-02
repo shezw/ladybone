@@ -23,6 +23,7 @@ Gfx::IntSize canvas_image_source_dimensions(CanvasImageSource const& image)
             // FIXME: This is very janky and not correct.
             return { source->width(), source->height() };
         },
+#if ENABLE_SVG
         [](GC::Ref<SVG::SVGImageElement> source) -> Gfx::IntSize {
             if (auto decoded_image_frame = source->current_image_frame(); decoded_image_frame.has_value())
                 return decoded_image_frame->size();
@@ -30,6 +31,7 @@ Gfx::IntSize canvas_image_source_dimensions(CanvasImageSource const& image)
             // FIXME: This is very janky and not correct.
             return { source->width()->anim_val()->value(), source->height()->anim_val()->value() };
         },
+#endif
         [](GC::Ref<HTMLCanvasElement> source) -> Gfx::IntSize {
             if (auto painting_surface = source->surface())
                 return painting_surface->size();
@@ -53,7 +55,11 @@ Gfx::IntSize canvas_image_source_dimensions(CanvasImageSource const& image)
 Optional<Gfx::DecodedImageFrame> canvas_image_source_frame(CanvasImageSource const& image)
 {
     return image.visit(
+#if ENABLE_SVG
         [](OneOf<GC::Ref<HTMLImageElement>, GC::Ref<SVG::SVGImageElement>> auto const& element) -> Optional<Gfx::DecodedImageFrame> {
+#else
+        [](GC::Ref<HTMLImageElement> const& element) -> Optional<Gfx::DecodedImageFrame> {
+#endif
             auto image_data = element->decoded_image_data();
             if (!image_data)
                 return {};

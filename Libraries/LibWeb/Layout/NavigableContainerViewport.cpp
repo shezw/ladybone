@@ -11,7 +11,9 @@
 #include <LibWeb/Layout/NavigableContainerViewport.h>
 #include <LibWeb/Layout/Viewport.h>
 #include <LibWeb/Painting/NavigableContainerViewportPaintable.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGSVGElement.h>
+#endif
 
 namespace Web::Layout {
 
@@ -29,6 +31,7 @@ CSS::SizeWithAspectRatio NavigableContainerViewport::natural_size() const
     if (!is<HTML::HTMLObjectElement>(dom_node()))
         return {};
 
+#if ENABLE_SVG
     if (auto const* content_document = dom_node().content_document_without_origin_check()) {
         if (auto const* root = content_document->document_element();
             root && root->is_svg_svg_element()) {
@@ -37,6 +40,7 @@ CSS::SizeWithAspectRatio NavigableContainerViewport::natural_size() const
             return { metrics.width, metrics.height, metrics.aspect_ratio };
         }
     }
+#endif
     return {};
 }
 

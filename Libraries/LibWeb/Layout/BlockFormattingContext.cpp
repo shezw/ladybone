@@ -25,7 +25,6 @@
 #include <LibWeb/Layout/ListItemBox.h>
 #include <LibWeb/Layout/ListItemMarkerBox.h>
 #include <LibWeb/Layout/ReplacedBox.h>
-#include <LibWeb/Layout/SVGSVGBox.h>
 #include <LibWeb/Layout/TableWrapper.h>
 #include <LibWeb/Layout/Viewport.h>
 

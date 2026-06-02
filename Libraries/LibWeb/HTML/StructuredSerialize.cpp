@@ -35,7 +35,6 @@
 #include <LibWeb/Bindings/DOMRectReadOnly.h>
 #include <LibWeb/Bindings/File.h>
 #include <LibWeb/Bindings/FileList.h>
-#include <LibWeb/Bindings/ImageBitmap.h>
 #include <LibWeb/Bindings/Intrinsics.h>
 #include <LibWeb/Bindings/MessagePort.h>
 #include <LibWeb/Bindings/QuotaExceededError.h>
@@ -55,8 +54,6 @@
 #include <LibWeb/Geometry/DOMQuad.h>
 #include <LibWeb/Geometry/DOMRect.h>
 #include <LibWeb/Geometry/DOMRectReadOnly.h>
-#include <LibWeb/HTML/ImageBitmap.h>
-#include <LibWeb/HTML/ImageData.h>
 #include <LibWeb/HTML/MessagePort.h>
 #include <LibWeb/HTML/Scripting/TemporaryExecutionContext.h>
 #include <LibWeb/HTML/StructuredSerialize.h>
@@ -65,6 +62,12 @@
 #include <LibWeb/Streams/WritableStream.h>
 #include <LibWeb/WebIDL/DOMException.h>
 #include <LibWeb/WebIDL/QuotaExceededError.h>
+
+#if ENABLE_CANVAS
+#include <LibWeb/Bindings/ImageBitmap.h>
+#include <LibWeb/HTML/ImageBitmap.h>
+#include <LibWeb/HTML/ImageData.h>
+#endif
 
 namespace Web::HTML {
 
@@ -968,10 +971,12 @@ private:
             return Crypto::CryptoKey::create(realm);
         case Bindings::InterfaceName::DOMQuad:
             return Geometry::DOMQuad::create(realm);
+#if ENABLE_CANVAS
         case Bindings::InterfaceName::ImageData:
             return ImageData::create(realm);
         case Bindings::InterfaceName::ImageBitmap:
             return ImageBitmap::create(realm);
+#endif
         case Bindings::InterfaceName::QuotaExceededError:
             return WebIDL::QuotaExceededError::create(realm);
         case Bindings::InterfaceName::Unknown:
@@ -1111,7 +1116,11 @@ static bool is_transferable_interface_exposed_on_target_realm(TransferType name,
     case TransferType::TransformStream:
         return is_exposed(Bindings::InterfaceName::TransformStream, realm);
     case TransferType::ImageBitmap:
+#if ENABLE_CANVAS
         return is_exposed(Bindings::InterfaceName::ImageBitmap, realm);
+#else
+        return false;
+#endif
     case TransferType::Unknown:
         dbgln("Unknown interface type for transfer: {}", to_underlying(name));
         break;
@@ -1145,9 +1154,13 @@ static WebIDL::ExceptionOr<GC::Ref<Bindings::PlatformObject>> create_transferred
         return transform_stream;
     }
     case TransferType::ImageBitmap: {
+#if ENABLE_CANVAS
         auto image_bitmap = target_realm.create<ImageBitmap>(target_realm);
         TRY(image_bitmap->transfer_receiving_steps(decoder));
         return image_bitmap;
+#else
+        break;
+#endif
     }
     case TransferType::ArrayBuffer:
     case TransferType::ResizableArrayBuffer:

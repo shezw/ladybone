@@ -4179,6 +4179,7 @@ RefPtr<StyleValue const> Parser::parse_basic_shape_value(TokenStream<ComponentVa
     }
 
     if (function_name.equals_ignoring_ascii_case("path"sv)) {
+#if ENABLE_SVG
         // <path()> = path( <'fill-rule'>?, <string> )
         auto arguments_tokens = TokenStream { component_value.function().value };
         auto arguments = parse_a_comma_separated_list_of_component_values(arguments_tokens);
@@ -4209,6 +4210,9 @@ RefPtr<StyleValue const> Parser::parse_basic_shape_value(TokenStream<ComponentVa
 
         transaction.commit();
         return BasicShapeStyleValue::create(Path { fill_rule, move(path_data) });
+#else
+        return nullptr;
+#endif
     }
 
     return nullptr;

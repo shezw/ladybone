@@ -10,6 +10,7 @@
 #include <LibWeb/HTML/AbstractWorker.h>
 #include <LibWeb/HTML/Window.h>
 #include <LibWeb/HTML/WorkerAgentParent.h>
+#include <LibWeb/TrustedTypes/TrustedScriptURL.h>
 #include <LibWeb/WebIDL/ExceptionOr.h>
 
 #define ENUMERATE_WORKER_EVENT_HANDLERS(E)  \

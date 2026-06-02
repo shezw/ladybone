@@ -299,9 +299,13 @@ void Polygon::serialize(StringBuilder& builder, SerializationMode mode) const
 
 Gfx::Path Path::to_path(CSSPixelRect, Layout::Node const&) const
 {
+#if ENABLE_SVG
     auto result = path_instructions.to_gfx_path();
     result.set_fill_type(fill_rule);
     return result;
+#else
+    return {};
+#endif
 }
 
 // https://drafts.csswg.org/css-shapes/#basic-shape-serialization
@@ -321,7 +325,11 @@ void Path::serialize(StringBuilder& builder, SerializationMode mode) const
         }
     }
 
+#if ENABLE_SVG
     serialize_a_string(builder, path_instructions.serialize());
+#else
+    serialize_a_string(builder, String {});
+#endif
 
     builder.append(')');
 }

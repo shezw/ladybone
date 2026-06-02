@@ -23,8 +23,10 @@
 #include <LibWeb/HTML/HTMLScriptElement.h>
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/SRI/SRI.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGElement.h>
 #include <LibWeb/SVG/SVGScriptElement.h>
+#endif
 
 namespace Web::ContentSecurityPolicy::Directives {
 
@@ -842,7 +844,11 @@ enum class NonceableResult {
         return NonceableResult::NotNonceable;
 
     // 1. If element does not have an attribute named "nonce", return "Not Nonceable".
-    if (!is<HTML::HTMLElement>(element.ptr()) && !is<SVG::SVGElement>(element.ptr()))
+    if (!is<HTML::HTMLElement>(element.ptr())
+#if ENABLE_SVG
+        && !is<SVG::SVGElement>(element.ptr())
+#endif
+    )
         return NonceableResult::NotNonceable;
 
     if (!element->has_attribute(HTML::AttributeNames::nonce))
@@ -905,15 +911,22 @@ MatchResult does_element_match_source_list_for_type_and_source(GC::Ptr<DOM::Elem
             auto nonce_source_parse_result = parse_source_expression(Production::NonceSource, expression);
             if (nonce_source_parse_result.has_value()) {
                 VERIFY(element);
-                VERIFY(is<HTML::HTMLElement>(element.ptr()) || is<SVG::SVGElement>(element.ptr()));
+                VERIFY(is<HTML::HTMLElement>(element.ptr())
+#if ENABLE_SVG
+                    || is<SVG::SVGElement>(element.ptr())
+#endif
+                );
 
                 String element_nonce;
                 if (auto* html_element = as_if<HTML::HTMLElement>(element.ptr())) {
                     element_nonce = html_element->nonce();
-                } else {
+                }
+#if ENABLE_SVG
+                else {
                     auto const& svg_element = as<SVG::SVGElement>(*element);
                     element_nonce = svg_element.nonce();
                 }
+#endif
 
                 if (nonce_source_parse_result->base64_value == element_nonce)
                     return MatchResult::Matches;
@@ -954,10 +967,13 @@ MatchResult does_element_match_source_list_for_type_and_source(GC::Ptr<DOM::Elem
                     if (auto const* html_script_element = as_if<HTML::HTMLScriptElement>(element.ptr())) {
                         if (!html_script_element->is_parser_inserted())
                             return MatchResult::Matches;
-                    } else if (auto const* svg_script_element = as_if<SVG::SVGScriptElement>(element.ptr())) {
+                    }
+#if ENABLE_SVG
+                    else if (auto const* svg_script_element = as_if<SVG::SVGScriptElement>(element.ptr())) {
                         if (!svg_script_element->is_parser_inserted())
                             return MatchResult::Matches;
                     }
+#endif
                 }
             }
 

@@ -178,8 +178,10 @@
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/IntersectionObserver/IntersectionObserver.h>
 #include <LibWeb/Layout/BlockFormattingContext.h>
+#if ENABLE_SVG
 #include <LibWeb/Layout/SVGFormattingContext.h>
 #include <LibWeb/Layout/SVGSVGBox.h>
+#endif
 #include <LibWeb/Layout/TreeBuilder.h>
 #include <LibWeb/Layout/Viewport.h>
 #include <LibWeb/Loader/ContentBlocker.h>
@@ -197,12 +199,14 @@
 #include <LibWeb/Platform/EventLoopPlugin.h>
 #include <LibWeb/ResizeObserver/ResizeObserver.h>
 #include <LibWeb/ResizeObserver/ResizeObserverEntry.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGDecodedImageData.h>
 #include <LibWeb/SVG/SVGElement.h>
 #include <LibWeb/SVG/SVGSVGElement.h>
 #include <LibWeb/SVG/SVGScriptElement.h>
 #include <LibWeb/SVG/SVGStyleElement.h>
 #include <LibWeb/SVG/SVGTitleElement.h>
+#endif
 #include <LibWeb/Selection/Selection.h>
 #include <LibWeb/TrustedTypes/RequireTrustedTypesForDirective.h>
 #include <LibWeb/TrustedTypes/TrustedTypePolicy.h>
@@ -554,7 +558,9 @@ Document::Document(JS::Realm& realm, URL::URL const& url, TemporaryDocumentForFr
         .has_legacy_override_built_ins_interface_extended_attribute = true,
     };
 
+#if ENABLE_SVG
     m_is_decoded_svg = m_page->client().is_svg_page_client();
+#endif
 
     m_cursor_blink_timer = heap().allocate<GC::Timer>();
     m_cursor_blink_timer->start_repeating(500, GC::create_function(heap(), [this] {
@@ -685,7 +691,9 @@ void Document::visit_edges(Cell::Visitor& visitor)
     visitor.visit(m_associated_inert_template_document);
     visitor.visit(m_appropriate_template_contents_owner_document);
     visitor.visit(m_pending_parsing_blocking_script);
+#if ENABLE_SVG
     visitor.visit(m_pending_parsing_blocking_svg_script);
+#endif
     visitor.visit(m_history);
     visitor.visit(m_html_parser_end_state);
     visitor.visit(m_style_computer);
@@ -718,7 +726,9 @@ void Document::visit_edges(Cell::Visitor& visitor)
     for (auto& resize_observer : m_resize_observers)
         visitor.visit(resize_observer);
 
+#if ENABLE_SVG
     visitor.visit(m_svg_roots_needing_relayout);
+#endif
     visitor.visit(m_query_containers_needing_container_query_evaluation_after_layout);
 
     visitor.visit(m_shared_resource_requests);
@@ -1152,11 +1162,13 @@ Element const* Document::document_element() const
     return first_child_of_type<Element>();
 }
 
+#if ENABLE_SVG
 // https://www.w3.org/TR/SVG2/struct.html#InterfaceDocumentExtensions
 GC::Ptr<SVG::SVGSVGElement> Document::root_element()
 {
     return as_if<SVG::SVGSVGElement>(document_element());
 }
+#endif
 
 // https://html.spec.whatwg.org/multipage/dom.html#the-html-element-2
 HTML::HTMLHtmlElement* Document::html_element()
@@ -1254,6 +1266,7 @@ Utf16String Document::title() const
 {
     Utf16String value;
 
+#if ENABLE_SVG
     // 1. If the document element is an SVG svg element, then let value be the child text content of the first SVG title
     //    element that is a child of the document element.
     if (auto const* document_element = this->document_element(); is<SVG::SVGSVGElement>(document_element)) {
@@ -1264,6 +1277,9 @@ Utf16String Document::title() const
     // 2. Otherwise, let value be the child text content of the title element, or the empty string if the title element
     //    is null.
     else if (auto title_element = this->title_element()) {
+#else
+    if (auto title_element = this->title_element()) {
+#endif
         value = title_element->text_content().value_or({});
     }
 
@@ -1279,6 +1295,7 @@ WebIDL::ExceptionOr<void> Document::set_title(Utf16String const& title)
 {
     auto* document_element = this->document_element();
 
+#if ENABLE_SVG
     // -> If the document element is an SVG svg element
     if (is<SVG::SVGSVGElement>(document_element)) {
         GC::Ptr<Element> element;
@@ -1304,6 +1321,9 @@ WebIDL::ExceptionOr<void> Document::set_title(Utf16String const& title)
 
     // -> If the document element is in the HTML namespace
     else if (document_element && document_element->namespace_uri() == Namespace::HTML) {
+#else
+    if (document_element && document_element->namespace_uri() == Namespace::HTML) {
+#endif
         auto title_element = this->title_element();
         auto* head_element = this->head();
 
@@ -1598,16 +1618,19 @@ void Document::invalidate_layout_tree(InvalidateLayoutTreeReason reason)
     tear_down_layout_tree();
 }
 
+#if ENABLE_SVG
 void Document::mark_svg_root_as_needing_relayout(Layout::SVGSVGBox& svg_root)
 {
     m_svg_roots_needing_relayout.set(svg_root);
 }
+#endif
 
 void Document::set_needs_container_query_evaluation_after_layout(Element const& query_container)
 {
     m_query_containers_needing_container_query_evaluation_after_layout.set(const_cast<Element&>(query_container));
 }
 
+#if ENABLE_SVG
 static void relayout_svg_root(Layout::SVGSVGBox& svg_root)
 {
     Layout::LayoutState layout_state(svg_root);
@@ -1642,6 +1665,7 @@ static void relayout_svg_root(Layout::SVGSVGBox& svg_root)
         return TraversalDecision::Continue;
     });
 }
+#endif
 
 static void propagate_scrollbar_width_to_viewport(Element& root_element, Layout::Viewport& viewport)
 {
@@ -1744,7 +1768,9 @@ void Document::update_layout(UpdateLayoutReason reason)
         if (layout_is_up_to_date())
             return;
 
+#if ENABLE_SVG
         auto svg_roots_to_relayout = move(m_svg_roots_needing_relayout);
+#endif
 
         // NOTE: If this is a document hosting <template> contents, layout is unnecessary.
         if (m_created_for_appropriate_template_contents)
@@ -1752,6 +1778,7 @@ void Document::update_layout(UpdateLayoutReason reason)
 
         auto const needs_layout_tree_rebuild = !m_layout_root || needs_layout_tree_update() || child_needs_layout_tree_update() || needs_full_layout_tree_update();
 
+#if ENABLE_SVG
         // Partial SVG relayout
         if (!needs_layout_tree_rebuild && !svg_roots_to_relayout.is_empty() && !m_layout_root->needs_layout_update()) {
             for (auto const& svg_root : svg_roots_to_relayout)
@@ -1765,6 +1792,7 @@ void Document::update_layout(UpdateLayoutReason reason)
             m_document->set_needs_repaint();
             return;
         }
+#endif
 
         // Clear text blocks cache so we rebuild them on the next find action.
         if (m_layout_root)
@@ -1845,6 +1873,7 @@ void Document::update_layout(UpdateLayoutReason reason)
                 Layout::AvailableSize::make_definite(viewport_rect.width()),
                 Layout::AvailableSize::make_definite(viewport_rect.height()));
 
+#if ENABLE_SVG
             if (m_layout_root->first_child() && m_layout_root->first_child()->is_svg_svg_box()) {
                 // NOTE: If we are laying out a standalone SVG document, we give it some special treatment:
                 //       The root <svg> container gets the same size as the viewport,
@@ -1855,9 +1884,12 @@ void Document::update_layout(UpdateLayoutReason reason)
                 Layout::SVGFormattingContext svg_formatting_context(layout_state, Layout::LayoutMode::Normal, svg_root, nullptr);
                 svg_formatting_context.run(available_space);
             } else {
+#endif
                 Layout::BlockFormattingContext root_formatting_context(layout_state, Layout::LayoutMode::Normal, *m_layout_root, nullptr);
                 root_formatting_context.run(available_space);
+#if ENABLE_SVG
             }
+#endif
         }
 
         layout_state.commit(*m_layout_root);
@@ -1935,7 +1967,10 @@ bool Document::layout_is_up_to_date() const
         && !needs_layout_tree_update()
         && !child_needs_layout_tree_update()
         && !needs_full_layout_tree_update()
-        && m_svg_roots_needing_relayout.is_empty();
+#if ENABLE_SVG
+        && m_svg_roots_needing_relayout.is_empty()
+#endif
+        ;
 }
 
 static void apply_element_style_invalidation_after_style_change(Element& element, CSS::RequiredInvalidationAfterStyleChange const& invalidation, bool invalidate_assigned_slottables, bool invalidate_descendant_slots)
@@ -3228,6 +3263,7 @@ GC::Ref<HTML::HTMLScriptElement> Document::take_pending_parsing_blocking_script(
     return *script;
 }
 
+#if ENABLE_SVG
 void Document::set_pending_parsing_blocking_svg_script(SVG::SVGScriptElement* script)
 {
     m_pending_parsing_blocking_svg_script = script;
@@ -3240,6 +3276,7 @@ GC::Ref<SVG::SVGScriptElement> Document::take_pending_parsing_blocking_svg_scrip
     m_pending_parsing_blocking_svg_script = nullptr;
     return *script;
 }
+#endif
 
 void Document::add_script_to_execute_when_parsing_has_finished(Badge<HTML::HTMLScriptElement>, HTML::HTMLScriptElement& script)
 {
@@ -7520,10 +7557,12 @@ Optional<String> Document::get_style_sheet_source(CSS::StyleSheetIdentifier cons
                     if (auto* sheet = as<HTML::HTMLStyleElement>(*node).sheet())
                         return sheet->source_text({});
                 }
+#if ENABLE_SVG
                 if (node->is_svg_style_element()) {
                     if (auto* sheet = as<SVG::SVGStyleElement>(*node).sheet())
                         return sheet->source_text({});
                 }
+#endif
             }
         }
         return {};

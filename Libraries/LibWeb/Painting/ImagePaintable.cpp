@@ -16,10 +16,12 @@
 
 namespace Web::Painting {
 
+#if ENABLE_SVG
 NonnullRefPtr<ImagePaintable> ImagePaintable::create(Layout::SVGImageBox const& layout_box)
 {
     return adopt_ref(*new ImagePaintable(layout_box, layout_box.dom_node(), false, String {}, true));
 }
+#endif
 
 NonnullRefPtr<ImagePaintable> ImagePaintable::create(Layout::ImageBox const& layout_box)
 {

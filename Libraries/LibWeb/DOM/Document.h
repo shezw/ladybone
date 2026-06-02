@@ -308,8 +308,10 @@ public:
     Element* document_element();
     Element const* document_element() const;
 
+#if ENABLE_SVG
     // https://www.w3.org/TR/SVG2/struct.html#InterfaceDocumentExtensions
     GC::Ptr<SVG::SVGSVGElement> root_element();
+#endif
 
     HTML::HTMLHtmlElement* html_element();
     HTML::HTMLHeadElement* head();
@@ -446,12 +448,18 @@ public:
     HTML::HTMLScriptElement* pending_parsing_blocking_script() { return m_pending_parsing_blocking_script.ptr(); }
     GC::Ref<HTML::HTMLScriptElement> take_pending_parsing_blocking_script(Badge<HTML::HTMLParser>);
 
+#if ENABLE_SVG
     void set_pending_parsing_blocking_svg_script(SVG::SVGScriptElement*);
     SVG::SVGScriptElement* pending_parsing_blocking_svg_script() { return m_pending_parsing_blocking_svg_script.ptr(); }
     GC::Ref<SVG::SVGScriptElement> take_pending_parsing_blocking_svg_script(Badge<HTML::HTMLParser>);
+#endif
     bool has_pending_parsing_blocking_script() const
     {
-        return m_pending_parsing_blocking_script.ptr() || m_pending_parsing_blocking_svg_script.ptr();
+        return m_pending_parsing_blocking_script.ptr()
+#if ENABLE_SVG
+            || m_pending_parsing_blocking_svg_script.ptr()
+#endif
+            ;
     }
 
     void add_script_to_execute_when_parsing_has_finished(Badge<HTML::HTMLScriptElement>, HTML::HTMLScriptElement&);
@@ -659,7 +667,9 @@ public:
     [[nodiscard]] bool needs_full_layout_tree_update() const { return m_needs_full_layout_tree_update; }
     void set_needs_full_layout_tree_update(bool b) { m_needs_full_layout_tree_update = b; }
 
+#if ENABLE_SVG
     void mark_svg_root_as_needing_relayout(Layout::SVGSVGBox&);
+#endif
 
     void set_needs_to_refresh_scroll_state(bool b);
 
@@ -1216,7 +1226,9 @@ private:
     String m_source;
 
     GC::Ptr<HTML::HTMLScriptElement> m_pending_parsing_blocking_script;
+#if ENABLE_SVG
     GC::Ptr<SVG::SVGScriptElement> m_pending_parsing_blocking_svg_script;
+#endif
 
     Vector<GC::Ref<HTML::HTMLScriptElement>> m_scripts_to_execute_when_parsing_has_finished;
 
@@ -1324,7 +1336,9 @@ private:
 
     bool m_is_running_update_layout { false };
 
+#if ENABLE_SVG
     HashTable<GC::Ref<Layout::SVGSVGBox>> m_svg_roots_needing_relayout;
+#endif
 
     bool m_needs_animated_style_update { false };
 

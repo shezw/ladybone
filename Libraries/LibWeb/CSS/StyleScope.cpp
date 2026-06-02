@@ -229,6 +229,7 @@ static CSSStyleSheet& mathml_stylesheet()
 }
 #endif
 
+#if ENABLE_SVG
 static CSSStyleSheet& svg_stylesheet()
 {
     static GC::Root<CSSStyleSheet> sheet;
@@ -238,6 +239,7 @@ static CSSStyleSheet& svg_stylesheet()
     }
     return *sheet;
 }
+#endif
 
 static GC::Ptr<CSSContainerRule const> current_container_rule(Vector<GC::Ptr<CSSContainerRule const>> const& container_rule_stack)
 {
@@ -340,7 +342,9 @@ void StyleScope::for_each_stylesheet(CascadeOrigin cascade_origin, Function<void
 #if ENABLE_MATHML
         callback(mathml_stylesheet());
 #endif
+#if ENABLE_SVG
         callback(svg_stylesheet());
+#endif
     }
     if (cascade_origin == CascadeOrigin::User) {
         auto& style_scope = const_cast<StyleScope&>(*this);

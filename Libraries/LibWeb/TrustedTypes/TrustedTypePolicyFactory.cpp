@@ -20,7 +20,6 @@
 #include <LibWeb/HTML/TagNames.h>
 #include <LibWeb/HTML/WindowEventHandlers.h>
 #include <LibWeb/Namespace.h>
-#include <LibWeb/SVG/TagNames.h>
 #include <LibWeb/TrustedTypes/TrustedHTML.h>
 #include <LibWeb/TrustedTypes/TrustedScript.h>
 #include <LibWeb/TrustedTypes/TrustedScriptURL.h>

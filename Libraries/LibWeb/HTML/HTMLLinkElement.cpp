@@ -39,7 +39,9 @@
 #include <LibWeb/Loader/ResourceLoader.h>
 #include <LibWeb/Page/Page.h>
 #include <LibWeb/Platform/ImageCodecPlugin.h>
-#include <LibWeb/SVG/SVGDecodedImageData.h>
+#if ENABLE_SVG
+#    include <LibWeb/SVG/SVGDecodedImageData.h>
+#endif
 
 namespace Web::HTML {
 
@@ -935,6 +937,7 @@ static NonnullRefPtr<Core::Promise<bool>> decode_favicon(ReadonlyBytes favicon_d
     auto promise = Core::Promise<bool>::construct();
 
     if (favicon_url.basename().ends_with(".svg"sv)) {
+#if ENABLE_SVG
         auto result = SVG::SVGDecodedImageData::create(document->realm(), document->page(), favicon_url, favicon_data);
         if (result.is_error()) {
             promise->reject(Error::from_string_view("Failed to decode SVG favicon"sv));
@@ -953,6 +956,10 @@ static NonnullRefPtr<Core::Promise<bool>> decode_favicon(ReadonlyBytes favicon_d
             navigable->traversable_navigable()->page().client().page_did_change_favicon(decoded_frame->bitmap());
         promise->resolve(true);
         return promise;
+#else
+        promise->reject(Error::from_string_view("SVG favicon decoding is disabled"sv));
+        return promise;
+#endif
     }
 
     auto on_failed_decode = [favicon_url, promise]([[maybe_unused]] Error& error) {

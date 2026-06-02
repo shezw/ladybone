@@ -632,6 +632,7 @@ void Page::update_all_media_element_video_sinks()
         client().request_frame();
 }
 
+#if ENABLE_CANVAS
 void Page::register_canvas_element(Badge<HTML::HTMLCanvasElement>, UniqueNodeID canvas_id)
 {
     m_canvas_elements.append(canvas_id);
@@ -666,6 +667,7 @@ void Page::republish_all_canvas_element_surfaces()
         canvas_element.republish_compositor_surface();
     });
 }
+#endif
 
 void Page::did_request_media_context_menu(UniqueNodeID media_id, CSSPixelPoint position, ByteString const& target, unsigned modifiers, MediaContextMenu const& menu)
 {

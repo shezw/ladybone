@@ -7,6 +7,7 @@
  */
 
 #include <LibCore/Timer.h>
+#include <LibGfx/PaintingSurface.h>
 #include <LibWeb/CSS/ComputedProperties.h>
 #include <LibWeb/CSS/PseudoElement.h>
 #include <LibWeb/CSS/SystemColor.h>

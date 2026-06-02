@@ -1180,15 +1180,15 @@ void HTMLInputElement::create_text_input_shadow_tree()
         // Up button
         m_up_button_element = MUST(DOM::create_element(document(), HTML::TagNames::button, Namespace::HTML));
 
-        auto up_button_svg = MUST(DOM::create_element(document(), SVG::TagNames::svg, Namespace::SVG));
+        auto up_button_svg = MUST(DOM::create_element(document(), "svg"_fly_string, Namespace::SVG));
         up_button_svg->set_attribute_value(HTML::AttributeNames::style, "width: 1em; height: 1em;"_string);
-        up_button_svg->set_attribute_value(SVG::AttributeNames::xmlns, Namespace::SVG.to_string());
-        up_button_svg->set_attribute_value(SVG::AttributeNames::viewBox, "0 0 24 24"_string);
+        up_button_svg->set_attribute_value("xmlns"_fly_string, Namespace::SVG.to_string());
+        up_button_svg->set_attribute_value("viewBox"_fly_string, "0 0 24 24"_string);
         MUST(m_up_button_element->append_child(up_button_svg));
 
-        auto up_button_svg_path = MUST(DOM::create_element(document(), SVG::TagNames::path, Namespace::SVG));
-        up_button_svg_path->set_attribute_value(SVG::AttributeNames::fill, "currentColor"_string);
-        up_button_svg_path->set_attribute_value(SVG::AttributeNames::d, "M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"_string);
+        auto up_button_svg_path = MUST(DOM::create_element(document(), "path"_fly_string, Namespace::SVG));
+        up_button_svg_path->set_attribute_value("fill"_fly_string, "currentColor"_string);
+        up_button_svg_path->set_attribute_value("d"_fly_string, "M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"_string);
         MUST(up_button_svg->append_child(up_button_svg_path));
 
         MUST(element->append_child(*m_up_button_element));
@@ -1219,15 +1219,15 @@ void HTMLInputElement::create_text_input_shadow_tree()
         // Down button
         m_down_button_element = MUST(DOM::create_element(document(), HTML::TagNames::button, Namespace::HTML));
 
-        auto down_button_svg = MUST(DOM::create_element(document(), SVG::TagNames::svg, Namespace::SVG));
+        auto down_button_svg = MUST(DOM::create_element(document(), "svg"_fly_string, Namespace::SVG));
         down_button_svg->set_attribute_value(HTML::AttributeNames::style, "width: 1em; height: 1em;"_string);
-        down_button_svg->set_attribute_value(SVG::AttributeNames::xmlns, Namespace::SVG.to_string());
-        down_button_svg->set_attribute_value(SVG::AttributeNames::viewBox, "0 0 24 24"_string);
+        down_button_svg->set_attribute_value("xmlns"_fly_string, Namespace::SVG.to_string());
+        down_button_svg->set_attribute_value("viewBox"_fly_string, "0 0 24 24"_string);
         MUST(m_down_button_element->append_child(down_button_svg));
 
-        auto down_button_svg_path = MUST(DOM::create_element(document(), SVG::TagNames::path, Namespace::SVG));
-        down_button_svg_path->set_attribute_value(SVG::AttributeNames::fill, "currentColor"_string);
-        down_button_svg_path->set_attribute_value(SVG::AttributeNames::d, "M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"_string);
+        auto down_button_svg_path = MUST(DOM::create_element(document(), "path"_fly_string, Namespace::SVG));
+        down_button_svg_path->set_attribute_value("fill"_fly_string, "currentColor"_string);
+        down_button_svg_path->set_attribute_value("d"_fly_string, "M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"_string);
         MUST(down_button_svg->append_child(down_button_svg_path));
 
         MUST(element->append_child(*m_down_button_element));

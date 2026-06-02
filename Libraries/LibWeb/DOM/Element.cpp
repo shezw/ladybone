@@ -123,7 +123,9 @@
 #include <LibWeb/Painting/ViewportPaintable.h>
 #include <LibWeb/PixelUnits.h>
 #include <LibWeb/Platform/EventLoopPlugin.h>
+#if ENABLE_SVG
 #include <LibWeb/SVG/SVGAElement.h>
+#endif
 #include <LibWeb/Selection/Selection.h>
 #include <LibWeb/TrustedTypes/RequireTrustedTypesForDirective.h>
 #include <LibWeb/TrustedTypes/TrustedTypePolicy.h>
@@ -1926,7 +1928,11 @@ bool Element::matches_placeholder_shown_pseudo_class() const
 bool Element::matches_link_pseudo_class() const
 {
     // All a elements that have an href attribute, and all area elements that have an href attribute, must match one of :link and :visited.
-    if (!is<HTML::HTMLAnchorElement>(*this) && !is<HTML::HTMLAreaElement>(*this) && !is<SVG::SVGAElement>(*this))
+    if (!is<HTML::HTMLAnchorElement>(*this) && !is<HTML::HTMLAreaElement>(*this)
+#if ENABLE_SVG
+        && !is<SVG::SVGAElement>(*this)
+#endif
+    )
         return false;
     return has_attribute(HTML::AttributeNames::href);
 }
