@@ -33,6 +33,12 @@
 #    define AK_IS_ARCH_AARCH64() 0
 #endif
 
+#if defined(__arm__) && !defined(__aarch64__)
+#    define AK_IS_ARCH_ARM() 1
+#else
+#    define AK_IS_ARCH_ARM() 0
+#endif
+
 #if defined(__riscv) && __riscv_xlen == 64
 #    define AK_IS_ARCH_RISCV64() 1
 #else

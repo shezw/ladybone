@@ -23,7 +23,6 @@ endif()
 option(ENABLE_GUI_TARGETS "Enable building GUI targets" ON)
 option(ENABLE_INSTALL_HEADERS "Enable installing headers" ON)
 option(ENABLE_INSTALL_FREEDESKTOP_FILES "Enable installing .desktop and .service files" ${freedesktop_files_default})
-option(LADYBIRD_ENABLE_CPPTRACE "Enable use of cpptrace as the default library for stacktraces. If not available falls back to backtrace.h" ON)
 option(LADYBIRD_GENERATE_DSYM "Generate dSYM bundles for binaries and libraries (macOS only)" OFF)
 option(ENABLE_CI_BASELINE_CPU "Use a baseline CPU target for improved ccache sharing" OFF)
 

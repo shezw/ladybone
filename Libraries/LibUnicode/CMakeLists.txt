@@ -27,7 +27,7 @@ set(GENERATED_SOURCES ${CURRENT_LIB_GENERATED})
 
 ladybird_lib(LibUnicode unicode)
 
-target_link_libraries(LibUnicode PRIVATE ICU::i18n ICU::uc ICU::data)
+target_link_libraries(LibUnicode PRIVATE ICU::i18n ICU::uc ICU::data Threads::Threads)
 
 import_rust_crate(MANIFEST_PATH Rust/Cargo.toml CRATE_NAME libunicode_rust FEATURES allocator FFI_HEADER RustFFI.h)
 target_link_libraries(LibUnicode PRIVATE libunicode_rust)

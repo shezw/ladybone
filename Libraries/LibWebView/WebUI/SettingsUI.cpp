@@ -5,6 +5,7 @@
  */
 
 #include <AK/JsonArray.h>
+#include <AK/JsonObject.h>
 #include <LibURL/Parser.h>
 #include <LibWebView/Application.h>
 #include <LibWebView/SearchEngine.h>

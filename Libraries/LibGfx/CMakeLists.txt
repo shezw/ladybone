@@ -110,7 +110,14 @@ if (ENABLE_INSTALL_HEADERS)
 endif()
 
 target_link_libraries(LibGfx PRIVATE PkgConfig::WOFF2 JPEG::JPEG PNG::PNG WebP::webp WebP::webpdecoder
-            WebP::webpdemux WebP::libwebpmux skia harfbuzz)
+            WebP::webpdemux WebP::libwebpmux harfbuzz)
+
+target_link_libraries(LibGfx PUBLIC skia)
+
+find_library(SKIA_SKCMS_LIBRARY NAMES skcms PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib" NO_DEFAULT_PATH)
+if (SKIA_SKCMS_LIBRARY)
+    target_link_libraries(LibGfx PUBLIC "${SKIA_SKCMS_LIBRARY}")
+endif()
 
 if (LADYBIRD_ENABLE_IMAGE_AVIF)
     target_link_libraries(LibGfx PRIVATE avif)

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <AK/CharacterTypes.h>
+#include <AK/Platform.h>
 #include <AK/Utf16FlyString.h>
 #include <LibJS/Runtime/Completion.h>
 #include <LibJS/Runtime/PrimitiveString.h>
@@ -202,7 +203,11 @@ private:
     };
 };
 
+#ifdef AK_ARCH_32_BIT
+static_assert(sizeof(PropertyKey) == 8);
+#else
 static_assert(sizeof(PropertyKey) == sizeof(uintptr_t));
+#endif
 
 }
 

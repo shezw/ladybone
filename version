@@ -1,0 +1,8 @@
+#pragma once
+
+#if defined(__has_include_next)
+#    if __has_include_next(<version>)
+#        include_next <version>
+#    endif
+#endif
+

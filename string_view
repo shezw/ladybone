@@ -1,0 +1,14 @@
+#pragma once
+
+#if defined(__has_include_next)
+#    if __has_include_next(<string_view>)
+#        include_next <string_view>
+#    endif
+#endif
+
+#if defined(__cpp_char8_t) && (!defined(__cpp_lib_char8_t) || __cpp_lib_char8_t < 201907L)
+namespace std {
+using u8string_view = basic_string_view<char8_t>;
+}
+#endif
+

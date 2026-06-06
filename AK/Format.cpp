@@ -23,6 +23,11 @@
 #include <string.h>
 #include <time.h>
 
+#if defined(AK_OS_LINUX)
+#    include <sys/syscall.h>
+#    include <unistd.h>
+#endif
+
 #if defined(AK_OS_SERENITY)
 #    include <serenity.h>
 #endif
@@ -1317,7 +1322,7 @@ static auto current_process_id()
 static auto current_thread_id()
 {
 #if defined(AK_OS_LINUX)
-    return gettid();
+    return syscall(SYS_gettid);
 #elif defined(AK_OS_WINDOWS)
     return GetCurrentThreadId();
 #elif defined(AK_OS_MACOS)

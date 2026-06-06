@@ -2,13 +2,12 @@
   "builtin-baseline": "48cfe1e0e928341709d97fc3d2eff10ad6262c96",
   "default-features": [
     "gamepad",
-    "graphics-3d"
+    "graphics-3d",
+    "cpptrace",
+    "network-http3",
+    "desktop-dbus"
   ],
   "dependencies": [
-    {
-      "name": "cpptrace",
-      "platform": "linux | windows | osx"
-    },
     {
       "name": "curl",
       "default-features": false,
@@ -16,16 +15,10 @@
         "brotli",
         "non-http",
         "http2",
-        "http3",
         "openssl",
         "websockets",
         "zstd"
       ]
-    },
-    {
-      "name": "dbus",
-      "default-features": false,
-      "platform": "linux | freebsd"
     },
     {
       "name": "dirent",
@@ -54,10 +47,6 @@
       ]
     },
     "icu",
-    {
-      "name": "libdwarf",
-      "platform": "linux | windows | osx"
-    },
     "libjpeg-turbo",
     {
       "name": "libpng",
@@ -132,6 +121,41 @@
     "zlib"
   ],
   "features": {
+    "cpptrace": {
+      "description": "Build with cpptrace/libdwarf support for symbolized native stack traces",
+      "dependencies": [
+        {
+          "name": "cpptrace",
+          "platform": "linux | windows | osx"
+        },
+        {
+          "name": "libdwarf",
+          "platform": "linux | windows | osx"
+        }
+      ]
+    },
+    "network-http3": {
+      "description": "Build curl with HTTP/3 support",
+      "dependencies": [
+        {
+          "name": "curl",
+          "default-features": false,
+          "features": [
+            "http3"
+          ]
+        }
+      ]
+    },
+    "desktop-dbus": {
+      "description": "Build D-Bus desktop integration dependencies",
+      "dependencies": [
+        {
+          "name": "dbus",
+          "default-features": false,
+          "platform": "linux | freebsd"
+        }
+      ]
+    },
     "graphics-3d": {
       "description": "Build WebGL and GPU-backed Skia rendering support",
       "dependencies": [

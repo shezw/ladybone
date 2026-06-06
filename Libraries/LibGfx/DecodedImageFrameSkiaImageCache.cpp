@@ -14,8 +14,11 @@
 #include <core/SkColorSpace.h>
 #include <core/SkImage.h>
 #include <core/SkRefCnt.h>
-#include <gpu/ganesh/GrDirectContext.h>
-#include <gpu/ganesh/SkImageGanesh.h>
+
+#if ENABLE_3D_GRAPHICS || defined(USE_VULKAN)
+#    include <gpu/ganesh/GrDirectContext.h>
+#    include <gpu/ganesh/SkImageGanesh.h>
+#endif
 
 namespace Gfx {
 
@@ -109,6 +112,7 @@ sk_sp<SkImage> DecodedImageFrameSkiaImageCache::image_for_frame(DecodedImageFram
 
     auto raster_image = sk_image_from_bitmap(bitmap, frame.color_space());
     sk_sp<SkImage> image;
+#if ENABLE_3D_GRAPHICS || defined(USE_VULKAN)
     auto* gr_context = m_impl->skia_backend_context ? m_impl->skia_backend_context->sk_context() : nullptr;
     if (gr_context) {
         image = SkImages::TextureFromImage(gr_context, raster_image.get(), skgpu::Mipmapped::kNo, skgpu::Budgeted::kYes);
@@ -117,6 +121,9 @@ sk_sp<SkImage> DecodedImageFrameSkiaImageCache::image_for_frame(DecodedImageFram
     } else {
         image = move(raster_image);
     }
+#else
+    image = move(raster_image);
+#endif
 
     if (!image)
         return nullptr;

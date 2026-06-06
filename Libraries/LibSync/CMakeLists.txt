@@ -5,3 +5,7 @@ else()
 endif()
 
 ladybird_lib(LibSync sync EXPLICIT_SYMBOL_EXPORT)
+
+if (NOT WIN32)
+    target_link_libraries(LibSync PRIVATE Threads::Threads)
+endif()

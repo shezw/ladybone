@@ -10,10 +10,10 @@
 #include <stdint.h>
 
 extern "C" {
-#if defined(AK_OS_WINDOWS)
-typedef uint32_t mp_digit;
-#else
+#if !defined(AK_OS_WINDOWS) && defined(__SIZEOF_LONG__) && __SIZEOF_LONG__ == 8
 typedef uint64_t mp_digit;
+#else
+typedef uint32_t mp_digit;
 #endif
 typedef int mp_sign;
 

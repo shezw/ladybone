@@ -1,0 +1,129 @@
+#pragma once
+
+#if defined(__has_include_next)
+#    if __has_include_next(<concepts>)
+#        include_next <concepts>
+#        define AK_HAS_SYSTEM_CONCEPTS 1
+#    endif
+#endif
+
+#ifndef AK_HAS_SYSTEM_CONCEPTS
+
+#include <iterator>
+#include <type_traits>
+#include <utility>
+
+namespace std {
+
+#ifndef __cpp_lib_remove_cvref
+template<typename T>
+struct remove_cvref {
+    using type = remove_cv_t<remove_reference_t<T>>;
+};
+
+template<typename T>
+using remove_cvref_t = typename remove_cvref<T>::type;
+#endif
+
+template<typename T, typename U>
+concept same_as = is_same_v<T, U> && is_same_v<U, T>;
+
+template<typename From, typename To>
+concept convertible_to = is_convertible_v<From, To> && requires {
+    static_cast<To>(declval<From>());
+};
+
+template<typename Derived, typename Base>
+concept derived_from = is_base_of_v<Base, Derived> && is_convertible_v<const volatile Derived*, const volatile Base*>;
+
+template<typename T>
+concept integral = is_integral_v<T>;
+
+template<typename T>
+concept signed_integral = integral<T> && is_signed_v<T>;
+
+template<typename T>
+concept unsigned_integral = integral<T> && !signed_integral<T>;
+
+template<typename T>
+concept floating_point = is_floating_point_v<T>;
+
+template<typename F, typename... Args>
+concept invocable = is_invocable_v<F, Args...>;
+
+template<typename F, typename... Args>
+concept regular_invocable = invocable<F, Args...>;
+
+template<typename F, typename... Args>
+concept predicate = regular_invocable<F, Args...> && convertible_to<invoke_result_t<F, Args...>, bool>;
+
+template<typename T, typename... Args>
+concept constructible_from = is_constructible_v<T, Args...>;
+
+template<typename T>
+concept destructible = is_nothrow_destructible_v<T>;
+
+#ifndef AK_STD_HAS_ITERATOR_CONCEPTS_SHIM
+namespace ak_iterator_detail {
+
+template<typename I, typename = void>
+struct direct_iterator_category {
+    using type = void;
+};
+
+template<typename I>
+struct direct_iterator_category<I, void_t<typename I::iterator_category>> {
+    using type = typename I::iterator_category;
+};
+
+template<typename I, typename = void>
+struct iterator_category {
+    using type = typename direct_iterator_category<I>::type;
+};
+
+template<typename I>
+struct iterator_category<I, void_t<typename iterator_traits<I>::iterator_category>> {
+    using type = typename iterator_traits<I>::iterator_category;
+};
+
+template<typename I>
+using iterator_category_t = typename iterator_category<I>::type;
+
+}
+
+template<typename I>
+concept input_iterator = !is_void_v<ak_iterator_detail::iterator_category_t<I>>
+    && is_base_of_v<input_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+template<typename I>
+concept forward_iterator = input_iterator<I>
+    && is_base_of_v<forward_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+template<typename I>
+concept bidirectional_iterator = forward_iterator<I>
+    && is_base_of_v<bidirectional_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+template<typename I>
+concept random_access_iterator = bidirectional_iterator<I>
+    && is_base_of_v<random_access_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+#    define AK_STD_HAS_ITERATOR_CONCEPTS_SHIM 1
+#endif
+
+template<typename LHS, typename RHS>
+concept assignable_from = is_lvalue_reference_v<LHS> && requires(LHS lhs, RHS&& rhs) {
+    { lhs = static_cast<RHS&&>(rhs) } -> same_as<LHS>;
+};
+
+namespace ranges {
+
+template<typename T>
+concept input_range = requires(T& value) {
+    std::begin(value);
+    std::end(value);
+};
+
+}
+
+}
+
+#endif

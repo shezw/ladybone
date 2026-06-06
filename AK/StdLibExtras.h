@@ -11,6 +11,7 @@
 #include <AK/StdLibExtraDetails.h>
 
 #include <memory>
+#include <new>
 #include <utility>
 
 namespace AK {
@@ -32,9 +33,18 @@ requires(AK::Detail::IsIntegral<T>)
 template<typename... Args>
 void compiletime_fail(Args...);
 
-using std::construct_at;
 using std::forward;
 using std::move;
+
+#if defined(__cpp_lib_construct_at) && __cpp_lib_construct_at >= 201811L
+using std::construct_at;
+#else
+template<typename T, typename... Args>
+constexpr T* construct_at(T* location, Args&&... args)
+{
+    return ::new (const_cast<void*>(static_cast<void const volatile*>(location))) T(forward<Args>(args)...);
+}
+#endif
 
 }
 

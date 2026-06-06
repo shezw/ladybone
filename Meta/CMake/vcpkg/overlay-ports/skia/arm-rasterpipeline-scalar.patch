@@ -1,0 +1,18 @@
+diff --git a/gn/skia/BUILD.gn b/gn/skia/BUILD.gn
+index c70ba5c..14d85fe 100644
+--- a/gn/skia/BUILD.gn
++++ b/gn/skia/BUILD.gn
+@@ -126,6 +126,13 @@ config("default") {
+     ]
+     cflags_cc += [ "-fvisibility-inlines-hidden" ]
+     cflags_cc += [ "-std=c++2a" ]
++    if (target_cpu == "arm") {
++      defines += [
++        "SKRP_CPU_SCALAR",
++        "SK_DISABLE_LOWP_RASTER_PIPELINE",
++      ]
++    }
++
+   }
+ 
+   if (current_cpu == "arm") {

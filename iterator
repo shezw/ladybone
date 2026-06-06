@@ -1,0 +1,60 @@
+#pragma once
+
+#if defined(__has_include_next)
+#    if __has_include_next(<iterator>)
+#        include_next <iterator>
+#    endif
+#endif
+
+#include <type_traits>
+
+#if !defined(__cpp_lib_concepts) && !defined(AK_STD_HAS_ITERATOR_CONCEPTS_SHIM)
+namespace std {
+
+namespace ak_iterator_detail {
+
+template<typename I, typename = void>
+struct direct_iterator_category {
+    using type = void;
+};
+
+template<typename I>
+struct direct_iterator_category<I, void_t<typename I::iterator_category>> {
+    using type = typename I::iterator_category;
+};
+
+template<typename I, typename = void>
+struct iterator_category {
+    using type = typename direct_iterator_category<I>::type;
+};
+
+template<typename I>
+struct iterator_category<I, void_t<typename iterator_traits<I>::iterator_category>> {
+    using type = typename iterator_traits<I>::iterator_category;
+};
+
+template<typename I>
+using iterator_category_t = typename iterator_category<I>::type;
+
+}
+
+template<typename I>
+concept input_iterator = !is_void_v<ak_iterator_detail::iterator_category_t<I>>
+    && is_base_of_v<input_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+template<typename I>
+concept forward_iterator = input_iterator<I>
+    && is_base_of_v<forward_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+template<typename I>
+concept bidirectional_iterator = forward_iterator<I>
+    && is_base_of_v<bidirectional_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+template<typename I>
+concept random_access_iterator = bidirectional_iterator<I>
+    && is_base_of_v<random_access_iterator_tag, ak_iterator_detail::iterator_category_t<I>>;
+
+}
+
+#    define AK_STD_HAS_ITERATOR_CONCEPTS_SHIM 1
+#endif

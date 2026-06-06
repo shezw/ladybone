@@ -17,6 +17,8 @@ namespace Web {
 #    define CPU_STRING "x86_64"
 #elif ARCH(AARCH64)
 #    define CPU_STRING "AArch64"
+#elif ARCH(ARM)
+#    define CPU_STRING "armv7l"
 #elif ARCH(I386)
 #    define CPU_STRING "x86"
 #elif ARCH(RISCV64)

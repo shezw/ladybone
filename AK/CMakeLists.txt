@@ -66,7 +66,7 @@ else()
 endif()
 configure_file(Backtrace.h.in Backtrace.h @ONLY)
 
-target_link_libraries(AK PRIVATE FastFloat::fast_float fmt::fmt simdutf::simdutf)
+target_link_libraries(AK PRIVATE FastFloat::fast_float fmt::fmt simdutf::simdutf Threads::Threads)
 
 set(MIMALLOC_VISIBILITY PRIVATE)
 if (NOT BUILD_SHARED_LIBS)

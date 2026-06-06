@@ -1,0 +1,13 @@
+diff --git a/gn/skia/BUILD.gn b/gn/skia/BUILD.gn
+index 97a2576..c70ba5c 100644
+--- a/gn/skia/BUILD.gn
++++ b/gn/skia/BUILD.gn
+@@ -125,7 +125,7 @@ config("default") {
+       "-fvisibility=hidden",
+     ]
+     cflags_cc += [ "-fvisibility-inlines-hidden" ]
+-    cflags_cc += [ "-std=c++20" ]
++    cflags_cc += [ "-std=c++2a" ]
+   }
+ 
+   if (current_cpu == "arm") {

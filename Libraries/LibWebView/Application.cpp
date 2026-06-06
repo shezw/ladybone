@@ -1677,6 +1677,7 @@ Optional<Core::TimeZoneWatcher&> Application::time_zone_watcher()
     return {};
 }
 
+#if ENABLE_DEVTOOLS
 Vector<DevTools::TabDescription> Application::tab_list() const
 {
     Vector<DevTools::TabDescription> tabs;
@@ -2082,5 +2083,6 @@ void Application::did_disconnect_devtools_client(DevTools::TabDescription const&
 
     view->did_disconnect_devtools_client();
 }
+#endif
 
 }

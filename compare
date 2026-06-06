@@ -1,0 +1,118 @@
+#pragma once
+
+#if defined(__has_include_next)
+#    if __has_include_next(<compare>)
+#        include_next <compare>
+#        define AK_HAS_SYSTEM_COMPARE 1
+#    endif
+#endif
+
+#ifndef AK_HAS_SYSTEM_COMPARE
+
+namespace std {
+
+class strong_ordering {
+public:
+    static const strong_ordering less;
+    static const strong_ordering equal;
+    static const strong_ordering equivalent;
+    static const strong_ordering greater;
+
+    friend constexpr bool operator==(strong_ordering lhs, strong_ordering rhs) noexcept { return lhs.m_value == rhs.m_value; }
+    friend constexpr bool operator!=(strong_ordering lhs, strong_ordering rhs) noexcept { return lhs.m_value != rhs.m_value; }
+
+    friend constexpr bool operator==(strong_ordering value, int) noexcept { return value.m_value == 0; }
+    friend constexpr bool operator==(int, strong_ordering value) noexcept { return value.m_value == 0; }
+    friend constexpr bool operator!=(strong_ordering value, int) noexcept { return value.m_value != 0; }
+    friend constexpr bool operator!=(int, strong_ordering value) noexcept { return value.m_value != 0; }
+    friend constexpr bool operator<(strong_ordering value, int) noexcept { return value.m_value < 0; }
+    friend constexpr bool operator<(int, strong_ordering value) noexcept { return 0 < value.m_value; }
+    friend constexpr bool operator<=(strong_ordering value, int) noexcept { return value.m_value <= 0; }
+    friend constexpr bool operator<=(int, strong_ordering value) noexcept { return 0 <= value.m_value; }
+    friend constexpr bool operator>(strong_ordering value, int) noexcept { return value.m_value > 0; }
+    friend constexpr bool operator>(int, strong_ordering value) noexcept { return 0 > value.m_value; }
+    friend constexpr bool operator>=(strong_ordering value, int) noexcept { return value.m_value >= 0; }
+    friend constexpr bool operator>=(int, strong_ordering value) noexcept { return 0 >= value.m_value; }
+
+private:
+    constexpr explicit strong_ordering(signed char value)
+        : m_value(value)
+    {
+    }
+
+    signed char m_value { 0 };
+};
+
+inline constexpr strong_ordering strong_ordering::less { -1 };
+inline constexpr strong_ordering strong_ordering::equal { 0 };
+inline constexpr strong_ordering strong_ordering::equivalent { 0 };
+inline constexpr strong_ordering strong_ordering::greater { 1 };
+
+class weak_ordering {
+public:
+    static const weak_ordering less;
+    static const weak_ordering equivalent;
+    static const weak_ordering greater;
+
+    constexpr weak_ordering(strong_ordering value)
+        : m_value(value < 0 ? -1 : value > 0 ? 1
+                                             : 0)
+    {
+    }
+
+    friend constexpr bool operator==(weak_ordering lhs, weak_ordering rhs) noexcept { return lhs.m_value == rhs.m_value; }
+    friend constexpr bool operator!=(weak_ordering lhs, weak_ordering rhs) noexcept { return lhs.m_value != rhs.m_value; }
+
+private:
+    constexpr explicit weak_ordering(signed char value)
+        : m_value(value)
+    {
+    }
+
+    signed char m_value { 0 };
+};
+
+inline constexpr weak_ordering weak_ordering::less { -1 };
+inline constexpr weak_ordering weak_ordering::equivalent { 0 };
+inline constexpr weak_ordering weak_ordering::greater { 1 };
+
+class partial_ordering {
+public:
+    static const partial_ordering less;
+    static const partial_ordering equivalent;
+    static const partial_ordering greater;
+    static const partial_ordering unordered;
+
+    constexpr partial_ordering(strong_ordering value)
+        : m_value(value < 0 ? -1 : value > 0 ? 1
+                                             : 0)
+    {
+    }
+
+    constexpr partial_ordering(weak_ordering value)
+        : m_value(value == weak_ordering::less ? -1 : value == weak_ordering::greater ? 1
+                                                                                      : 0)
+    {
+    }
+
+    friend constexpr bool operator==(partial_ordering lhs, partial_ordering rhs) noexcept { return lhs.m_value == rhs.m_value; }
+    friend constexpr bool operator!=(partial_ordering lhs, partial_ordering rhs) noexcept { return lhs.m_value != rhs.m_value; }
+
+private:
+    constexpr explicit partial_ordering(signed char value)
+        : m_value(value)
+    {
+    }
+
+    signed char m_value { 0 };
+};
+
+inline constexpr partial_ordering partial_ordering::less { -1 };
+inline constexpr partial_ordering partial_ordering::equivalent { 0 };
+inline constexpr partial_ordering partial_ordering::greater { 1 };
+inline constexpr partial_ordering partial_ordering::unordered { 2 };
+
+}
+
+#endif
+

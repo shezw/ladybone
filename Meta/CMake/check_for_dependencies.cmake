@@ -1,7 +1,5 @@
 include_guard()
 
-find_package(PkgConfig REQUIRED)
-
 find_package(mimalloc CONFIG REQUIRED)
 
 # AK dependencies
@@ -10,6 +8,15 @@ find_package(cpptrace CONFIG)
 find_package(FastFloat CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(simdutf REQUIRED)
+find_package(ICU 78.2 EXACT REQUIRED COMPONENTS data i18n uc)
+find_package(Threads REQUIRED)
+
+if (LAGOM_TOOLS_ONLY)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    return()
+endif()
+
+find_package(PkgConfig REQUIRED)
 
 # LibGfx dependencies
 find_package(harfbuzz REQUIRED)
@@ -67,7 +74,6 @@ if (LADYBIRD_ENABLE_3D_GRAPHICS AND NOT APPLE)
 endif()
 
 find_package(CURL REQUIRED)
-find_package(ICU 78.2 EXACT REQUIRED COMPONENTS data i18n uc)
 find_package(LibXml2 REQUIRED)
 find_package(OpenSSL REQUIRED)
 if (LADYBIRD_ENABLE_GAMEPAD)
@@ -75,7 +81,6 @@ if (LADYBIRD_ENABLE_GAMEPAD)
 endif()
 find_package(simdjson CONFIG REQUIRED)
 find_package(SQLite3 REQUIRED)
-find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
 
 pkg_check_modules(libtommath REQUIRED IMPORTED_TARGET libtommath)

@@ -158,7 +158,7 @@ struct CalendarEraData {
     // NB: This column is not in the spec table, but is needed to handle calendars with mid-year era transitions.
     Optional<ISODate> iso_era_start;
 };
-static constexpr auto CALENDAR_ERA_DATA = to_array<CalendarEraData>({
+static auto const CALENDAR_ERA_DATA = to_array<CalendarEraData>({
     // clang-format off
     { "buddhist"sv,         "be"sv,     {},     {}, {},   CalendarEraData::Kind::Epoch,    {},    {}                   },
     { "coptic"sv,           "am"sv,     {},     {}, {},   CalendarEraData::Kind::Epoch,    {},    {}                   },
@@ -204,7 +204,7 @@ static constexpr auto ALL_LEAP_MONTH_CODES = to_array({ "M01L"sv, "M02L"sv, "M03
 static constexpr auto THIRTEENTH_MONTH_CODES = to_array({ "M13"sv });
 static constexpr auto HEBREW_ADAR_I_MONTH_CODES = to_array({ "M05L"sv });
 
-static constexpr auto ADDITIONAL_MONTH_CODES = to_array<AdditionalMonthCodes>({
+static auto const ADDITIONAL_MONTH_CODES = to_array<AdditionalMonthCodes>({
     { "chinese"sv, ALL_LEAP_MONTH_CODES, AdditionalMonthCodes::Leap::SkipBackward },
     { "coptic"sv, THIRTEENTH_MONTH_CODES, {} },
     { "dangi"sv, ALL_LEAP_MONTH_CODES, AdditionalMonthCodes::Leap::SkipBackward },
@@ -219,7 +219,7 @@ struct ISOReferenceYears {
     Optional<i32> days_1_to_29;
     Optional<i32> day_30;
 };
-static constexpr auto CHINESE_AND_DANGI_ISO_REFERENCE_YEARS = to_array<ISOReferenceYears>({
+static auto const CHINESE_AND_DANGI_ISO_REFERENCE_YEARS = to_array<ISOReferenceYears>({
     { "M01"sv, 1972, 1970 },
     { "M01L"sv, {}, {} },
     { "M02"sv, 1972, 1972 },

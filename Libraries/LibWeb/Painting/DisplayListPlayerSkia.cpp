@@ -24,9 +24,11 @@
 #include <effects/SkGradientShader.h>
 #include <effects/SkImageFilters.h>
 #include <effects/SkLumaColorFilter.h>
-#include <gpu/ganesh/GrDirectContext.h>
-#include <gpu/ganesh/SkImageGanesh.h>
-#include <gpu/ganesh/SkSurfaceGanesh.h>
+#if ENABLE_3D_GRAPHICS
+#    include <gpu/ganesh/GrDirectContext.h>
+#    include <gpu/ganesh/SkImageGanesh.h>
+#    include <gpu/ganesh/SkSurfaceGanesh.h>
+#endif
 #include <pathops/SkPathOps.h>
 
 #include <LibGfx/Bitmap.h>
@@ -189,6 +191,7 @@ void DisplayListPlayerSkia::draw_video_frame(DrawVideoFrame const& command)
         return;
 
     sk_sp<SkImage> image;
+#if ENABLE_3D_GRAPHICS
     auto* gr_context = m_skia_backend_context ? m_skia_backend_context->sk_context() : nullptr;
     if (gr_context) {
         image = SkImages::TextureFromYUVAPixmaps(
@@ -198,6 +201,7 @@ void DisplayListPlayerSkia::draw_video_frame(DrawVideoFrame const& command)
             false,
             frame->color_space().color_space<sk_sp<SkColorSpace>>());
     }
+#endif
 
     RefPtr<Gfx::Bitmap> converted_bitmap;
     if (!image) {
@@ -208,6 +212,7 @@ void DisplayListPlayerSkia::draw_video_frame(DrawVideoFrame const& command)
         }
         converted_bitmap = bitmap_or_error.release_value();
         auto raster_image = Gfx::sk_image_from_bitmap(*converted_bitmap, frame->color_space());
+#if ENABLE_3D_GRAPHICS
         if (gr_context) {
             image = SkImages::TextureFromImage(gr_context, raster_image.get(), skgpu::Mipmapped::kNo, skgpu::Budgeted::kYes);
             if (!image)
@@ -215,6 +220,9 @@ void DisplayListPlayerSkia::draw_video_frame(DrawVideoFrame const& command)
         } else {
             image = move(raster_image);
         }
+#else
+        image = move(raster_image);
+#endif
     }
 
     auto dst_rect = to_skia_rect(command.dst_rect);

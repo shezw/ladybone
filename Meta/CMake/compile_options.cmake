@@ -1,5 +1,7 @@
 # Flags shared by Lagom (including Ladybird) and Serenity.
-set(CMAKE_CXX_STANDARD 23)
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 23)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

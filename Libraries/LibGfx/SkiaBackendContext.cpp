@@ -11,7 +11,10 @@
 #include <LibGfx/SkiaBackendContext.h>
 
 #include <core/SkSurface.h>
-#include <gpu/ganesh/GrDirectContext.h>
+
+#if ENABLE_3D_GRAPHICS || defined(USE_VULKAN)
+#    include <gpu/ganesh/GrDirectContext.h>
+#endif
 
 #ifdef USE_VULKAN
 #    include <gpu/ganesh/vk/GrVkDirectContext.h>
@@ -30,12 +33,12 @@ namespace Gfx {
 
 #if ENABLE_3D_GRAPHICS && (defined(AK_OS_MACOS) || USE_VULKAN)
 static constexpr size_t skia_resource_cache_limit = 256 * MiB;
-#endif
 static constexpr auto skia_deferred_cleanup_interval = AK::Duration::from_seconds(1);
 static constexpr auto skia_aggressive_cleanup_interval = AK::Duration::from_seconds(5);
 static constexpr auto skia_deferred_cleanup_resource_age = std::chrono::seconds(5);
 static constexpr auto skia_resource_cache_high_watermark = 384 * MiB;
 static constexpr auto skia_resource_cache_critical_watermark = 512 * MiB;
+#endif
 
 static RefPtr<SkiaBackendContext> s_main_thread_context;
 
@@ -47,6 +50,7 @@ void SkiaBackendContext::flush_and_submit(SkSurface* surface)
     if (!context)
         return;
 
+#if ENABLE_3D_GRAPHICS || defined(USE_VULKAN)
     static thread_local Optional<MonotonicTime> s_last_deferred_cleanup;
     static thread_local Optional<MonotonicTime> s_last_aggressive_cleanup;
 
@@ -69,6 +73,7 @@ void SkiaBackendContext::flush_and_submit(SkSurface* surface)
     context->getResourceCacheUsage(nullptr, &resource_bytes);
     if (resource_bytes >= skia_resource_cache_critical_watermark)
         context->purgeUnlockedResources(GrPurgeResourceOptions::kScratchResourcesOnly);
+#endif
 }
 
 void SkiaBackendContext::initialize_gpu_backend()

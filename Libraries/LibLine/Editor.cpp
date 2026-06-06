@@ -247,7 +247,7 @@ void Editor::add_to_history(ByteString const& line)
     if ((m_history.size() + 1) > m_history_capacity)
         m_history.take_first();
     auto now = UnixDateTime::now();
-    m_history.append({ line, now.seconds_since_epoch() });
+    m_history.append({ line, static_cast<time_t>(now.seconds_since_epoch()) });
     m_history_dirty = true;
 }
 

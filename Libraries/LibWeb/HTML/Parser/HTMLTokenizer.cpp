@@ -33,6 +33,11 @@ static StringView ffi_string_view(u8 const* ptr, size_t len)
     return { ptr, len };
 }
 
+static HTMLToken::Position ffi_position(u64 line, u64 column)
+{
+    return { static_cast<size_t>(line), static_cast<size_t>(column) };
+}
+
 static RustFfiTokenizerHandle* create_tokenizer_from_utf8(StringView utf8_bytes)
 {
     auto* bytes = reinterpret_cast<u8 const*>(utf8_bytes.characters_without_null_termination());
@@ -154,8 +159,8 @@ Optional<HTMLToken> HTMLTokenizer::next_token(StopAtInsertionPoint stop_at_inser
     }
 
     HTMLToken token { type };
-    token.set_start_position({}, { ffi.start_line, ffi.start_column });
-    token.set_end_position({}, { ffi.end_line, ffi.end_column });
+    token.set_start_position({}, ffi_position(ffi.start_line, ffi.start_column));
+    token.set_end_position({}, ffi_position(ffi.end_line, ffi.end_column));
 
     switch (type) {
     case HTMLToken::Type::Character:
@@ -177,10 +182,10 @@ Optional<HTMLToken> HTMLTokenizer::next_token(StopAtInsertionPoint stop_at_inser
             else
                 attribute.local_name = MUST(FlyString::from_utf8(ffi_string_view(ffi_attribute.name_ptr, ffi_attribute.name_len)));
             attribute.value = MUST(String::from_utf8(ffi_string_view(ffi_attribute.value_ptr, ffi_attribute.value_len)));
-            attribute.name_start_position = { ffi_attribute.name_start_line, ffi_attribute.name_start_column };
-            attribute.name_end_position = { ffi_attribute.name_end_line, ffi_attribute.name_end_column };
-            attribute.value_start_position = { ffi_attribute.value_start_line, ffi_attribute.value_start_column };
-            attribute.value_end_position = { ffi_attribute.value_end_line, ffi_attribute.value_end_column };
+            attribute.name_start_position = ffi_position(ffi_attribute.name_start_line, ffi_attribute.name_start_column);
+            attribute.name_end_position = ffi_position(ffi_attribute.name_end_line, ffi_attribute.name_end_column);
+            attribute.value_start_position = ffi_position(ffi_attribute.value_start_line, ffi_attribute.value_start_column);
+            attribute.value_end_position = ffi_position(ffi_attribute.value_end_line, ffi_attribute.value_end_column);
             token.add_attribute(move(attribute));
         }
         token.normalize_attributes();

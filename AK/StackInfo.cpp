@@ -15,6 +15,10 @@
 #elif defined(AK_OS_LINUX) || defined(AK_LIBC_GLIBC) || defined(AK_OS_MACOS) || defined(AK_OS_IOS) || defined(AK_OS_NETBSD) || defined(AK_OS_SOLARIS) || defined(AK_OS_HAIKU)
 #    include <pthread.h>
 #    include <sys/resource.h>
+#    if defined(AK_OS_LINUX)
+#        include <sys/syscall.h>
+#        include <unistd.h>
+#    endif
 #elif defined(AK_OS_FREEBSD) || defined(AK_OS_OPENBSD)
 #    include <pthread.h>
 #    include <pthread_np.h>
@@ -108,7 +112,7 @@ StackInfo::StackInfo()
 
 #if defined(AK_OS_LINUX) && !defined(AK_OS_ANDROID) && !defined(AK_LIBC_GLIBC)
     // Note: musl libc always gives the initial size of the main thread's stack
-    if (getpid() == static_cast<pid_t>(gettid())) {
+    if (getpid() == static_cast<pid_t>(syscall(SYS_gettid))) {
         rlimit limit;
         getrlimit(RLIMIT_STACK, &limit);
         rlim_t size = limit.rlim_cur;

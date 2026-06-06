@@ -1,0 +1,15 @@
+diff --git a/modules/skcms/BUILD.gn b/modules/skcms/BUILD.gn
+index ab6a75f..09c4e02 100644
+--- a/modules/skcms/BUILD.gn
++++ b/modules/skcms/BUILD.gn
+@@ -78,6 +78,10 @@ static_library("skcms") {
+     ]
+   }
+ 
++  if (target_cpu == "arm") {
++    defines += [ "SKCMS_PORTABLE" ]
++  }
++
+   if (is_component_build) {
+     defines += [
+       "SKCMS_DLL",

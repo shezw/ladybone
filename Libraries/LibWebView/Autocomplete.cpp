@@ -7,6 +7,8 @@
 
 #include <AK/Debug.h>
 #include <AK/Find.h>
+#include <AK/JsonArray.h>
+#include <AK/JsonObject.h>
 #include <LibCore/EventLoop.h>
 #include <LibRequests/Request.h>
 #include <LibRequests/RequestClient.h>

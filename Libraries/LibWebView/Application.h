@@ -14,8 +14,10 @@
 #include <LibCore/EventLoop.h>
 #include <LibCore/Forward.h>
 #include <LibDatabase/Forward.h>
-#include <LibDevTools/DevToolsDelegate.h>
-#include <LibDevTools/Forward.h>
+#if ENABLE_DEVTOOLS
+#    include <LibDevTools/DevToolsDelegate.h>
+#    include <LibDevTools/Forward.h>
+#endif
 #include <LibGfx/Point.h>
 #include <LibGfx/Size.h>
 #include <LibIPC/Forward.h>
@@ -53,7 +55,11 @@ namespace WebView {
 struct ApplicationSettingsObserver;
 struct ApplicationBookmarkStoreObserver;
 
-class WEBVIEW_API Application : public DevTools::DevToolsDelegate {
+class WEBVIEW_API Application
+#if ENABLE_DEVTOOLS
+    : public DevTools::DevToolsDelegate
+#endif
+{
     AK_MAKE_NONCOPYABLE(Application);
 
 public:
@@ -243,6 +249,7 @@ private:
     };
     void create_bookmark_menu_items(Optional<MenuData> = {});
 
+#if ENABLE_DEVTOOLS
     virtual Vector<DevTools::TabDescription> tab_list() const override;
     virtual Vector<DevTools::CSSProperty> css_property_list() const override;
     virtual void inspect_tab(DevTools::TabDescription const&, OnTabInspectionComplete) const override;
@@ -279,6 +286,7 @@ private:
     virtual void stop_listening_for_navigation_events(DevTools::TabDescription const&) const override;
     virtual void did_connect_devtools_client(DevTools::TabDescription const&) const override;
     virtual void did_disconnect_devtools_client(DevTools::TabDescription const&) const override;
+#endif
 
     static Application* s_the;
 

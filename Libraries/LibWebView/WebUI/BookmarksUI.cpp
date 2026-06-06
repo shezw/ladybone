@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include <AK/JsonArray.h>
+#include <AK/JsonObject.h>
 #include <LibCore/File.h>
 #include <LibWebView/Application.h>
 #include <LibWebView/BookmarkStore.h>
