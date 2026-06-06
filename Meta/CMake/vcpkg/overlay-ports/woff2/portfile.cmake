@@ -25,6 +25,26 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 vcpkg_copy_pdbs()
 
+# vcpkg_cmake_install() uses CMake's install/strip path for release builds. For
+# static ARMHF archives that removes the symbol table required by GNU ld, so copy
+# the freshly built archives back after install.
+foreach(build_type IN ITEMS rel dbg)
+  if(build_type STREQUAL "dbg")
+    set(woff2_archive_destination "${CURRENT_PACKAGES_DIR}/debug/lib")
+  else()
+    set(woff2_archive_destination "${CURRENT_PACKAGES_DIR}/lib")
+  endif()
+
+  file(GLOB woff2_build_dirs LIST_DIRECTORIES true "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-*-${build_type}")
+  foreach(woff2_build_dir IN LISTS woff2_build_dirs)
+    foreach(woff2_archive IN ITEMS libwoff2common.a libwoff2dec.a libwoff2enc.a)
+      if(EXISTS "${woff2_build_dir}/${woff2_archive}")
+        file(COPY_FILE "${woff2_build_dir}/${woff2_archive}" "${woff2_archive_destination}/${woff2_archive}")
+      endif()
+    endforeach()
+  endforeach()
+endforeach()
+
 file(COPY "${CURRENT_PACKAGES_DIR}/bin/" DESTINATION "${CURRENT_PACKAGES_DIR}/tools/woff2")
 file(REMOVE_RECURSE
   "${CURRENT_PACKAGES_DIR}/bin"

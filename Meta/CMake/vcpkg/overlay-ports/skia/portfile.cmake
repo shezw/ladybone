@@ -401,3 +401,22 @@ file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_D
 
 file(GLOB third_party_licenses "${SOURCE_PATH}/third_party_licenses/*")
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE" ${third_party_licenses})
+
+# Keep the static skcms companion archive linkable after all package finalizers.
+# GNU ld needs the regular symbol table when LibGfx links against libskia.so and
+# the standalone skcms archive on ARMHF.
+foreach(skia_config IN ITEMS rel dbg)
+    file(GLOB skia_build_dirs LIST_DIRECTORIES true "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-*-${skia_config}")
+    foreach(skia_build_dir IN LISTS skia_build_dirs)
+        if(skia_config STREQUAL "dbg")
+            set(skia_archive_destination "${CURRENT_PACKAGES_DIR}/debug/lib")
+        else()
+            set(skia_archive_destination "${CURRENT_PACKAGES_DIR}/lib")
+        endif()
+
+        install_skia_static_archive_from_objects(libskcms.a "${skia_build_dir}" "${skia_archive_destination}"
+            "${skia_build_dir}/obj/modules/skcms/libskcms.skcms.o"
+            "${skia_build_dir}/obj/modules/skcms/src/libskcms.skcms_TransformBaseline.o"
+        )
+    endforeach()
+endforeach()
