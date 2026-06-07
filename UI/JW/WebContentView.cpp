@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include <AK/Platform.h>
 #include <AK/String.h>
 #include <LibCore/EventLoop.h>
 #include <LibCore/Resource.h>
@@ -19,6 +20,8 @@
 #include <LibWebView/Application.h>
 #include <LibWebView/WebContentClient.h>
 #include <UI/JW/WebContentView.h>
+#include <stdlib.h>
+#include <string.h>
 
 namespace Ladybird {
 
@@ -90,6 +93,28 @@ static Web::UIEvents::KeyCode jw_key_to_web(int key)
     }
 }
 
+static bool environment_is(char const* name, char const* expected)
+{
+    auto* value = getenv(name);
+    return value && strcmp(value, expected) == 0;
+}
+
+static jw_proxy_t* create_jw_proxy(int width, int height, char const*& backend_name)
+{
+    if (environment_is("LADYBIRD_JW_BACKEND", "sdl")) {
+        backend_name = "SDL";
+        return jw_proxy_create_sdl(width, height, "Ladybird JW");
+    }
+
+#if defined(AK_OS_LINUX)
+    backend_name = "fbdev";
+    return jw_proxy_create_fbdev(getenv("LADYBIRD_JW_FBDEV"), width, height, "Ladybird JW");
+#else
+    backend_name = "SDL";
+    return jw_proxy_create_sdl(width, height, "Ladybird JW");
+#endif
+}
+
 ErrorOr<NonnullOwnPtr<WebContentView>> WebContentView::create()
 {
     auto view = adopt_own(*new WebContentView);
@@ -112,14 +137,21 @@ ErrorOr<void> WebContentView::initialize()
     if (!m_context)
         return Error::from_string_literal("Failed to create JingWei context");
 
-    m_proxy = jw_proxy_create_sdl(m_viewport_size.width(), m_viewport_size.height(), "Ladybird JW");
-    if (!m_proxy)
+    char const* backend_name = nullptr;
+    m_proxy = create_jw_proxy(m_viewport_size.width(), m_viewport_size.height(), backend_name);
+    if (!m_proxy) {
+        if (strcmp(backend_name, "fbdev") == 0)
+            return Error::from_string_literal("Failed to create JingWei fbdev proxy");
         return Error::from_string_literal("Failed to create JingWei SDL proxy");
+    }
 
     auto* proxy = m_proxy;
     m_display = jw_display_create(m_viewport_size.width(), m_viewport_size.height(), proxy);
-    if (!m_display)
-        return Error::from_string_literal("Failed to create JingWei display");
+    if (!m_display) {
+        if (strcmp(backend_name, "fbdev") == 0)
+            return Error::from_string_literal("Failed to create JingWei fbdev display");
+        return Error::from_string_literal("Failed to create JingWei SDL display");
+    }
 
     m_proxy = nullptr;
     if (jw_context_register_display(m_context, m_display) < 0) {
