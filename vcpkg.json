@@ -56,7 +56,7 @@
     },
     {
       "name": "libproxy",
-      "platform": "!(android | bsd)"
+      "platform": "!(android | bsd | arm)"
     },
     "libtommath",
     {
